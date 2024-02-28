@@ -22,18 +22,28 @@ export default function TabLayout() {
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
         headerShown: useClientOnlyValue(false, true),
-      }}>
+        tabBarStyle: {
+          height: 60
+        },
+        tabBarItemStyle: {
+          margin: 5
+        },
+        tabBarLabelStyle: {
+          fontSize: 12
+        }
+      }}
+    >
       <Tabs.Screen
-        name="index"
+        name='index'
         options={{
           title: 'Parking Map',
-          tabBarIcon: ({ color }) => <TabBarIcon name="map-pin" color={color} />,
+          tabBarIcon: ({ color }) => <TabBarIcon name='map-signs' color={color} />,
           headerRight: () => (
-            <Link href="/modal" asChild>
+            <Link href='/notifications' asChild>
               <Pressable>
                 {({ pressed }) => (
                   <FontAwesome
-                    name="bell"
+                    name='bell'
                     size={25}
                     color={Colors[colorScheme ?? 'light'].text}
                     style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
@@ -41,21 +51,20 @@ export default function TabLayout() {
                 )}
               </Pressable>
             </Link>
-          ),
-          
+          )
         }}
       />
       <Tabs.Screen
-        name="heatmap"
+        name='heatmap'
         options={{
           title: 'Heatmap',
-          tabBarIcon: ({ color }) => <TabBarIcon name="map" color={color} />,
+          tabBarIcon: ({ color }) => <TabBarIcon name='map' color={color} />,
           headerRight: () => (
-            <Link href="/modal" asChild>
+            <Link href='/notifications' asChild>
               <Pressable>
                 {({ pressed }) => (
                   <FontAwesome
-                    name="bell"
+                    name='bell'
                     size={25}
                     color={Colors[colorScheme ?? 'light'].text}
                     style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
@@ -63,20 +72,20 @@ export default function TabLayout() {
                 )}
               </Pressable>
             </Link>
-          ),
+          )
         }}
       />
-       <Tabs.Screen
-        name="profile"
+      <Tabs.Screen
+        name='profile'
         options={{
           title: 'Profile',
-          tabBarIcon: ({ color }) => <TabBarIcon name="user" color={color} />,
+          tabBarIcon: ({ color }) => <TabBarIcon name='user' color={color} />,
           headerRight: () => (
-            <Link href="/modal" asChild>
+            <Link href='/notifications' asChild>
               <Pressable>
                 {({ pressed }) => (
                   <FontAwesome
-                    name="bell"
+                    name='bell'
                     size={25}
                     color={Colors[colorScheme ?? 'light'].text}
                     style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
@@ -84,20 +93,20 @@ export default function TabLayout() {
                 )}
               </Pressable>
             </Link>
-          ),
+          )
         }}
       />
-       <Tabs.Screen
-        name="settings"
+      <Tabs.Screen
+        name='settings'
         options={{
           title: 'Settings',
-          tabBarIcon: ({ color }) => <TabBarIcon name="cog" color={color} />,
+          tabBarIcon: ({ color }) => <TabBarIcon name='cog' color={color} />,
           headerRight: () => (
-            <Link href="/modal" asChild>
+            <Link href='/notifications' asChild>
               <Pressable>
                 {({ pressed }) => (
                   <FontAwesome
-                    name="bell"
+                    name='bell'
                     size={25}
                     color={Colors[colorScheme ?? 'light'].text}
                     style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
@@ -105,7 +114,7 @@ export default function TabLayout() {
                 )}
               </Pressable>
             </Link>
-          ),
+          )
         }}
       />
     </Tabs>
