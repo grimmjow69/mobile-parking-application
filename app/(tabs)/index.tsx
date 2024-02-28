@@ -1,13 +1,22 @@
-import { StyleSheet } from 'react-native';
+import { Dimensions, StyleSheet } from 'react-native';
 
-import EditScreenInfo from '@/components/EditScreenInfo';
-import { Text, View } from '@/components/Themed';
+import { View } from '@/components/Themed';
+import MapView from 'react-native-maps';
 
 export default function TabOneScreen() {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Tab One</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
+      <MapView
+        style={styles.map}
+        initialRegion={{
+          latitude: 49.204337721560485,
+          longitude: 18.756124391955183,
+          latitudeDelta: 0.01,
+          longitudeDelta: 0.01
+        }}
+        showsUserLocation={true}
+        showsCompass={true}
+      ></MapView>
     </View>
   );
 }
@@ -26,5 +35,10 @@ const styles = StyleSheet.create({
     marginVertical: 30,
     height: 1,
     width: '80%',
+  },
+  map: {
+    flex: 1,
+    width: Dimensions.get("window").width,
+    height: Dimensions.get("window").height,
   },
 });
