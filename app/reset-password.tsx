@@ -3,7 +3,7 @@ import { Platform, StyleSheet } from 'react-native';
 
 import { View } from '@/components/Themed';
 
-export default function NotificationsScreen() {
+export default function PasswordResetScreen() {
   return (
     <View style={styles.container}>
       <StatusBar style={Platform.OS === 'ios' ? 'light' : 'auto'} />

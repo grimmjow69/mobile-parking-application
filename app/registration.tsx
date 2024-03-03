@@ -1,18 +1,20 @@
-import { Pressable, StyleSheet } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
+import { Platform, StyleSheet } from 'react-native';
 
-import { Text, View } from '@/components/Themed';
+import { View } from '@/components/Themed';
+import React from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Button, TextInput } from 'react-native-paper';
-import React from 'react';
-import { Link } from 'expo-router';
 
-export default function TabTwoScreen() {
+export default function RegistrationScreen() {
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
+  const [passwordCheck, setPasswordCheck] = React.useState('');
 
-  const handleLogin = () => {
-    console.log('Login with:', email, password);
+  const handleRegister = () => {
+    console.log('Register:', email, password);
   };
+
   return (
     <View style={styles.container}>
       <SafeAreaProvider style={styles.container}>
@@ -39,22 +41,21 @@ export default function TabTwoScreen() {
           right={<TextInput.Icon icon='lock' />}
         />
 
-        <Button mode='contained' onPress={handleLogin} style={styles.button} icon='login'>
-          Log in
+        <TextInput
+          label='Password check'
+          value={passwordCheck}
+          onChangeText={setPasswordCheck}
+          mode='outlined'
+          style={styles.input}
+          secureTextEntry
+          textContentType='password'
+          right={<TextInput.Icon icon='lock' />}
+        />
+
+        <Button mode='contained' onPress={handleRegister} style={styles.button} icon='register'>
+          Register
         </Button>
 
-        <Link href='/reset-password' asChild>
-          <Button style={styles.button}>Forgot Password?</Button>
-        </Link>
-
-        <Text style={styles.registerText}>
-          Don't have an account?{' '}
-          <Link href='/registration' asChild>
-            <Text style={styles.linkText} onPress={() => console.log('Navigate to registration')}>
-              Register here
-            </Text>
-          </Link>
-        </Text>
       </SafeAreaProvider>
     </View>
   );
@@ -73,12 +74,5 @@ const styles = StyleSheet.create({
   },
   button: {
     marginTop: 40
-  },
-  registerText: {
-    marginTop: 16
-  },
-  linkText: {
-    fontWeight: 'bold',
-    color: '#6200ee'
   }
 });
