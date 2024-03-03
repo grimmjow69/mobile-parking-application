@@ -1,18 +1,13 @@
 import React from 'react';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Link, Tabs } from 'expo-router';
-import { Pressable } from 'react-native';
+import { Pressable, StyleSheet } from 'react-native';
 
 import Colors from '@/constants/Colors';
 import { useColorScheme } from '@/components/useColorScheme';
 import { useClientOnlyValue } from '@/components/useClientOnlyValue';
-
-function TabBarIcon(props: {
-  name: React.ComponentProps<typeof FontAwesome>['name'];
-  color: string;
-}) {
-  return <FontAwesome size={28} style={{ marginBottom: -3 }} {...props} />;
-}
+import { Badge, Icon } from 'react-native-paper';
+import { View } from '@/components/Themed';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -37,18 +32,16 @@ export default function TabLayout() {
         name='index'
         options={{
           title: 'Parking Map',
-          tabBarIcon: ({ color }) => <TabBarIcon name='map-signs' color={color} />,
+          tabBarIcon: ({ color }) => <Icon source='map-marker-multiple' color={color} size={26} />,
           headerRight: () => (
             <Link href='/notifications' asChild>
               <Pressable>
-                {({ pressed }) => (
-                  <FontAwesome
-                    name='bell'
-                    size={25}
-                    color={Colors[colorScheme ?? 'light'].text}
-                    style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
-                  />
-                )}
+                <View style={styles.notificationsBell}>
+                  <Badge size={16} style={[styles.notificationsBadge]}>
+                    3
+                  </Badge>
+                  <Icon source='bell' size={30} />
+                </View>
               </Pressable>
             </Link>
           )
@@ -58,18 +51,16 @@ export default function TabLayout() {
         name='heatmap'
         options={{
           title: 'Heatmap',
-          tabBarIcon: ({ color }) => <TabBarIcon name='map' color={color} />,
+          tabBarIcon: ({ color }) => <Icon source='map-clock' color={color} size={26} />,
           headerRight: () => (
             <Link href='/notifications' asChild>
               <Pressable>
-                {({ pressed }) => (
-                  <FontAwesome
-                    name='bell'
-                    size={25}
-                    color={Colors[colorScheme ?? 'light'].text}
-                    style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
-                  />
-                )}
+                <View style={styles.notificationsBell}>
+                  <Badge size={16} style={[styles.notificationsBadge]}>
+                    3
+                  </Badge>
+                  <Icon source='bell' size={30} />
+                </View>
               </Pressable>
             </Link>
           )
@@ -79,18 +70,16 @@ export default function TabLayout() {
         name='profile'
         options={{
           title: 'Profile',
-          tabBarIcon: ({ color }) => <TabBarIcon name='user' color={color} />,
+          tabBarIcon: ({ color }) => <Icon source='account' color={color} size={26} />,
           headerRight: () => (
             <Link href='/notifications' asChild>
               <Pressable>
-                {({ pressed }) => (
-                  <FontAwesome
-                    name='bell'
-                    size={25}
-                    color={Colors[colorScheme ?? 'light'].text}
-                    style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
-                  />
-                )}
+                <View style={styles.notificationsBell}>
+                  <Badge size={16} style={[styles.notificationsBadge]}>
+                    3
+                  </Badge>
+                  <Icon source='bell' size={30} />
+                </View>
               </Pressable>
             </Link>
           )
@@ -100,18 +89,16 @@ export default function TabLayout() {
         name='settings'
         options={{
           title: 'Settings',
-          tabBarIcon: ({ color }) => <TabBarIcon name='cog' color={color} />,
+          tabBarIcon: ({ color }) => <Icon source='cog' color={color} size={26} />,
           headerRight: () => (
             <Link href='/notifications' asChild>
               <Pressable>
-                {({ pressed }) => (
-                  <FontAwesome
-                    name='bell'
-                    size={25}
-                    color={Colors[colorScheme ?? 'light'].text}
-                    style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
-                  />
-                )}
+                <View style={styles.notificationsBell}>
+                  <Badge size={16} style={[styles.notificationsBadge]}>
+                    3
+                  </Badge>
+                  <Icon source='bell' size={30} />
+                </View>
               </Pressable>
             </Link>
           )
@@ -120,3 +107,17 @@ export default function TabLayout() {
     </Tabs>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#303c64'
+  },
+  notificationsBadge: {
+    position: 'absolute',
+    zIndex: 1
+  },
+  notificationsBell: {
+    marginRight: 12
+  }
+});

@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 
 import { Text, View } from '@/components/Themed';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -25,7 +25,7 @@ export default function TabTwoScreen() {
           autoCapitalize='none'
           keyboardType='email-address'
           textContentType='emailAddress'
-          right={<TextInput.Icon icon='account' />}
+          right={<TextInput.Icon icon='email' />}
         />
 
         <TextInput
@@ -43,7 +43,7 @@ export default function TabTwoScreen() {
           Log in
         </Button>
 
-        <Link href='/reset-password' asChild>
+        <Link href='/resend-password' asChild>
           <Button style={styles.button}>Forgot Password?</Button>
         </Link>
 

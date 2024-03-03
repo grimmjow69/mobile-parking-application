@@ -30,20 +30,21 @@ export default function MapScreen() {
       <MapView
         style={styles.map}
         initialRegion={{
-          latitude: 49.204337721560485,
-          longitude: 18.756124391955183,
-          latitudeDelta: 0.01,
-          longitudeDelta: 0.01
+          latitude: 49.202337,
+          longitude: 18.756124,
+          latitudeDelta: 0.005,
+          longitudeDelta: 0.005
         }}
         showsUserLocation={true}
         showsCompass={true}
+        showsPointsOfInterest={false}
       >
         <Marker
           key={1}
           coordinate={{ latitude: 49.204337721560485, longitude: 18.756124391955183 }}
         />
         <Marker
-          key={1}
+          key={2}
           coordinate={{ latitude: 49.404337721560485, longitude: 18.956124391955183 }}
         />
       </MapView>

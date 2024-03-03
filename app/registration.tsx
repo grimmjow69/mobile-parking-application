@@ -1,5 +1,4 @@
-import { StatusBar } from 'expo-status-bar';
-import { Platform, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 
 import { View } from '@/components/Themed';
 import React from 'react';
@@ -27,7 +26,7 @@ export default function RegistrationScreen() {
           autoCapitalize='none'
           keyboardType='email-address'
           textContentType='emailAddress'
-          right={<TextInput.Icon icon='account' />}
+          right={<TextInput.Icon icon='email' />}
         />
 
         <TextInput
@@ -52,7 +51,7 @@ export default function RegistrationScreen() {
           right={<TextInput.Icon icon='lock' />}
         />
 
-        <Button mode='contained' onPress={handleRegister} style={styles.button} icon='register'>
+        <Button mode='contained' onPress={handleRegister} style={styles.button} icon='login-variant'>
           Register
         </Button>
 

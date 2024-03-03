@@ -6,7 +6,6 @@ import { View } from '@/components/Themed';
 export default function NotificationsScreen() {
   return (
     <View style={styles.container}>
-      <StatusBar style={Platform.OS === 'ios' ? 'light' : 'auto'} />
     </View>
   );
 }
