@@ -4,7 +4,7 @@ import { View } from '@/components/Themed';
 import MapView, { Marker, Polygon, Region } from 'react-native-maps';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import * as Location from 'expo-location';
-import { ActivityIndicator, Button, IconButton, MD3Colors } from 'react-native-paper';
+import { ActivityIndicator, Button, IconButton, MD3Colors, Snackbar } from 'react-native-paper';
 import { ParkingSpot } from '../models/parking-spot';
 import { fetchAllSpotsData } from '../services/parking-data-service';
 
@@ -12,11 +12,15 @@ export default function MapScreen() {
   const [parkingSpots, setParkingSpots] = useState<ParkingSpot[]>([]);
   const [loading, setLoading] = useState(true);
   const [closestSpot, setClosestSpot] = useState<ParkingSpot | null>(null);
+  const [snackbarVisible, setSnackbarVisible] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarColor, setSnackbarColor] = useState('#323232');
+  const [snackbarIcon, setSnackbarIcon] = useState('check-circle');
   const mapRef = React.useRef<MapView>(null);
 
   const [currentLocation, setCurrentLocation] = useState<Region | null>({
-    latitude: 49.302337,
-    longitude: 18.756124,
+    latitude: 49.20423438192019,
+    longitude: 18.75633519840852,
     latitudeDelta: 0.005,
     longitudeDelta: 0.005
   });
@@ -26,9 +30,14 @@ export default function MapScreen() {
     try {
       const allSpotsData = await fetchAllSpotsData();
       setParkingSpots(allSpotsData);
+      setSnackbarMessage('Data loaded successfully');
+      setSnackbarColor('#4CAF50');
+      setSnackbarIcon('check-circle');
     } catch (error) {
-      console.error(error);
+      setSnackbarColor('#D32F2F');
+      setSnackbarIcon('alert-circle');
     } finally {
+      setSnackbarVisible(true);
       setLoading(false);
     }
   }, []);
@@ -39,7 +48,8 @@ export default function MapScreen() {
 
   const findClosestSpot = useCallback(() => {
     if (currentLocation) {
-      let closestSpot = parkingSpots.reduce(
+      const availableSpots = parkingSpots.filter((spot) => !spot.occupied);
+      let closestSpot = availableSpots.reduce(
         (closest: { spot: ParkingSpot | null; distance: number }, spot: ParkingSpot) => {
           const spotDistance = getDistance(
             currentLocation.latitude,
@@ -90,18 +100,18 @@ export default function MapScreen() {
   const renderMarker = (spot: ParkingSpot) => {
     const isClosestSpot = spot === closestSpot;
     const markerColor = spot.occupied ? 'red' : 'green';
-  
+
     const middleLatitude = spot.latitude;
     const middleLongitude = spot.longitude;
     const offset = 0.000012;
-  
+
     const polygonCoordinates = [
       { latitude: middleLatitude + offset, longitude: middleLongitude + offset },
       { latitude: middleLatitude + offset, longitude: middleLongitude - offset },
       { latitude: middleLatitude - offset, longitude: middleLongitude - offset },
-      { latitude: middleLatitude - offset, longitude: middleLongitude + offset },
+      { latitude: middleLatitude - offset, longitude: middleLongitude + offset }
     ];
-  
+
     return (
       <React.Fragment key={spot.parkingSpotId}>
         <Polygon
@@ -122,6 +132,8 @@ export default function MapScreen() {
       </React.Fragment>
     );
   };
+
+  const onDismissSnackBar = () => setSnackbarVisible(false);
 
   return (
     <View style={styles.container}>
@@ -162,6 +174,19 @@ export default function MapScreen() {
           </Button>
         </>
       )}
+      <Snackbar
+        visible={snackbarVisible}
+        onDismiss={onDismissSnackBar}
+        duration={1000}
+        style={{ backgroundColor: snackbarColor }}
+        action={{
+          icon: snackbarIcon,
+          color: '#white', // <---- Add this.
+          label: ''
+        }}
+      >
+        {snackbarMessage}
+      </Snackbar>
     </View>
   );
 }
