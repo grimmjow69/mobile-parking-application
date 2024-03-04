@@ -3,6 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import React from 'react';
 import { Button, TextInput } from 'react-native-paper';
+import i18n from '../assets/localization/i18n';
 
 export default function PasswordResendScreen() {
   const [email, setEmail] = React.useState('');
@@ -15,7 +16,7 @@ export default function PasswordResendScreen() {
     <View style={styles.container}>
       <SafeAreaProvider style={styles.container}>
         <TextInput
-          label='Email'
+          label={i18n.t('profile.email')}
           value={email}
           onChangeText={setEmail}
           mode='outlined'
@@ -32,7 +33,7 @@ export default function PasswordResendScreen() {
           style={styles.button}
           icon='login-variant'
         >
-          Resend password
+          {i18n.t('profile.resendPassword')}
         </Button>
       </SafeAreaProvider>
     </View>

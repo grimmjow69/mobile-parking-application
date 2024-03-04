@@ -1,17 +1,29 @@
 import { StyleSheet, View } from 'react-native';
 
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { Button, Switch, useTheme, Text } from 'react-native-paper';
-import React from 'react';
+import { Button, Switch, Text } from 'react-native-paper';
+import React, { useEffect, useState } from 'react';
 import { PreferencesContext } from '../context/preference-context';
+import i18n from '../../assets/localization/i18n';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function TabTwoScreen() {
-  const { toggleTheme, isThemeDark } = React.useContext(PreferencesContext);
-  const [isLanguageEnglish, setIsLanguageEnglish] = React.useState(true);
-  const [isLocationEnabled, setIsLocationEnabled] = React.useState(false);
+export default function SettingsScreen() {
+  const { toggleTheme, isThemeDark, setLanguage } = React.useContext(PreferencesContext);
+  const [isLanguageEnglish, setIsLanguageEnglish] = useState(i18n.language === 'en');
+  const [isLocationEnabled, setIsLocationEnabled] = useState(false);
 
-  const toggleLanguage = () => {
+  const toggleLanguage = async () => {
+    const newLanguage = isLanguageEnglish ? 'sk' : 'en';
     setIsLanguageEnglish(!isLanguageEnglish);
+    i18n.changeLanguage(newLanguage);
+    await AsyncStorage.setItem('language', newLanguage);
+    setLanguage(newLanguage);
+  };
+
+  const toggleDarkTheme = async () => {
+    toggleTheme();
+    const newTheme = isThemeDark ? 'light' : 'dark';
+    await AsyncStorage.setItem('theme', newTheme);
   };
 
   const reportBug = () => {
@@ -27,26 +39,26 @@ export default function TabTwoScreen() {
       <SafeAreaProvider style={styles.container}>
         <View style={styles.content}>
           <View style={styles.switchRow}>
-            <Text>Dark Theme</Text>
-            <Switch value={isThemeDark} onValueChange={toggleTheme} />
+            <Text>{i18n.t('settings.darkTheme')}</Text>
+            <Switch value={isThemeDark} onValueChange={toggleDarkTheme} />
           </View>
 
           <View style={styles.switchRow}>
-            <Text>English Language</Text>
+            <Text>{i18n.t('settings.useEnglish')}</Text>
             <Switch value={isLanguageEnglish} onValueChange={toggleLanguage} />
           </View>
 
           <View style={styles.switchRow}>
-            <Text>Location Services</Text>
+            <Text>{i18n.t('settings.locationServices')}</Text>
             <Switch value={isLocationEnabled} onValueChange={toggleLocationServices} />
           </View>
 
           <View style={styles.footer}>
             <Button icon='bug' mode='contained' style={styles.reportButton} onPress={reportBug}>
-              Report Bug
+              {i18n.t('settings.reportBug')}
             </Button>
-            <Text>Author: Your Name</Text>
-            <Text>Version: 1.0.0</Text>
+            <Text>{i18n.t('settings.author')}: Lukáš Fuček</Text>
+            <Text>{i18n.t('settings.version')}: 1.0.0</Text>
           </View>
         </View>
       </SafeAreaProvider>

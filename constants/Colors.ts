@@ -104,7 +104,8 @@ export default {
     tabIconDefault: '#ccc',
     tabIconSelected: '#303c64',
     refreshIcon: '#303c64',
-    refreshIconText: '#fff'
+    refreshIconText: '#fff',
+    navigationBar: '#fff'
   },
   dark: {
     text: '#fff',
@@ -113,6 +114,7 @@ export default {
     tabIconDefault: '#ccc',
     tabIconSelected: '#303c64',
     refreshIcon: '#fff',
-    refreshIconText: '#2c2c2c'
+    refreshIconText: '#2c2c2c',
+    navigationBar: 'rgb(18, 18, 18)'
   }
 };

@@ -8,6 +8,7 @@ import { ActivityIndicator, IconButton, Snackbar, Text } from 'react-native-pape
 import { PreferencesContext } from '../context/preference-context';
 import { LightMap, darkMap } from '@/constants/MapStyles';
 import Colors from '@/constants/Colors';
+import i18n from '../../assets/localization/i18n';
 
 export default function HeatmapScreen() {
   const [heatmapPoints, setHeatmapPoints] = useState<HeatmapPoint[]>([]);
@@ -22,10 +23,10 @@ export default function HeatmapScreen() {
     try {
       const points = await fetchHeatmapData();
       setHeatmapPoints(points);
-      setSnackbarMessage('Data loaded successfully');
+      setSnackbarMessage(i18n.t('base.loadSuccess'));
       setSnackbarColor('#56ae57');
     } catch (error) {
-      setSnackbarMessage('Failed to load data');
+      setSnackbarMessage(i18n.t('base.loadFailed'));
       setSnackbarColor('#D32F2F');
     } finally {
       setSnackbarVisible(true);

@@ -3,6 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import React from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Button, TextInput } from 'react-native-paper';
+import i18n from '../assets/localization/i18n';
 
 export default function RegistrationScreen() {
   const [email, setEmail] = React.useState('');
@@ -17,7 +18,7 @@ export default function RegistrationScreen() {
     <View style={styles.container}>
       <SafeAreaProvider style={styles.container}>
         <TextInput
-          label='Email'
+          label={i18n.t('profile.email')}
           value={email}
           onChangeText={setEmail}
           mode='outlined'
@@ -29,7 +30,7 @@ export default function RegistrationScreen() {
         />
 
         <TextInput
-          label='Password'
+          label={i18n.t('profile.password')}
           value={password}
           onChangeText={setPassword}
           mode='outlined'
@@ -40,7 +41,7 @@ export default function RegistrationScreen() {
         />
 
         <TextInput
-          label='Password check'
+          label={i18n.t('profile.passwordCheck')}
           value={passwordCheck}
           onChangeText={setPasswordCheck}
           mode='outlined'
@@ -50,10 +51,14 @@ export default function RegistrationScreen() {
           right={<TextInput.Icon icon='lock' />}
         />
 
-        <Button mode='contained' onPress={handleRegister} style={styles.button} icon='login-variant'>
-          Register
+        <Button
+          mode='contained'
+          onPress={handleRegister}
+          style={styles.button}
+          icon='login-variant'
+        >
+          {i18n.t('profile.register')}
         </Button>
-
       </SafeAreaProvider>
     </View>
   );

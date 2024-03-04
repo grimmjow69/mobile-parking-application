@@ -1,0 +1,43 @@
+{
+  "navigation": {
+    "parkingMap": "Parking map",
+    "heatmap": "Heatmap",
+    "profile": "Profile",
+    "settings": "Settings",
+    "notifications": "Notifications",
+    "resendPassword": "Resend password",
+    "registration": "Register"
+  },
+  "parkingMap": {
+    "findClosestSpot": "Find closest spot"
+  },
+  "heatmap": {},
+  "profile": {
+    "email": "Email",
+    "password": "Password",
+    "passwordCheck": "Password check",
+    "logIn": "Log in",
+    "register": "Register",
+    "forgotPassword": "Forgot password ?",
+    "dontHaveAccount": "Don't have account ?",
+    "registerHere": "Register here",
+    "resendPassword": "Resend password"
+  },
+  "settings": {
+    "darkTheme": "Dark theme",
+    "useEnglish": "English language",
+    "locationServices": "Location services",
+    "reportBug": "Report bug",
+    "author": "Author",
+    "version": "Version"
+  },
+  "notifications": {
+    "notifications": "Notifications",
+    "hasBeenTaken": "has been taken",
+    "isFree": "is free"
+  },
+  "base": {
+    "loadSuccess": "Data loaded successfully",
+    "loadFailed": "Failed to load data"
+  }
+}

@@ -1,6 +1,7 @@
 import { StyleSheet, View } from 'react-native';
 
 import { List } from 'react-native-paper';
+import i18n from '../assets/localization/i18n';
 
 const mockData = [
   { id: 1, title: 'Parking spot 10 is free', description: 'Time - 17:07:05' },

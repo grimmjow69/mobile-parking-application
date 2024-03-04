@@ -8,6 +8,7 @@ import { ActivityIndicator, Button, IconButton, Snackbar, Text } from 'react-nat
 import { ParkingSpot } from '../models/parking-spot';
 import { fetchAllSpotsData } from '../services/parking-data-service';
 import { LightMap, darkMap } from '@/constants/MapStyles';
+import i18n from '../../assets/localization/i18n';
 import Colors from '@/constants/Colors';
 
 export default function MapScreen() {
@@ -32,9 +33,10 @@ export default function MapScreen() {
     try {
       const allSpotsData = await fetchAllSpotsData();
       setParkingSpots(allSpotsData);
-      setSnackbarMessage('Data loaded successfully');
+      setSnackbarMessage(i18n.t('base.loadSuccess'));
       setSnackbarColor('#56ae57');
     } catch (error) {
+      setSnackbarMessage(i18n.t('base.loadFailed'));
       setSnackbarColor('#D32F2F');
     } finally {
       setSnackbarVisible(true);
@@ -173,7 +175,7 @@ export default function MapScreen() {
             style={styles.findClosestSpotButton}
             onPress={() => findClosestSpot()}
           >
-            Find closest spot
+           {i18n.t('parkingMap.findClosestSpot')}
           </Button>
         </>
       )}

@@ -1,6 +1,8 @@
-import React from "react";
+import React, { createContext } from 'react';
 
-export const PreferencesContext = React.createContext({
-  toggleTheme: () => {},
-  isThemeDark: false
-});
+export const PreferencesContext = createContext({
+    toggleTheme: () => {},
+    isThemeDark: false,
+    language: 'en',
+    setLanguage: (lang: string) => {}
+  });

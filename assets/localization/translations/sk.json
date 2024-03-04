@@ -1,0 +1,42 @@
+{
+  "navigation": {
+    "parkingMap": "Parkovisko",
+    "heatmap": "Heatmapa",
+    "profile": "Profil",
+    "settings": "Nastavenia",
+    "notifications": "Notifikácie",
+    "resendPassword": "Odoslať stratené heslo",
+    "registration": "Registrácia"
+  },
+  "parkingMap": {
+    "findClosestSpot": "Nájsť najbližšie miesto"
+  },
+  "heatmap": {},
+  "profile": {
+    "email": "Email",
+    "password": "Heslo",
+    "passwordCheck": "Kontrola hesla",
+    "logIn": "Prihlásiť sa",
+    "register": "Zaregistrovať sa",
+    "forgotPassword": "Zabudli ste heslo?",
+    "dontHaveAccount": "Nemáte účet?",
+    "registerHere": "Registrovať",
+    "resendPassword": "Odoslať heslo"
+  },
+  "settings": {
+    "darkTheme": "Tmavá téma",
+    "useEnglish": "Použiť Angličtinu",
+    "locationServices": "Lokalizačné služby",
+    "reportBug": "Nahlásiť chybu",
+    "author": "Autor",
+    "version": "Verzia"
+  },
+  "notifications": {
+    "hasBeenTaken": "bol obsadené",
+    "isFree": "je voľné"
+  },
+  "base": {
+    "loadSuccess": "Dáta boli úspešne načítané",
+    "loadFailed": "Načítanie dát zlyhalo"
+  }
+}

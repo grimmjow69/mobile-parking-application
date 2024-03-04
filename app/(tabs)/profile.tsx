@@ -2,10 +2,13 @@ import { StyleSheet, View } from 'react-native';
 
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Button, TextInput, Text } from 'react-native-paper';
-import React from 'react';
+import React, { useContext } from 'react';
 import { Link } from 'expo-router';
+import i18n from '../../assets/localization/i18n';
+import { PreferencesContext } from '../context/preference-context';
 
 export default function TabTwoScreen() {
+  const {} = useContext(PreferencesContext);
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
 
@@ -16,7 +19,7 @@ export default function TabTwoScreen() {
     <View style={styles.container}>
       <SafeAreaProvider style={styles.container}>
         <TextInput
-          label='Email'
+          label={i18n.t('profile.email')}
           value={email}
           onChangeText={setEmail}
           mode='outlined'
@@ -28,7 +31,7 @@ export default function TabTwoScreen() {
         />
 
         <TextInput
-          label='Password'
+          label={i18n.t('profile.password')}
           value={password}
           onChangeText={setPassword}
           mode='outlined'
@@ -39,18 +42,18 @@ export default function TabTwoScreen() {
         />
 
         <Button mode='contained' onPress={handleLogin} style={styles.button} icon='login'>
-          Log in
+          {i18n.t('profile.logIn')}
         </Button>
 
         <Link href='/resend-password' asChild>
-          <Button style={styles.button}>Forgot Password?</Button>
+          <Button style={styles.button}>{i18n.t('profile.forgotPassword')}</Button>
         </Link>
 
         <Text style={styles.registerText}>
-          Don't have an account?{' '}
+          {i18n.t('profile.dontHaveAccount')} {'  '}
           <Link href='/registration' asChild>
             <Text style={styles.linkText} onPress={() => console.log('Navigate to registration')}>
-              Register here
+              {i18n.t('profile.registerHere')}
             </Text>
           </Link>
         </Text>

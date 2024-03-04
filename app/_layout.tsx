@@ -3,12 +3,16 @@ import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { PaperProvider } from 'react-native-paper';
 import React from 'react';
 import { PreferencesContext } from './context/preference-context';
-import { darkTheme, lightTheme } from '@/constants/Colors';
+import Colors, { darkTheme, lightTheme } from '@/constants/Colors';
+import i18n from '../assets/localization/i18n';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Platform } from 'react-native';
+import * as NavigationBar from 'expo-navigation-bar';
 
 export { ErrorBoundary } from 'expo-router';
 
@@ -42,11 +46,37 @@ export default function RootLayout() {
 }
 
 function RootLayoutNav() {
-  const [isThemeDark, setIsThemeDark] = React.useState(false);
+  const [isThemeDark, setIsThemeDark] = useState(false);
+  const [language, setLanguage] = useState('en');
 
   const toggleTheme = React.useCallback(() => {
     return setIsThemeDark(!isThemeDark);
   }, [isThemeDark]);
+
+  const handleSetLanguage = useCallback((lang: React.SetStateAction<string>) => {
+    setLanguage(lang);
+  }, []);
+
+  useEffect(() => {
+    const loadPreferences = async () => {
+      try {
+        const storedTheme = await AsyncStorage.getItem('theme');
+        if (storedTheme !== null) {
+          setIsThemeDark(storedTheme === 'dark');
+        }
+
+        const storedLanguage = await AsyncStorage.getItem('language');
+        if (storedLanguage !== null) {
+          setLanguage(storedLanguage);
+          i18n.changeLanguage(storedLanguage);
+        }
+      } catch (e) {
+        console.log(e);
+      }
+    };
+
+    loadPreferences();
+  }, []);
 
   let paperTheme = isThemeDark ? darkTheme : lightTheme;
   let reactNavigationtheme = isThemeDark ? DarkTheme : DefaultTheme;
@@ -54,10 +84,16 @@ function RootLayoutNav() {
   const preferences = React.useMemo(
     () => ({
       toggleTheme,
-      isThemeDark
+      isThemeDark,
+      language,
+      setLanguage
     }),
-    [toggleTheme, isThemeDark]
+    [toggleTheme, isThemeDark, language, setLanguage]
   );
+
+  if (Platform.OS === 'android') {
+    NavigationBar.setBackgroundColorAsync(Colors[isThemeDark ? 'dark' : 'light'].navigationBar);
+  }
 
   return (
     <PreferencesContext.Provider value={preferences}>
@@ -67,15 +103,15 @@ function RootLayoutNav() {
             <Stack.Screen name='(tabs)' options={{ headerShown: false }} />
             <Stack.Screen
               name='notifications'
-              options={{ presentation: 'modal', title: 'Notifications' }}
+              options={{ presentation: 'modal', title: i18n.t('navigation.notifications') }}
             />
             <Stack.Screen
               name='registration'
-              options={{ presentation: 'modal', title: 'Register' }}
+              options={{ presentation: 'modal', title: i18n.t('navigation.registration') }}
             />
             <Stack.Screen
               name='resend-password'
-              options={{ presentation: 'modal', title: 'Resend password' }}
+              options={{ presentation: 'modal', title: i18n.t('navigation.resendPassword') }}
             />
           </Stack>
         </PaperProvider>
