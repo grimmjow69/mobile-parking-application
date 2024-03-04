@@ -5,7 +5,10 @@ import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 
-import { useColorScheme } from '@/components/useColorScheme';
+import { PaperProvider } from 'react-native-paper';
+import React from 'react';
+import { PreferencesContext } from './context/preference-context';
+import { darkTheme, lightTheme } from '@/constants/Colors';
 
 export { ErrorBoundary } from 'expo-router';
 
@@ -39,22 +42,44 @@ export default function RootLayout() {
 }
 
 function RootLayoutNav() {
-  const colorScheme = useColorScheme();
+  const [isThemeDark, setIsThemeDark] = React.useState(false);
+
+  const toggleTheme = React.useCallback(() => {
+    return setIsThemeDark(!isThemeDark);
+  }, [isThemeDark]);
+
+  let paperTheme = isThemeDark ? darkTheme : lightTheme;
+  let reactNavigationtheme = isThemeDark ? DarkTheme : DefaultTheme;
+
+  const preferences = React.useMemo(
+    () => ({
+      toggleTheme,
+      isThemeDark
+    }),
+    [toggleTheme, isThemeDark]
+  );
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name='(tabs)' options={{ headerShown: false }} />
-        <Stack.Screen
-          name='notifications'
-          options={{ presentation: 'modal', title: 'Notifications' }}
-        />
-        <Stack.Screen name='registration' options={{ presentation: 'modal', title: 'Register'}} />
-        <Stack.Screen
-          name='resend-password'
-          options={{ presentation: 'modal', title: 'Resend password' }}
-        />
-      </Stack>
-    </ThemeProvider>
+    <PreferencesContext.Provider value={preferences}>
+      <ThemeProvider value={reactNavigationtheme}>
+        <PaperProvider theme={paperTheme}>
+          <Stack>
+            <Stack.Screen name='(tabs)' options={{ headerShown: false }} />
+            <Stack.Screen
+              name='notifications'
+              options={{ presentation: 'modal', title: 'Notifications' }}
+            />
+            <Stack.Screen
+              name='registration'
+              options={{ presentation: 'modal', title: 'Register' }}
+            />
+            <Stack.Screen
+              name='resend-password'
+              options={{ presentation: 'modal', title: 'Resend password' }}
+            />
+          </Stack>
+        </PaperProvider>
+      </ThemeProvider>
+    </PreferencesContext.Provider>
   );
 }

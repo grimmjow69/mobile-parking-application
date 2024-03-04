@@ -1,21 +1,18 @@
 import React from 'react';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Link, Tabs } from 'expo-router';
-import { Pressable, StyleSheet } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 
-import Colors from '@/constants/Colors';
-import { useColorScheme } from '@/components/useColorScheme';
 import { useClientOnlyValue } from '@/components/useClientOnlyValue';
 import { Badge, Icon } from 'react-native-paper';
-import { View } from '@/components/Themed';
+import { PreferencesContext } from '../context/preference-context';
+import Colors from '@/constants/Colors';
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
-
+  const { isThemeDark } = React.useContext(PreferencesContext);
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+        tabBarActiveTintColor: Colors[isThemeDark ? 'dark' : 'light'].tint,
         headerShown: useClientOnlyValue(false, true),
         tabBarStyle: {
           height: 60
@@ -111,11 +108,10 @@ export default function TabLayout() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#303c64'
   },
   notificationsBadge: {
     position: 'absolute',
-    zIndex: 1
+    zIndex: 1,
   },
   notificationsBell: {
     marginRight: 12

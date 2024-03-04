@@ -1,6 +1,5 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
-import { View } from '@/components/Themed';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import React from 'react';
 import { Button, TextInput } from 'react-native-paper';

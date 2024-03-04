@@ -1,12 +1,14 @@
-import { Dimensions, StyleSheet } from 'react-native';
+import { Dimensions, StyleSheet, View } from 'react-native';
 
-import { View } from '@/components/Themed';
 import MapView, { Marker, Polygon, Region } from 'react-native-maps';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import * as Location from 'expo-location';
-import { ActivityIndicator, Button, IconButton, MD3Colors, Snackbar } from 'react-native-paper';
+import { PreferencesContext } from '../context/preference-context';
+import { ActivityIndicator, Button, IconButton, Snackbar, Text } from 'react-native-paper';
 import { ParkingSpot } from '../models/parking-spot';
 import { fetchAllSpotsData } from '../services/parking-data-service';
+import { LightMap, darkMap } from '@/constants/MapStyles';
+import Colors from '@/constants/Colors';
 
 export default function MapScreen() {
   const [parkingSpots, setParkingSpots] = useState<ParkingSpot[]>([]);
@@ -15,8 +17,8 @@ export default function MapScreen() {
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarColor, setSnackbarColor] = useState('#323232');
-  const [snackbarIcon, setSnackbarIcon] = useState('check-circle');
-  const mapRef = React.useRef<MapView>(null);
+  const mapRef = useRef<MapView>(null);
+  const { isThemeDark } = useContext(PreferencesContext);
 
   const [currentLocation, setCurrentLocation] = useState<Region | null>({
     latitude: 49.20423438192019,
@@ -31,11 +33,9 @@ export default function MapScreen() {
       const allSpotsData = await fetchAllSpotsData();
       setParkingSpots(allSpotsData);
       setSnackbarMessage('Data loaded successfully');
-      setSnackbarColor('#4CAF50');
-      setSnackbarIcon('check-circle');
+      setSnackbarColor('#56ae57');
     } catch (error) {
       setSnackbarColor('#D32F2F');
-      setSnackbarIcon('alert-circle');
     } finally {
       setSnackbarVisible(true);
       setLoading(false);
@@ -154,12 +154,15 @@ export default function MapScreen() {
             showsUserLocation={true}
             showsCompass={true}
             showsPointsOfInterest={false}
+            customMapStyle={isThemeDark ? darkMap : LightMap}
           >
             {parkingSpots.map(renderMarker)}
           </MapView>
           <IconButton
             icon='refresh'
-            mode='contained-tonal'
+            mode='contained'
+            iconColor={Colors[isThemeDark ? 'dark' : 'light'].refreshIconText}
+            containerColor={Colors[isThemeDark ? 'dark' : 'light'].refreshIcon}
             size={30}
             style={styles.refreshButton}
             onPress={() => getData()}
@@ -178,14 +181,12 @@ export default function MapScreen() {
         visible={snackbarVisible}
         onDismiss={onDismissSnackBar}
         duration={1000}
-        style={{ backgroundColor: snackbarColor }}
-        action={{
-          icon: snackbarIcon,
-          color: '#white', // <---- Add this.
-          label: ''
-        }}
+        style={{ backgroundColor: snackbarColor, alignItems: 'center' }}
       >
-        {snackbarMessage}
+        <Text style={{ textAlign: 'center', fontWeight: 'bold', color: '#fff' }}>
+          {' '}
+          {snackbarMessage}
+        </Text>
       </Snackbar>
     </View>
   );

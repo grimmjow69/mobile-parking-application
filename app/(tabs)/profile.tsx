@@ -1,8 +1,7 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
-import { Text, View } from '@/components/Themed';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { Button, TextInput } from 'react-native-paper';
+import { Button, TextInput, Text } from 'react-native-paper';
 import React from 'react';
 import { Link } from 'expo-router';
 
@@ -78,7 +77,6 @@ const styles = StyleSheet.create({
     marginTop: 16
   },
   linkText: {
-    fontWeight: 'bold',
-    color: '#6200ee'
+    fontWeight: 'bold'
   }
 });

@@ -1,11 +1,13 @@
-import { Dimensions, StyleSheet } from 'react-native';
+import { Dimensions, StyleSheet, View } from 'react-native';
 
-import { View } from '@/components/Themed';
 import MapView, { Heatmap, PROVIDER_GOOGLE } from 'react-native-maps';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import { HeatmapPoint } from '../models/heatmap';
 import { fetchHeatmapData } from '../services/parking-data-service';
-import { ActivityIndicator, IconButton, Snackbar } from 'react-native-paper';
+import { ActivityIndicator, IconButton, Snackbar, Text } from 'react-native-paper';
+import { PreferencesContext } from '../context/preference-context';
+import { LightMap, darkMap } from '@/constants/MapStyles';
+import Colors from '@/constants/Colors';
 
 export default function HeatmapScreen() {
   const [heatmapPoints, setHeatmapPoints] = useState<HeatmapPoint[]>([]);
@@ -13,7 +15,7 @@ export default function HeatmapScreen() {
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarColor, setSnackbarColor] = useState('#323232');
-  const [snackbarIcon, setSnackbarIcon] = useState('check-circle');
+  const { isThemeDark } = useContext(PreferencesContext);
 
   const getData = useCallback(async () => {
     setLoading(true);
@@ -21,12 +23,10 @@ export default function HeatmapScreen() {
       const points = await fetchHeatmapData();
       setHeatmapPoints(points);
       setSnackbarMessage('Data loaded successfully');
-      setSnackbarColor('#4CAF50');
-      setSnackbarIcon('check-circle');
+      setSnackbarColor('#56ae57');
     } catch (error) {
       setSnackbarMessage('Failed to load data');
       setSnackbarColor('#D32F2F');
-      setSnackbarIcon('alert-circle');
     } finally {
       setSnackbarVisible(true);
       setLoading(false);
@@ -54,6 +54,7 @@ export default function HeatmapScreen() {
             }}
             showsPointsOfInterest={false}
             provider={PROVIDER_GOOGLE}
+            customMapStyle={isThemeDark ? darkMap : LightMap}
             style={styles.map}
           >
             <Heatmap
@@ -69,7 +70,9 @@ export default function HeatmapScreen() {
           </MapView>
           <IconButton
             icon='refresh'
-            mode='contained-tonal'
+            mode='contained'
+            iconColor={Colors[isThemeDark ? 'dark' : 'light'].refreshIconText}
+            containerColor={Colors[isThemeDark ? 'dark' : 'light'].refreshIcon}
             size={30}
             style={styles.refreshButton}
             onPress={() => getData()}
@@ -80,14 +83,9 @@ export default function HeatmapScreen() {
         visible={snackbarVisible}
         onDismiss={onDismissSnackBar}
         duration={1000}
-        style={{ backgroundColor: snackbarColor }}
-        action={{
-          icon: snackbarIcon,
-          color: '#white', // <---- Add this.
-          label: ''
-        }}
+        style={{ backgroundColor: snackbarColor, alignItems: 'center' }}
       >
-        {snackbarMessage}
+        <Text style={{ textAlign: 'center', fontWeight: 'bold', color:'#fff' }}> {snackbarMessage}</Text>
       </Snackbar>
     </View>
   );
@@ -110,8 +108,8 @@ const styles = StyleSheet.create({
   },
   refreshButton: {
     position: 'absolute',
-    bottom: 8,
-    right: 8
+    top: 8,
+    left: 8
   },
   map: {
     flex: 1,

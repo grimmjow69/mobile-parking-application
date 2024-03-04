@@ -1,21 +1,14 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
-import { Text, View } from '@/components/Themed';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { Button, Switch, useTheme } from 'react-native-paper';
+import { Button, Switch, useTheme, Text } from 'react-native-paper';
 import React from 'react';
+import { PreferencesContext } from '../context/preference-context';
 
 export default function TabTwoScreen() {
-  const { colors } = useTheme();
-
-  const [isThemeDark, setIsThemeDark] = React.useState(false);
+  const { toggleTheme, isThemeDark } = React.useContext(PreferencesContext);
   const [isLanguageEnglish, setIsLanguageEnglish] = React.useState(true);
-  const [arePushNotificationsEnabled, setArePushNotificationsEnabled] = React.useState(true);
   const [isLocationEnabled, setIsLocationEnabled] = React.useState(false);
-
-  const toggleTheme = () => {
-    setIsThemeDark(!isThemeDark);
-  };
 
   const toggleLanguage = () => {
     setIsLanguageEnglish(!isLanguageEnglish);
@@ -29,44 +22,23 @@ export default function TabTwoScreen() {
     setIsLocationEnabled(!isLocationEnabled);
   };
 
-  const togglePushNotifications = () => {
-    setArePushNotificationsEnabled(!arePushNotificationsEnabled);
-  };
-
   return (
     <View style={styles.container}>
       <SafeAreaProvider style={styles.container}>
         <View style={styles.content}>
           <View style={styles.switchRow}>
             <Text>Dark Theme</Text>
-            <Switch value={isThemeDark} onValueChange={toggleTheme} color={colors.primary} />
+            <Switch value={isThemeDark} onValueChange={toggleTheme} />
           </View>
 
           <View style={styles.switchRow}>
             <Text>English Language</Text>
-            <Switch
-              value={isLanguageEnglish}
-              onValueChange={toggleLanguage}
-              color={colors.primary}
-            />
+            <Switch value={isLanguageEnglish} onValueChange={toggleLanguage} />
           </View>
 
           <View style={styles.switchRow}>
             <Text>Location Services</Text>
-            <Switch
-              value={isLocationEnabled}
-              onValueChange={toggleLocationServices}
-              color={colors.primary}
-            />
-          </View>
-
-          <View style={styles.switchRow}>
-            <Text>Push Notifications</Text>
-            <Switch
-              value={arePushNotificationsEnabled}
-              onValueChange={togglePushNotifications}
-              color={colors.primary}
-            />
+            <Switch value={isLocationEnabled} onValueChange={toggleLocationServices} />
           </View>
 
           <View style={styles.footer}>
