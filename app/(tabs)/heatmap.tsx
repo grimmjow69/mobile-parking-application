@@ -4,7 +4,7 @@ import { View } from '@/components/Themed';
 import MapView, { Heatmap, PROVIDER_GOOGLE } from 'react-native-maps';
 import { useCallback, useEffect, useState } from 'react';
 import { HeatmapPoint } from '../models/heatmap';
-import { fetchHeatmapData } from '../services/heatmap-data-service';
+import { fetchHeatmapData } from '../services/parking-data-service';
 import { ActivityIndicator, Button, IconButton } from 'react-native-paper';
 
 export default function HeatmapScreen() {
@@ -47,9 +47,9 @@ export default function HeatmapScreen() {
             <Heatmap
               points={heatmapPoints}
               gradient={{
-                colors: ['green', 'yellow', 'orange', 'red'],
-                startPoints: [0.25, 0.5, 0.75, 1],
-                colorMapSize: 256
+                colors: ["transparent", "#BBCF4C", "#EEC20B", "#F29305", "#E50000"],
+                startPoints: [0, 0.25, 0.50, 0.75, 1],
+                colorMapSize: 500
               }}
               radius={10}
               opacity={0.7}

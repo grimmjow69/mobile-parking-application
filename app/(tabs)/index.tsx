@@ -1,15 +1,77 @@
 import { Dimensions, StyleSheet } from 'react-native';
 
 import { View } from '@/components/Themed';
-import MapView, { Marker, Region } from 'react-native-maps';
-import React, { useEffect, useState } from 'react';
+import MapView, { Marker, Polygon, Region } from 'react-native-maps';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import * as Location from 'expo-location';
-
-
+import { ActivityIndicator, Button, IconButton, MD3Colors } from 'react-native-paper';
+import { ParkingSpot } from '../models/parking-spot';
+import { fetchAllSpotsData } from '../services/parking-data-service';
 
 export default function MapScreen() {
+  const [parkingSpots, setParkingSpots] = useState<ParkingSpot[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [closestSpot, setClosestSpot] = useState<ParkingSpot | null>(null);
+  const mapRef = React.useRef<MapView>(null);
 
-  const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number): number => {
+  const [currentLocation, setCurrentLocation] = useState<Region | null>({
+    latitude: 49.302337,
+    longitude: 18.756124,
+    latitudeDelta: 0.005,
+    longitudeDelta: 0.005
+  });
+
+  const getData = useCallback(async () => {
+    setLoading(true);
+    try {
+      const allSpotsData = await fetchAllSpotsData();
+      setParkingSpots(allSpotsData);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    getData();
+  }, [getData]);
+
+  const findClosestSpot = useCallback(() => {
+    if (currentLocation) {
+      let closestSpot = parkingSpots.reduce(
+        (closest: { spot: ParkingSpot | null; distance: number }, spot: ParkingSpot) => {
+          const spotDistance = getDistance(
+            currentLocation.latitude,
+            currentLocation.longitude,
+            spot.latitude,
+            spot.longitude
+          );
+          if (spotDistance < closest.distance) {
+            return {
+              spot,
+              distance: spotDistance
+            };
+          }
+          return closest;
+        },
+        { spot: null, distance: Infinity }
+      );
+
+      setClosestSpot(closestSpot.spot);
+
+      if (closestSpot.spot) {
+        mapRef.current?.animateToRegion({
+          latitude: closestSpot.spot.latitude,
+          longitude: closestSpot.spot.longitude,
+          latitudeDelta: 0.001,
+          longitudeDelta: 0.001
+        });
+      }
+    }
+  }, [currentLocation, parkingSpots]);
+
+  const getDistance = (lat1: number, lon1: number, lat2: number, lon2: number): number => {
     const R = 6371;
     const dLat = deg2rad(lat2 - lat1);
     const dLon = deg2rad(lon2 - lon1);
@@ -25,29 +87,81 @@ export default function MapScreen() {
     return deg * (Math.PI / 180);
   };
 
+  const renderMarker = (spot: ParkingSpot) => {
+    const isClosestSpot = spot === closestSpot;
+    const markerColor = spot.occupied ? 'red' : 'green';
+  
+    const middleLatitude = spot.latitude;
+    const middleLongitude = spot.longitude;
+    const offset = 0.000012;
+  
+    const polygonCoordinates = [
+      { latitude: middleLatitude + offset, longitude: middleLongitude + offset },
+      { latitude: middleLatitude + offset, longitude: middleLongitude - offset },
+      { latitude: middleLatitude - offset, longitude: middleLongitude - offset },
+      { latitude: middleLatitude - offset, longitude: middleLongitude + offset },
+    ];
+  
+    return (
+      <React.Fragment key={spot.parkingSpotId}>
+        <Polygon
+          key={spot.parkingSpotId}
+          coordinates={polygonCoordinates}
+          strokeColor={markerColor}
+          fillColor={markerColor}
+        />
+        {isClosestSpot && (
+          <Marker
+            key={'closest-overlay'}
+            coordinate={{
+              latitude: spot.latitude,
+              longitude: spot.longitude
+            }}
+          />
+        )}
+      </React.Fragment>
+    );
+  };
+
   return (
     <View style={styles.container}>
-      <MapView
-        style={styles.map}
-        initialRegion={{
-          latitude: 49.202337,
-          longitude: 18.756124,
-          latitudeDelta: 0.005,
-          longitudeDelta: 0.005
-        }}
-        showsUserLocation={true}
-        showsCompass={true}
-        showsPointsOfInterest={false}
-      >
-        <Marker
-          key={1}
-          coordinate={{ latitude: 49.204337721560485, longitude: 18.756124391955183 }}
-        />
-        <Marker
-          key={2}
-          coordinate={{ latitude: 49.404337721560485, longitude: 18.956124391955183 }}
-        />
-      </MapView>
+      {loading ? (
+        <ActivityIndicator animating={true} size={'large'} />
+      ) : (
+        <>
+          <MapView
+            ref={mapRef}
+            style={styles.map}
+            initialRegion={{
+              latitude: 49.202337,
+              longitude: 18.756124,
+              latitudeDelta: 0.005,
+              longitudeDelta: 0.005
+            }}
+            maxZoomLevel={19}
+            showsUserLocation={true}
+            showsCompass={true}
+            showsPointsOfInterest={false}
+          >
+            {parkingSpots.map(renderMarker)}
+          </MapView>
+          <IconButton
+            icon='refresh'
+            mode='contained-tonal'
+            size={30}
+            style={styles.refreshButton}
+            onPress={() => getData()}
+          />
+          <Button
+            icon='magnify'
+            mode='contained'
+            style={styles.findClosestSpotButton}
+            onPress={() => findClosestSpot()}
+          >
+            Find closest spot
+          </Button>
+        </>
+      )}
     </View>
   );
 }
@@ -58,9 +172,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center'
   },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold'
+  findClosestSpotButton: {
+    position: 'absolute',
+    bottom: 8
+  },
+  refreshButton: {
+    position: 'absolute',
+    top: 8,
+    left: 8
   },
   separator: {
     marginVertical: 30,

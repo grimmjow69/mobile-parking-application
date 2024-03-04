@@ -1,6 +1,24 @@
 import { HeatmapPoint } from '../models/heatmap';
+import { ParkingSpot } from '../models/parking-spot';
 
 const API_BASE_URL = 'http://192.168.100.11:8080/parking';
+
+export const fetchAllSpotsData = async (): Promise<ParkingSpot[]> => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/all-spots`);
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data: ParkingSpot[] = await response.json();
+
+    return data;
+  } catch (error) {
+    console.error('Error fetching all spots data:', error);
+    throw error;
+  }
+};
 
 export const fetchHeatmapData = async (): Promise<HeatmapPoint[]> => {
   try {
