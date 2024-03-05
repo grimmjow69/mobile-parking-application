@@ -19,7 +19,7 @@ export default function MapScreen() {
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarColor, setSnackbarColor] = useState('#323232');
   const mapRef = useRef<MapView>(null);
-  const { isThemeDark } = useContext(PreferencesContext);
+  const { isThemeDark, user } = useContext(PreferencesContext);
 
   const [currentLocation, setCurrentLocation] = useState<Region | null>({
     latitude: 49.20423438192019,
@@ -175,7 +175,7 @@ export default function MapScreen() {
             style={styles.findClosestSpotButton}
             onPress={() => findClosestSpot()}
           >
-           {i18n.t('parkingMap.findClosestSpot')}
+            {i18n.t('parkingMap.findClosestSpot')}
           </Button>
         </>
       )}

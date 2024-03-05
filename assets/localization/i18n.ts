@@ -24,8 +24,6 @@ const languageDetector: LanguageDetectorType = {
     const deviceLanguage =
       Constants.deviceLanguage || Constants.systemLanguage || Constants.deviceLocale || 'en';
 
-      console.log(deviceLanguage)
-
     callback(deviceLanguage);
   },
   init: () => {},

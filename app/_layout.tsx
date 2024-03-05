@@ -48,14 +48,11 @@ export default function RootLayout() {
 function RootLayoutNav() {
   const [isThemeDark, setIsThemeDark] = useState(false);
   const [language, setLanguage] = useState('en');
+  const [user, setUser] = useState(null);
 
   const toggleTheme = React.useCallback(() => {
     return setIsThemeDark(!isThemeDark);
   }, [isThemeDark]);
-
-  const handleSetLanguage = useCallback((lang: React.SetStateAction<string>) => {
-    setLanguage(lang);
-  }, []);
 
   useEffect(() => {
     const loadPreferences = async () => {
@@ -70,12 +67,23 @@ function RootLayoutNav() {
           setLanguage(storedLanguage);
           i18n.changeLanguage(storedLanguage);
         }
+      } catch (e) {}
+    };
+
+    const loadUserData = async () => {
+      try {
+        const userJson = await AsyncStorage.getItem('user');
+        if (userJson !== null) {
+          const userData = JSON.parse(userJson);
+          setUser(userData);
+        }
       } catch (e) {
-        console.log(e);
+        console.error('Failed to load user data', e);
       }
     };
 
     loadPreferences();
+    loadUserData();
   }, []);
 
   let paperTheme = isThemeDark ? darkTheme : lightTheme;
@@ -86,9 +94,11 @@ function RootLayoutNav() {
       toggleTheme,
       isThemeDark,
       language,
-      setLanguage
+      setLanguage,
+      user,
+      setUser
     }),
-    [toggleTheme, isThemeDark, language, setLanguage]
+    [toggleTheme, isThemeDark, language, setLanguage, user, setUser]
   );
 
   if (Platform.OS === 'android') {
