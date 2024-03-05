@@ -9,7 +9,10 @@
     "registration": "Register"
   },
   "parkingMap": {
-    "findClosestSpot": "Find closest spot"
+    "findClosestSpot": "Find closest spot",
+    "stateOccupied": "State: occupied",
+    "stateFree": "State: free",
+    "updatedAt": "Updated at:"
   },
   "heatmap": {},
   "profile": {
@@ -60,6 +63,7 @@
   },
   "base": {
     "loadSuccess": "Data loaded successfully",
-    "loadFailed": "Failed to load data"
+    "loadFailed": "Failed to load data",
+    "locationPermissionDenied": "Location permission was denied. Please enable it in your device settings to continue"
   }
 }

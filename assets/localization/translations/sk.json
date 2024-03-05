@@ -9,7 +9,10 @@
     "registration": "Registrácia"
   },
   "parkingMap": {
-    "findClosestSpot": "Nájsť najbližšie miesto"
+    "findClosestSpot": "Nájsť najbližšie miesto",
+    "stateOccupied": "Stav: obsadené",
+    "stateFree": "Stav: voľné",
+    "updatedAt": "Aktualizované: "
   },
   "heatmap": {},
   "profile": {
@@ -59,6 +62,7 @@
   },
   "base": {
     "loadSuccess": "Dáta boli úspešne načítané",
-    "loadFailed": "Načítanie dát zlyhalo"
+    "loadFailed": "Načítanie dát zlyhalo",
+    "locationPermissionDenied": "Povolenie polohy je zamietnuté. Prosím, povoľte ho vo svojich nastaveniach zariadenia"
   }
 }

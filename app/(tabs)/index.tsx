@@ -48,7 +48,25 @@ export default function MapScreen() {
     getData();
   }, [getData]);
 
-  const findClosestSpot = useCallback(() => {
+  const findClosestSpot = useCallback(async () => {
+    let { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== 'granted') {
+      setSnackbarMessage(i18n.t('base.locationPermissionDenied'));
+      setSnackbarColor('#D32F2F');
+      setSnackbarVisible(true);
+      return;
+    }
+
+    let location = await Location.getCurrentPositionAsync({});
+    const userLocation = {
+      latitude: location.coords.latitude,
+      longitude: location.coords.longitude,
+      latitudeDelta: 0.005,
+      longitudeDelta: 0.005
+    };
+
+    setCurrentLocation(userLocation);
+
     if (currentLocation) {
       const availableSpots = parkingSpots.filter((spot) => !spot.occupied);
       let closestSpot = availableSpots.reduce(

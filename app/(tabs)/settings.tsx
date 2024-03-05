@@ -10,7 +10,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 export default function SettingsScreen() {
   const { toggleTheme, isThemeDark, setLanguage } = React.useContext(PreferencesContext);
   const [isLanguageEnglish, setIsLanguageEnglish] = useState(i18n.language === 'en');
-  const [isLocationEnabled, setIsLocationEnabled] = useState(false);
 
   const toggleLanguage = async () => {
     const newLanguage = isLanguageEnglish ? 'sk' : 'en';
@@ -30,10 +29,6 @@ export default function SettingsScreen() {
     console.log('Bug report button tapped');
   };
 
-  const toggleLocationServices = () => {
-    setIsLocationEnabled(!isLocationEnabled);
-  };
-
   return (
     <View style={styles.container}>
       <SafeAreaProvider style={styles.container}>
@@ -47,12 +42,6 @@ export default function SettingsScreen() {
             <Text>{i18n.t('settings.useEnglish')}</Text>
             <Switch value={isLanguageEnglish} onValueChange={toggleLanguage} />
           </View>
-
-          <View style={styles.switchRow}>
-            <Text>{i18n.t('settings.locationServices')}</Text>
-            <Switch value={isLocationEnabled} onValueChange={toggleLocationServices} />
-          </View>
-
           <View style={styles.footer}>
             <Button icon='bug' mode='contained' style={styles.reportButton} onPress={reportBug}>
               {i18n.t('settings.reportBug')}
