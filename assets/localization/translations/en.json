@@ -21,7 +21,20 @@
     "forgotPassword": "Forgot password ?",
     "dontHaveAccount": "Don't have account ?",
     "registerHere": "Register here",
-    "resendPassword": "Resend password"
+    "resendPassword": "Resend password",
+    "errors": {
+      "emailError": "Invalid email format",
+      "passwordLengthError": "Password must be at least 6 characters",
+      "passwordsMatchError": "Passwords do not match",
+      "emailRequired": "Email is required",
+      "passwordRequired": "Password is required",
+      "passwordCheckRequired": "Please confirm your password"
+    },
+    "registrationResponse": {
+      "registrationSucess": "Registration successful",
+      "registrationFail": "An unexpected error occurred",
+      "emailAlreadyTaken": "Email is already taken"
+    }
   },
   "settings": {
     "darkTheme": "Dark theme",

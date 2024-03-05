@@ -21,7 +21,20 @@
     "forgotPassword": "Zabudli ste heslo?",
     "dontHaveAccount": "Nemáte účet?",
     "registerHere": "Registrovať",
-    "resendPassword": "Odoslať heslo"
+    "resendPassword": "Odoslať heslo",
+    "errors": {
+      "emailError": "Formát emailovej adresy je neplatný",
+      "passwordLengthError": "Heslo musí mať aspoň 6 znakov",
+      "passwordsMatchError": "Heslá sa nezhodujú",
+      "emailRequired": "Email je povinný",
+      "passwordRequired": "Heslo je povinné",
+      "passwordCheckRequired": "Prosím, potvrďte svoje heslo"
+    },
+    "registrationResponse": {
+      "registrationSucess": "Registrácia prebehla úspešne",
+      "registrationFail": "Nastala neočakávaná chyba",
+      "emailAlreadyTaken": "Email je už obsadený"
+    }
   },
   "settings": {
     "darkTheme": "Tmavá téma",

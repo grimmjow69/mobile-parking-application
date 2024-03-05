@@ -1,18 +1,52 @@
 import { StyleSheet, View } from 'react-native';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { Button, TextInput } from 'react-native-paper';
+import { Button, HelperText, Snackbar, TextInput, useTheme, Text } from 'react-native-paper';
 import i18n from '../assets/localization/i18n';
+import { registerUser } from './services/auth-service';
+import { useNavigation } from '@react-navigation/native';
 
 export default function RegistrationScreen() {
-  const [email, setEmail] = React.useState('');
-  const [password, setPassword] = React.useState('');
-  const [passwordCheck, setPasswordCheck] = React.useState('');
+  const navigation = useNavigation();
+  const [email, setEmail] = useState('a@gmail.cpom');
+  const [password, setPassword] = useState('123456');
+  const [passwordCheck, setPasswordCheck] = useState('123456');
+  const [snackbarVisible, setSnackbarVisible] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarColor, setSnackbarColor] = useState('#56ae57');
 
-  const handleRegister = () => {
-    console.log('Register:', email, password);
+  const onDismissSnackBar = () => setSnackbarVisible(false);
+
+  const showSnackbar = (message: string, color = '#56ae57') => {
+    setSnackbarMessage(message);
+    setSnackbarColor(color);
+    setSnackbarVisible(true);
   };
+
+  const handleRegister = async () => {
+    if (isFormValid()) {
+      await registerUser(email, password, showSnackbar, () => {
+        setTimeout(() => navigation.goBack(), Snackbar.DURATION_SHORT);
+      });
+    }
+  };
+
+  const validateEmail = (email: string) => {
+    const re = /\S+@\S+\.\S+/;
+    return re.test(email);
+  };
+
+  const isFormValid = () => {
+    return validateEmail(email) && password === passwordCheck && password.length >= 6;
+  };
+
+  const { colors } = useTheme();
+  const getIconColor = (hasError: boolean) => (hasError ? colors.error : colors.secondary);
+
+  const emailError = email !== '' && !validateEmail(email);
+  const passwordsMatchError = password !== '' && passwordCheck !== '' && password !== passwordCheck;
+  const passwordLengthError = password !== '' && password.length < 6;
 
   return (
     <View style={styles.container}>
@@ -23,42 +57,67 @@ export default function RegistrationScreen() {
           onChangeText={setEmail}
           mode='outlined'
           style={styles.input}
+          error={emailError}
           autoCapitalize='none'
           keyboardType='email-address'
           textContentType='emailAddress'
-          right={<TextInput.Icon icon='email' />}
+          right={<TextInput.Icon icon='email' color={getIconColor(emailError)} />}
         />
+        <HelperText type='error' visible={emailError}>
+          {i18n.t('profile.errors.emailError')}
+        </HelperText>
 
         <TextInput
           label={i18n.t('profile.password')}
           value={password}
           onChangeText={setPassword}
           mode='outlined'
+          error={passwordLengthError}
           style={styles.input}
           secureTextEntry
           textContentType='password'
-          right={<TextInput.Icon icon='lock' />}
+          right={<TextInput.Icon icon='lock' color={getIconColor(passwordLengthError)} />}
         />
+        <HelperText type='error' visible={passwordLengthError}>
+          {i18n.t('profile.errors.passwordLengthError')}
+        </HelperText>
 
         <TextInput
           label={i18n.t('profile.passwordCheck')}
           value={passwordCheck}
           onChangeText={setPasswordCheck}
           mode='outlined'
+          error={passwordsMatchError}
           style={styles.input}
           secureTextEntry
           textContentType='password'
-          right={<TextInput.Icon icon='lock' />}
+          right={<TextInput.Icon icon='lock' color={getIconColor(passwordsMatchError)} />}
         />
+        <HelperText type='error' visible={passwordsMatchError}>
+          {i18n.t('profile.errors.passwordsMatchError')}
+        </HelperText>
 
         <Button
           mode='contained'
           onPress={handleRegister}
           style={styles.button}
           icon='login-variant'
+          disabled={!isFormValid()}
         >
           {i18n.t('profile.register')}
         </Button>
+
+        <Snackbar
+          visible={snackbarVisible}
+          onDismiss={onDismissSnackBar}
+          duration={Snackbar.DURATION_SHORT}
+          style={{ backgroundColor: snackbarColor }}
+        >
+          <Text style={{ textAlign: 'center', fontWeight: 'bold', color: '#fff' }}>
+            {' '}
+            {snackbarMessage}
+          </Text>
+        </Snackbar>
       </SafeAreaProvider>
     </View>
   );
@@ -72,8 +131,7 @@ const styles = StyleSheet.create({
     padding: 16
   },
   input: {
-    width: 240,
-    marginBottom: 16
+    width: 260
   },
   button: {
     marginTop: 40
