@@ -12,7 +12,11 @@
     "findClosestSpot": "Nájsť najbližšie miesto",
     "stateOccupied": "Stav: obsadené",
     "stateFree": "Stav: voľné",
-    "updatedAt": "Aktualizované: "
+    "updatedAt": "Aktualizované: ",
+    "closestSpotFound": "Najbližšie bolo nájdené",
+    "noSpotFound": "Žiadne voľné miesto nebolo nenájdené",
+    "closestSpotFindError": "Chyba pri hľadaní najbližšieho miesta",
+    "noFavSpot": "Obľúbené miesto nebolo nenájdené"
   },
   "heatmap": {},
   "profile": {

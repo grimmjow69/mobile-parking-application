@@ -9,6 +9,7 @@ import { PreferencesContext } from '../context/preference-context';
 import { LightMap, darkMap } from '@/constants/MapStyles';
 import Colors from '@/constants/Colors';
 import i18n from '../../assets/localization/i18n';
+import { UNIZA_INITIAL_REGION } from '@/constants/Coords';
 
 export default function HeatmapScreen() {
   const [heatmapPoints, setHeatmapPoints] = useState<HeatmapPoint[]>([]);
@@ -47,12 +48,7 @@ export default function HeatmapScreen() {
       ) : (
         <>
           <MapView
-            initialRegion={{
-              latitude: 49.202537,
-              longitude: 18.756124,
-              latitudeDelta: 0.004,
-              longitudeDelta: 0.004
-            }}
+            initialRegion={UNIZA_INITIAL_REGION}
             showsPointsOfInterest={false}
             provider={PROVIDER_GOOGLE}
             customMapStyle={isThemeDark ? darkMap : LightMap}

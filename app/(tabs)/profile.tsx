@@ -8,6 +8,7 @@ import i18n from '../../assets/localization/i18n';
 import { PreferencesContext } from '../context/preference-context';
 import { loginUser } from '../services/auth-service';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { UserData } from '../models/user';
 
 export default function ProfileScreen() {
   const { user, setUser } = useContext(PreferencesContext);
@@ -24,7 +25,7 @@ export default function ProfileScreen() {
     setSnackbarVisible(true);
   };
 
-  const handleLoginSuccess = async (userData: any) => {
+  const handleLoginSuccess = async (userData: UserData) => {
     setUser(userData);
     const userJson = JSON.stringify(userData);
     await AsyncStorage.setItem('user', userJson);

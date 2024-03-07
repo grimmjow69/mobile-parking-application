@@ -6,3 +6,8 @@ export interface ParkingSpot {
   latitude: number;
   longitude: number;
 }
+
+export interface ParkingSpotCoordinates {
+  longitude: number;
+  latitude: number;
+}

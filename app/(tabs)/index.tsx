@@ -6,10 +6,11 @@ import * as Location from 'expo-location';
 import { PreferencesContext } from '../context/preference-context';
 import { ActivityIndicator, Button, IconButton, Snackbar, Text } from 'react-native-paper';
 import { ParkingSpot } from '../models/parking-spot';
-import { fetchAllSpotsData } from '../services/parking-data-service';
+import { fetchAllSpotsData, fetchSpotCoordinates } from '../services/parking-data-service';
 import { LightMap, darkMap } from '@/constants/MapStyles';
 import i18n from '../../assets/localization/i18n';
 import Colors from '@/constants/Colors';
+import { UNIZA_INITIAL_REGION } from '@/constants/Coords';
 
 export default function MapScreen() {
   const [parkingSpots, setParkingSpots] = useState<ParkingSpot[]>([]);
@@ -20,8 +21,6 @@ export default function MapScreen() {
   const [snackbarColor, setSnackbarColor] = useState('#323232');
   const mapRef = useRef<MapView>(null);
   const { isThemeDark, user } = useContext(PreferencesContext);
-
-  const [currentLocation, setCurrentLocation] = useState<Region | null>(null);
 
   const getData = useCallback(async () => {
     setLoading(true);
@@ -60,15 +59,13 @@ export default function MapScreen() {
       longitudeDelta: 0.005
     };
 
-    setCurrentLocation(userLocation);
-
-    if (currentLocation) {
+    if (userLocation) {
       const availableSpots = parkingSpots.filter((spot) => !spot.occupied);
       let closestSpot = availableSpots.reduce(
         (closest: { spot: ParkingSpot | null; distance: number }, spot: ParkingSpot) => {
           const spotDistance = getDistance(
-            currentLocation.latitude,
-            currentLocation.longitude,
+            userLocation.latitude,
+            userLocation.longitude,
             spot.latitude,
             spot.longitude
           );
@@ -83,18 +80,75 @@ export default function MapScreen() {
         { spot: null, distance: Infinity }
       );
 
-      setClosestSpot(closestSpot.spot);
-
       if (closestSpot.spot) {
+        setClosestSpot(closestSpot.spot);
+        setSnackbarMessage(i18n.t('parkingMap.closestSpotFound'));
+        setSnackbarColor('#56ae57');
         mapRef.current?.animateToRegion({
           latitude: closestSpot.spot.latitude,
           longitude: closestSpot.spot.longitude,
           latitudeDelta: 0.001,
           longitudeDelta: 0.001
         });
+      } else {
+        setSnackbarMessage(i18n.t('parkingMap.noSpotFound'));
+        setSnackbarColor('#D32F2F');
       }
+
+      setSnackbarVisible(true);
     }
-  }, [currentLocation, parkingSpots]);
+  }, [parkingSpots]);
+
+  const findClosestSpotToFav = useCallback(async () => {
+    if (user?.favouriteSpotId) {
+      try {
+        const favSpotCoordinates = await fetchSpotCoordinates(user.favouriteSpotId);
+
+        const availableSpots = parkingSpots.filter((spot) => !spot.occupied);
+        let closestSpot = availableSpots.reduce(
+          (closest: { spot: ParkingSpot | null; distance: number }, spot: ParkingSpot) => {
+            const spotDistance = getDistance(
+              favSpotCoordinates.latitude,
+              favSpotCoordinates.longitude,
+              spot.latitude,
+              spot.longitude
+            );
+            if (spotDistance < closest.distance) {
+              return {
+                spot,
+                distance: spotDistance
+              };
+            }
+            return closest;
+          },
+          { spot: null, distance: Infinity }
+        );
+
+        setClosestSpot(closestSpot.spot);
+
+        if (closestSpot.spot) {
+          mapRef.current?.animateToRegion({
+            latitude: closestSpot.spot.latitude,
+            longitude: closestSpot.spot.longitude,
+            latitudeDelta: 0.001,
+            longitudeDelta: 0.001
+          });
+        }
+
+        setSnackbarMessage(i18n.t('parkingMap.closestSpotFound'));
+        setSnackbarColor('#56ae57');
+      } catch (error) {
+        setSnackbarMessage(i18n.t('parkingMap.closestSpotFindError'));
+        setSnackbarColor('#D32F2F');
+      } finally {
+        setSnackbarVisible(true);
+      }
+    } else {
+      setSnackbarMessage(i18n.t('parkingMap.noFavSpot'));
+      setSnackbarColor('#D32F2F');
+      setSnackbarVisible(true);
+    }
+  }, [user?.favouriteSpotId, parkingSpots]);
 
   const getDistance = (lat1: number, lon1: number, lat2: number, lon2: number): number => {
     const R = 6371;
@@ -115,10 +169,10 @@ export default function MapScreen() {
   const renderMarker = (spot: ParkingSpot) => {
     const isClosestSpot = spot === closestSpot;
     const circleColor = spot.occupied ? '#DC143C' : '#228B22';
-  
+
     const middleLatitude = spot.latitude;
     const middleLongitude = spot.longitude;
-  
+
     return (
       <React.Fragment key={spot.parkingSpotId}>
         {isClosestSpot && (
@@ -155,12 +209,7 @@ export default function MapScreen() {
           <MapView
             ref={mapRef}
             style={styles.map}
-            initialRegion={{
-              latitude: 49.202537,
-              longitude: 18.756124,
-              latitudeDelta: 0.004,
-              longitudeDelta: 0.004
-            }}
+            initialRegion={UNIZA_INITIAL_REGION}
             maxZoomLevel={19}
             showsUserLocation={true}
             showsCompass={true}
@@ -178,14 +227,21 @@ export default function MapScreen() {
             style={styles.refreshButton}
             onPress={() => getData()}
           />
-          <Button
-            icon='magnify'
-            mode='contained'
-            style={styles.findClosestSpotButton}
-            onPress={() => findClosestSpot()}
-          >
-            {i18n.t('parkingMap.findClosestSpot')}
-          </Button>
+          <View style={styles.bottomButtons}>
+            <Button icon='magnify' mode='contained' onPress={() => findClosestSpot()}>
+              {i18n.t('parkingMap.findClosestSpot')}
+            </Button>
+            {user?.favouriteSpotId && (
+              <Button
+                icon='star'
+                mode='contained'
+                style={styles.findFavParkingSpot}
+                onPress={() => findClosestSpotToFav()}
+              >
+                {i18n.t('parkingMap.findClosestSpot')}
+              </Button>
+            )}
+          </View>
         </>
       )}
       <Snackbar
@@ -209,7 +265,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center'
   },
-  findClosestSpotButton: {
+  bottomButtons: {
     position: 'absolute',
     bottom: 8
   },
@@ -217,6 +273,9 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 8,
     left: 8
+  },
+  findFavParkingSpot: {
+    marginTop: 8
   },
   separator: {
     marginVertical: 30,

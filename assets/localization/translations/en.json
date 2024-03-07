@@ -12,7 +12,11 @@
     "findClosestSpot": "Find closest spot",
     "stateOccupied": "State: occupied",
     "stateFree": "State: free",
-    "updatedAt": "Updated at:"
+    "updatedAt": "Updated at:",
+    "closestSpotFound": "Closest spot found",
+    "noSpotFound": "No free spot was found",
+    "closestSpotFindError": "Error finding the closest spot",
+    "noFavSpot": "No favorite spot found"
   },
   "heatmap": {},
   "profile": {

@@ -13,6 +13,7 @@ import i18n from '../assets/localization/i18n';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Platform } from 'react-native';
 import * as NavigationBar from 'expo-navigation-bar';
+import { UserData } from './models/user';
 
 export { ErrorBoundary } from 'expo-router';
 
@@ -48,7 +49,7 @@ export default function RootLayout() {
 function RootLayoutNav() {
   const [isThemeDark, setIsThemeDark] = useState(false);
   const [language, setLanguage] = useState('en');
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<UserData | null>(null);
 
   const toggleTheme = React.useCallback(() => {
     return setIsThemeDark(!isThemeDark);
