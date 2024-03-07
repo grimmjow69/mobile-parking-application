@@ -21,12 +21,7 @@ export default function MapScreen() {
   const mapRef = useRef<MapView>(null);
   const { isThemeDark, user } = useContext(PreferencesContext);
 
-  const [currentLocation, setCurrentLocation] = useState<Region | null>({
-    latitude: 49.20423438192019,
-    longitude: 18.75633519840852,
-    latitudeDelta: 0.005,
-    longitudeDelta: 0.005
-  });
+  const [currentLocation, setCurrentLocation] = useState<Region | null>(null);
 
   const getData = useCallback(async () => {
     setLoading(true);
@@ -161,10 +156,10 @@ export default function MapScreen() {
             ref={mapRef}
             style={styles.map}
             initialRegion={{
-              latitude: 49.202337,
+              latitude: 49.202537,
               longitude: 18.756124,
-              latitudeDelta: 0.005,
-              longitudeDelta: 0.005
+              latitudeDelta: 0.004,
+              longitudeDelta: 0.004
             }}
             maxZoomLevel={19}
             showsUserLocation={true}

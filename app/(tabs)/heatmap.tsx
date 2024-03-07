@@ -48,10 +48,10 @@ export default function HeatmapScreen() {
         <>
           <MapView
             initialRegion={{
-              latitude: 49.202337,
+              latitude: 49.202537,
               longitude: 18.756124,
-              latitudeDelta: 0.005,
-              longitudeDelta: 0.005
+              latitudeDelta: 0.004,
+              longitudeDelta: 0.004
             }}
             showsPointsOfInterest={false}
             provider={PROVIDER_GOOGLE}
@@ -86,7 +86,10 @@ export default function HeatmapScreen() {
         duration={1000}
         style={{ backgroundColor: snackbarColor, alignItems: 'center' }}
       >
-        <Text style={{ textAlign: 'center', fontWeight: 'bold', color:'#fff' }}> {snackbarMessage}</Text>
+        <Text style={{ textAlign: 'center', fontWeight: 'bold', color: '#fff' }}>
+          {' '}
+          {snackbarMessage}
+        </Text>
       </Snackbar>
     </View>
   );
