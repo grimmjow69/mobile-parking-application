@@ -9,6 +9,7 @@ import { HeatmapPoint } from '../models/heatmap';
 import { PreferencesContext } from '../context/preference-context';
 import { UNIZA_INITIAL_REGION } from '@/constants/Coords';
 import { useCallback, useContext, useEffect, useState } from 'react';
+import { useIsFocused } from '@react-navigation/native';
 
 export default function HeatmapScreen() {
   const [heatmapPoints, setHeatmapPoints] = useState<HeatmapPoint[]>([]);
@@ -17,6 +18,7 @@ export default function HeatmapScreen() {
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarColor, setSnackbarColor] = useState('#323232');
   const { isThemeDark } = useContext(PreferencesContext);
+  const isFocused = useIsFocused();
 
   const getData = useCallback(async () => {
     setLoading(true);
@@ -35,8 +37,10 @@ export default function HeatmapScreen() {
   }, []);
 
   useEffect(() => {
-    getData();
-  }, [getData]);
+    if (isFocused) {
+      getData();
+    }
+  }, [isFocused, getData]);
 
   const onDismissSnackBar = () => setSnackbarVisible(false);
 

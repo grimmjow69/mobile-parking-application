@@ -10,16 +10,18 @@ import { fetchAllSpotsData, fetchSpotCoordinates } from '../services/parking-dat
 import { ParkingSpot } from '../models/parking-spot';
 import { PreferencesContext } from '../context/preference-context';
 import { UNIZA_INITIAL_REGION } from '@/constants/Coords';
+import { useIsFocused } from '@react-navigation/native';
 
 export default function MapScreen() {
   const [parkingSpots, setParkingSpots] = useState<ParkingSpot[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [closestSpot, setClosestSpot] = useState<ParkingSpot | null>(null);
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarColor, setSnackbarColor] = useState('#323232');
   const mapRef = useRef<MapView>(null);
   const { isThemeDark, user } = useContext(PreferencesContext);
+  const isFocused = useIsFocused();
 
   const getData = useCallback(async () => {
     setLoading(true);
@@ -38,8 +40,10 @@ export default function MapScreen() {
   }, []);
 
   useEffect(() => {
+    if (isFocused) {
     getData();
-  }, [getData]);
+    }
+  }, [isFocused, getData]);
 
   const findClosestSpot = useCallback(async () => {
     let { status } = await Location.requestForegroundPermissionsAsync();
