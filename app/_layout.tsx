@@ -1,18 +1,17 @@
-import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { useCallback, useEffect, useState } from 'react';
-
-import { PaperProvider } from 'react-native-paper';
-import React from 'react';
-import { PreferencesContext } from './context/preference-context';
-import Colors, { darkTheme, lightTheme } from '@/constants/Colors';
-import i18n from '../assets/localization/i18n';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Platform } from 'react-native';
 import * as NavigationBar from 'expo-navigation-bar';
+import * as SplashScreen from 'expo-splash-screen';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Colors, { darkTheme, lightTheme } from '@/constants/Colors';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
+import i18n from '../assets/localization/i18n';
+import React from 'react';
+import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
+import { PaperProvider } from 'react-native-paper';
+import { Platform } from 'react-native';
+import { PreferencesContext } from './context/preference-context';
+import { Stack } from 'expo-router';
+import { useEffect, useState } from 'react';
+import { useFonts } from 'expo-font';
 import { UserData } from './models/user';
 
 export { ErrorBoundary } from 'expo-router';

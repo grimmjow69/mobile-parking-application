@@ -1,15 +1,14 @@
-import { Dimensions, StyleSheet, View } from 'react-native';
-
-import MapView, { Heatmap, PROVIDER_GOOGLE } from 'react-native-maps';
-import { useCallback, useContext, useEffect, useState } from 'react';
-import { HeatmapPoint } from '../models/heatmap';
-import { fetchHeatmapData } from '../services/parking-data-service';
-import { ActivityIndicator, IconButton, Snackbar, Text } from 'react-native-paper';
-import { PreferencesContext } from '../context/preference-context';
-import { LightMap, darkMap } from '@/constants/MapStyles';
 import Colors from '@/constants/Colors';
 import i18n from '../../assets/localization/i18n';
+import MapView, { Heatmap, PROVIDER_GOOGLE } from 'react-native-maps';
+import { ActivityIndicator, IconButton, Snackbar, Text } from 'react-native-paper';
+import { darkMap, LightMap } from '@/constants/map-styles';
+import { Dimensions, StyleSheet, View } from 'react-native';
+import { fetchHeatmapData } from '../services/parking-data-service';
+import { HeatmapPoint } from '../models/heatmap';
+import { PreferencesContext } from '../context/preference-context';
 import { UNIZA_INITIAL_REGION } from '@/constants/Coords';
+import { useCallback, useContext, useEffect, useState } from 'react';
 
 export default function HeatmapScreen() {
   const [heatmapPoints, setHeatmapPoints] = useState<HeatmapPoint[]>([]);

@@ -1,13 +1,12 @@
-import { StyleSheet, View } from 'react-native';
-
-import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { Button, TextInput, Text, Snackbar, useTheme, HelperText } from 'react-native-paper';
-import React, { useContext, useEffect, useState } from 'react';
-import { Link } from 'expo-router';
-import i18n from '../../assets/localization/i18n';
-import { PreferencesContext } from '../context/preference-context';
-import { loginUser } from '../services/auth-service';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import i18n from '../../assets/localization/i18n';
+import { useContext, useEffect, useState } from 'react';
+import { Button, HelperText, Snackbar, Text, TextInput, useTheme } from 'react-native-paper';
+import { Link } from 'expo-router';
+import { loginUser } from '../services/auth-service';
+import { PreferencesContext } from '../context/preference-context';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { StyleSheet, View } from 'react-native';
 import { UserData } from '../models/user';
 
 export default function ProfileScreen() {

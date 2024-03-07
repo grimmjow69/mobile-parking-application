@@ -1,12 +1,12 @@
-import React from 'react';
-import { Link, Tabs } from 'expo-router';
-import { Pressable, StyleSheet, View } from 'react-native';
-
-import { useClientOnlyValue } from '@/components/useClientOnlyValue';
-import { Badge, Icon } from 'react-native-paper';
-import { PreferencesContext } from '../context/preference-context';
-import i18n from '../../assets/localization/i18n';
 import Colors from '@/constants/Colors';
+import i18n from '../../assets/localization/i18n';
+import React from 'react';
+import { Badge, Icon } from 'react-native-paper';
+import { Link, Tabs } from 'expo-router';
+import { PreferencesContext } from '../context/preference-context';
+import { Pressable, StyleSheet, View } from 'react-native';
+import { useClientOnlyValue } from '@/components/useClientOnlyValue';
+
 
 export default function TabLayout() {
   const { isThemeDark } = React.useContext(PreferencesContext);

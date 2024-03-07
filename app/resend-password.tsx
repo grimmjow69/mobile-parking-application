@@ -1,9 +1,8 @@
-import { StyleSheet, View } from 'react-native';
-
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import i18n from '../assets/localization/i18n';
 import React from 'react';
 import { Button, TextInput } from 'react-native-paper';
-import i18n from '../assets/localization/i18n';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { StyleSheet, View } from 'react-native';
 
 export default function PasswordResendScreen() {
   const [email, setEmail] = React.useState('');

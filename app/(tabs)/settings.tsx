@@ -1,11 +1,10 @@
-import { StyleSheet, View } from 'react-native';
-
-import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { Button, Switch, Text } from 'react-native-paper';
-import React, { useEffect, useState } from 'react';
-import { PreferencesContext } from '../context/preference-context';
-import i18n from '../../assets/localization/i18n';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import i18n from '../../assets/localization/i18n';
+import React, { useState } from 'react';
+import { Button, Switch, Text } from 'react-native-paper';
+import { PreferencesContext } from '../context/preference-context';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { StyleSheet, View } from 'react-native';
 
 export default function SettingsScreen() {
   const { toggleTheme, isThemeDark, setLanguage } = React.useContext(PreferencesContext);

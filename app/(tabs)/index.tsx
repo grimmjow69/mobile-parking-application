@@ -1,15 +1,14 @@
-import { Dimensions, StyleSheet, View } from 'react-native';
-
+import * as Location from 'expo-location';
+import Colors from '@/constants/Colors';
+import i18n from '../../assets/localization/i18n';
 import MapView, { Circle, Marker, Region } from 'react-native-maps';
 import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
-import * as Location from 'expo-location';
-import { PreferencesContext } from '../context/preference-context';
 import { ActivityIndicator, Button, IconButton, Snackbar, Text } from 'react-native-paper';
-import { ParkingSpot } from '../models/parking-spot';
+import { darkMap, LightMap } from '@/constants/map-styles';
+import { Dimensions, StyleSheet, View } from 'react-native';
 import { fetchAllSpotsData, fetchSpotCoordinates } from '../services/parking-data-service';
-import { LightMap, darkMap } from '@/constants/MapStyles';
-import i18n from '../../assets/localization/i18n';
-import Colors from '@/constants/Colors';
+import { ParkingSpot } from '../models/parking-spot';
+import { PreferencesContext } from '../context/preference-context';
 import { UNIZA_INITIAL_REGION } from '@/constants/Coords';
 
 export default function MapScreen() {

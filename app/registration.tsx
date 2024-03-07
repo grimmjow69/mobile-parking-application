@@ -1,11 +1,10 @@
-import { StyleSheet, View } from 'react-native';
-
-import React, { useState } from 'react';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { Button, HelperText, Snackbar, TextInput, useTheme, Text } from 'react-native-paper';
 import i18n from '../assets/localization/i18n';
+import { Button, HelperText, Snackbar, Text, TextInput, useTheme } from 'react-native-paper';
 import { registerUser } from './services/auth-service';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { StyleSheet, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { useState } from 'react';
 
 export default function RegistrationScreen() {
   const navigation = useNavigation();
