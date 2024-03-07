@@ -1,7 +1,7 @@
 import { StyleSheet, View } from 'react-native';
 
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { Button, TextInput, Text, Snackbar } from 'react-native-paper';
+import { Button, TextInput, Text, Snackbar, useTheme, HelperText } from 'react-native-paper';
 import React, { useContext, useEffect, useState } from 'react';
 import { Link } from 'expo-router';
 import i18n from '../../assets/localization/i18n';
@@ -11,11 +11,12 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function ProfileScreen() {
   const { user, setUser } = useContext(PreferencesContext);
-  const [email, setEmail] = useState('lukasfucek30@gmail.com');
-  const [password, setPassword] = useState('123456');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarColor, setSnackbarColor] = useState('#56ae57');
+  const { colors } = useTheme();
 
   const showSnackbar = (message: string, color = '#56ae57') => {
     setSnackbarMessage(message);
@@ -42,6 +43,20 @@ export default function ProfileScreen() {
     }
   };
 
+  const validateEmail = (email: string) => {
+    const re = /\S+@\S+\.\S+/;
+    return re.test(email);
+  };
+
+  const isFormValid = () => {
+    return validateEmail(email) && password.length >= 6;
+  };
+
+  const getIconColor = (hasError: boolean) => (hasError ? colors.error : colors.secondary);
+
+  const emailError = email !== '' && !validateEmail(email);
+  const passwordLengthError = password !== '' && password.length < 6;
+
   useEffect(() => {}, [user]);
 
   const onDismissSnackBar = () => setSnackbarVisible(false);
@@ -67,28 +82,46 @@ export default function ProfileScreen() {
         value={email}
         onChangeText={setEmail}
         mode='outlined'
+        error={emailError}
         style={styles.input}
         autoCapitalize='none'
         keyboardType='email-address'
         textContentType='emailAddress'
-        right={<TextInput.Icon icon='email' />}
+        right={<TextInput.Icon icon='email' color={getIconColor(emailError)} />}
       />
+      <HelperText type='error' visible={emailError}>
+        {i18n.t('profile.errors.emailError')}
+      </HelperText>
+
       <TextInput
         label={i18n.t('profile.password')}
         value={password}
         onChangeText={setPassword}
         mode='outlined'
+        error={passwordLengthError}
         style={styles.input}
         secureTextEntry
         textContentType='password'
-        right={<TextInput.Icon icon='lock' />}
+        right={<TextInput.Icon icon='lock' color={getIconColor(passwordLengthError)} />}
       />
-      <Button mode='contained' onPress={handleLogin} style={styles.button} icon='login'>
+      <HelperText type='error' visible={passwordLengthError}>
+        {i18n.t('profile.errors.passwordLengthError')}
+      </HelperText>
+
+      <Button
+        mode='contained'
+        onPress={handleLogin}
+        style={styles.button}
+        icon='login'
+        disabled={!isFormValid()}
+      >
         {i18n.t('profile.logIn')}
       </Button>
+
       <Link href='/resend-password' asChild>
         <Button style={styles.button}>{i18n.t('profile.forgotPassword')}</Button>
       </Link>
+
       <Text style={styles.registerText}>
         {i18n.t('profile.dontHaveAccount')} {'  '}
         <Link href='/registration' asChild>
@@ -125,8 +158,7 @@ const styles = StyleSheet.create({
     padding: 16
   },
   input: {
-    width: 240,
-    marginBottom: 16
+    width: 240
   },
   button: {
     marginTop: 40

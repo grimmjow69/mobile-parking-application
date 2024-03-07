@@ -9,9 +9,9 @@ import { useNavigation } from '@react-navigation/native';
 
 export default function RegistrationScreen() {
   const navigation = useNavigation();
-  const [email, setEmail] = useState('a@gmail.cpom');
-  const [password, setPassword] = useState('123456');
-  const [passwordCheck, setPasswordCheck] = useState('123456');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [passwordCheck, setPasswordCheck] = useState('');
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarColor, setSnackbarColor] = useState('#56ae57');
