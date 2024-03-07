@@ -1,6 +1,6 @@
 import { Dimensions, StyleSheet, View } from 'react-native';
 
-import MapView, { Marker, Polygon, Region } from 'react-native-maps';
+import MapView, { Circle, Marker, Region } from 'react-native-maps';
 import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import * as Location from 'expo-location';
 import { PreferencesContext } from '../context/preference-context';
@@ -119,27 +119,13 @@ export default function MapScreen() {
 
   const renderMarker = (spot: ParkingSpot) => {
     const isClosestSpot = spot === closestSpot;
-    const markerColor = spot.occupied ? 'red' : 'green';
-
+    const circleColor = spot.occupied ? '#DC143C' : '#228B22';
+  
     const middleLatitude = spot.latitude;
     const middleLongitude = spot.longitude;
-    const offset = 0.000012;
-
-    const polygonCoordinates = [
-      { latitude: middleLatitude + offset, longitude: middleLongitude + offset },
-      { latitude: middleLatitude + offset, longitude: middleLongitude - offset },
-      { latitude: middleLatitude - offset, longitude: middleLongitude - offset },
-      { latitude: middleLatitude - offset, longitude: middleLongitude + offset }
-    ];
-
+  
     return (
       <React.Fragment key={spot.parkingSpotId}>
-        <Polygon
-          key={spot.parkingSpotId}
-          coordinates={polygonCoordinates}
-          strokeColor={markerColor}
-          fillColor={markerColor}
-        />
         {isClosestSpot && (
           <Marker
             key={'closest-overlay'}
@@ -149,6 +135,16 @@ export default function MapScreen() {
             }}
           />
         )}
+        <Circle
+          center={{
+            latitude: middleLatitude,
+            longitude: middleLongitude
+          }}
+          radius={1}
+          strokeWidth={1}
+          strokeColor={circleColor}
+          fillColor={circleColor}
+        />
       </React.Fragment>
     );
   };
