@@ -1,4 +1,4 @@
-import Colors from '@/constants/Colors';
+import Colors from '@/constants/colors';
 import i18n from '../../assets/localization/i18n';
 import MapView, { Heatmap, PROVIDER_GOOGLE } from 'react-native-maps';
 import { ActivityIndicator, IconButton, Snackbar, Text } from 'react-native-paper';
@@ -7,7 +7,7 @@ import { Dimensions, StyleSheet, View } from 'react-native';
 import { fetchHeatmapData } from '../services/parking-data-service';
 import { HeatmapPoint } from '../models/heatmap';
 import { PreferencesContext } from '../context/preference-context';
-import { UNIZA_INITIAL_REGION } from '@/constants/Coords';
+import { UNIZA_INITIAL_REGION } from '@/constants/coords';
 import { useCallback, useContext, useEffect, useState } from 'react';
 import { useIsFocused } from '@react-navigation/native';
 

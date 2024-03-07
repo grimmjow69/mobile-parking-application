@@ -1,4 +1,4 @@
-import Colors from '@/constants/Colors';
+import Colors from '@/constants/colors';
 import i18n from '../../assets/localization/i18n';
 import React from 'react';
 import { Badge, Icon } from 'react-native-paper';

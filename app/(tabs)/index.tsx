@@ -1,5 +1,5 @@
 import * as Location from 'expo-location';
-import Colors from '@/constants/Colors';
+import Colors from '@/constants/colors';
 import i18n from '../../assets/localization/i18n';
 import MapView, { Circle, Marker, Region } from 'react-native-maps';
 import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
@@ -9,7 +9,7 @@ import { Dimensions, StyleSheet, View } from 'react-native';
 import { fetchAllSpotsData, fetchSpotCoordinates } from '../services/parking-data-service';
 import { ParkingSpot } from '../models/parking-spot';
 import { PreferencesContext } from '../context/preference-context';
-import { UNIZA_INITIAL_REGION } from '@/constants/Coords';
+import { UNIZA_INITIAL_REGION } from '@/constants/coords';
 import { useIsFocused } from '@react-navigation/native';
 
 export default function MapScreen() {

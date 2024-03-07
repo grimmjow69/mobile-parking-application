@@ -1,7 +1,7 @@
 import * as NavigationBar from 'expo-navigation-bar';
 import * as SplashScreen from 'expo-splash-screen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Colors, { darkTheme, lightTheme } from '@/constants/Colors';
+import Colors, { darkTheme, lightTheme } from '@/constants/colors';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import i18n from '../assets/localization/i18n';
 import React from 'react';
