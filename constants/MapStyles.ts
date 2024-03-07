@@ -80,10 +80,10 @@ export const darkMap = [
   },
   {
     featureType: 'poi',
-    elementType: 'labels.text.fill',
+    elementType: 'labels',
     stylers: [
       {
-        color: '#757575'
+        visibility: 'off'
       }
     ]
   },
@@ -196,6 +196,7 @@ export const darkMap = [
     ]
   }
 ];
+
 export const LightMap = [
   {
     featureType: 'landscape.man_made',
