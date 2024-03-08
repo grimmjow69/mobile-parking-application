@@ -11,6 +11,7 @@ import { ParkingSpot } from '../models/parking-spot';
 import { PreferencesContext } from '../context/preference-context';
 import { UNIZA_INITIAL_REGION } from '@/constants/coords';
 import { useIsFocused } from '@react-navigation/native';
+import moment from 'moment';
 
 export default function MapScreen() {
   const [parkingSpots, setParkingSpots] = useState<ParkingSpot[]>([]);
@@ -41,7 +42,7 @@ export default function MapScreen() {
 
   useEffect(() => {
     if (isFocused) {
-    getData();
+      getData();
     }
   }, [isFocused, getData]);
 
@@ -172,9 +173,9 @@ export default function MapScreen() {
   const renderMarker = (spot: ParkingSpot) => {
     const isClosestSpot = spot === closestSpot;
     const circleColor = spot.occupied ? '#DC143C' : '#228B22';
-
-    const middleLatitude = spot.latitude;
-    const middleLongitude = spot.longitude;
+    const updatedAtText = `${i18n.t('parkingMap.updatedAt')} ${moment(spot.updatedAt).format(
+      'HH:mm:ss'
+    )}`;
 
     return (
       <React.Fragment key={spot.parkingSpotId}>
@@ -187,10 +188,21 @@ export default function MapScreen() {
             }}
           />
         )}
+        <Marker
+          key={spot.parkingSpotId}
+          opacity={0}
+          icon={require('../../assets/images/icon.png')}
+          title={spot.name}
+          description={updatedAtText}
+          coordinate={{
+            latitude: spot.latitude,
+            longitude: spot.longitude
+          }}
+        ></Marker>
         <Circle
           center={{
-            latitude: middleLatitude,
-            longitude: middleLongitude
+            latitude: spot.latitude,
+            longitude: spot.longitude
           }}
           radius={1}
           strokeWidth={1}
@@ -213,7 +225,6 @@ export default function MapScreen() {
             ref={mapRef}
             style={styles.map}
             initialRegion={UNIZA_INITIAL_REGION}
-            maxZoomLevel={19}
             showsUserLocation={true}
             showsCompass={true}
             showsPointsOfInterest={false}
