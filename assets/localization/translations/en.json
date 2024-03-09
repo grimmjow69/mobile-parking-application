@@ -58,7 +58,8 @@
     "locationServices": "Location services",
     "reportBug": "Report bug",
     "author": "Author",
-    "version": "Version"
+    "version": "Version",
+    "alertPushNotifications": "Push notifications"
   },
   "notifications": {
     "notifications": "Notifications",

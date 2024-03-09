@@ -58,7 +58,8 @@
     "locationServices": "Lokalizačné služby",
     "reportBug": "Nahlásiť chybu",
     "author": "Autor",
-    "version": "Verzia"
+    "version": "Verzia",
+    "alertPushNotifications": "Push notifikácie"
   },
   "notifications": {
     "hasBeenTaken": "bol obsadené",

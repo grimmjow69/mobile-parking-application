@@ -1,7 +1,12 @@
 {
   "expo": {
-    "name": "uniza-parking-client",
-    "slug": "uniza-parking-client",
+    "name": "uniza-parking",
+    "slug": "uniza-parking",
+    "extra": {
+      "eas": {
+        "projectId": "1db89bb2-8e09-4954-bec7-39e75d67db34"
+      }
+    },
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/uniza-icon.png",
@@ -34,6 +39,7 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "owner": "unizaparking"
   }
 }

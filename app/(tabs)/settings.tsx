@@ -1,13 +1,22 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import i18n from '../../assets/localization/i18n';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Button, Switch, Text } from 'react-native-paper';
+import { deletePushTokenFromServer, registerForPushNotificationsAsync, sendPushTokenToServer } from '../services/notifications-service';
 import { PreferencesContext } from '../context/preference-context';
+import { PushNotificationConfig } from '../models/notifications';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { StyleSheet, View } from 'react-native';
 
 export default function SettingsScreen() {
-  const { toggleTheme, isThemeDark, setLanguage } = React.useContext(PreferencesContext);
+  const {
+    toggleTheme,
+    isThemeDark,
+    setLanguage,
+    user,
+    toggleAlertNotifications,
+    alertNotifications
+  } = useContext(PreferencesContext);
   const [isLanguageEnglish, setIsLanguageEnglish] = useState(i18n.language === 'en');
 
   const toggleLanguage = async () => {
@@ -22,6 +31,29 @@ export default function SettingsScreen() {
     toggleTheme();
     const newTheme = isThemeDark ? 'light' : 'dark';
     await AsyncStorage.setItem('theme', newTheme);
+  };
+
+  const toggleAlert = async () => {
+    toggleAlertNotifications();
+
+    const pushNotificationsConfig: PushNotificationConfig = {
+      enabled: !alertNotifications
+    };
+
+    await AsyncStorage.setItem('pushNotificationsConfig', JSON.stringify(pushNotificationsConfig));
+    try {
+      if (pushNotificationsConfig.enabled) {
+        await registerForPushNotificationsAsync().then((token) => {
+          if (token) {
+            sendPushTokenToServer(token, user!.userId);
+          }
+        });
+      } else {
+        await deletePushTokenFromServer(user!.userId);
+      }
+    } catch (error) {
+      console.error('Failed when setting up notifications', error);
+    }
   };
 
   const reportBug = () => {
@@ -41,6 +73,14 @@ export default function SettingsScreen() {
             <Text>{i18n.t('settings.useEnglish')}</Text>
             <Switch value={isLanguageEnglish} onValueChange={toggleLanguage} />
           </View>
+
+          {user && (
+            <View style={styles.switchRow}>
+              <Text>{i18n.t('settings.alertPushNotifications')}</Text>
+              <Switch value={alertNotifications} onValueChange={toggleAlert} />
+            </View>
+          )}
+
           <View style={styles.footer}>
             <Button icon='bug' mode='contained' style={styles.reportButton} onPress={reportBug}>
               {i18n.t('settings.reportBug')}

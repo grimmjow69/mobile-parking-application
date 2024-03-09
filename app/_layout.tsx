@@ -1,4 +1,5 @@
 import * as NavigationBar from 'expo-navigation-bar';
+import * as Notifications from 'expo-notifications';
 import * as SplashScreen from 'expo-splash-screen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Colors, { darkTheme, lightTheme } from '@/constants/colors';
@@ -13,12 +14,21 @@ import { Stack } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { useFonts } from 'expo-font';
 import { UserData } from './models/user';
+import { PushNotificationConfig } from './models/notifications';
 
 export { ErrorBoundary } from 'expo-router';
 
 export const unstable_settings = {
   initialRouteName: '(tabs)'
 };
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: false
+  })
+});
 
 SplashScreen.preventAutoHideAsync();
 
@@ -47,12 +57,17 @@ export default function RootLayout() {
 
 function RootLayoutNav() {
   const [isThemeDark, setIsThemeDark] = useState(false);
+  const [alertNotifications, setAlertNotifications] = useState(true);
   const [language, setLanguage] = useState('en');
   const [user, setUser] = useState<UserData | null>(null);
 
   const toggleTheme = React.useCallback(() => {
     return setIsThemeDark(!isThemeDark);
   }, [isThemeDark]);
+
+  const toggleAlertNotifications = React.useCallback(() => {
+    return setAlertNotifications(!alertNotifications);
+  }, [alertNotifications]);
 
   useEffect(() => {
     const loadPreferences = async () => {
@@ -66,6 +81,12 @@ function RootLayoutNav() {
         if (storedLanguage !== null) {
           setLanguage(storedLanguage);
           i18n.changeLanguage(storedLanguage);
+        }
+
+        const value = await AsyncStorage.getItem('pushNotificationsConfig');
+        if (value !== null) {
+          const config: PushNotificationConfig = JSON.parse(value);
+          setAlertNotifications(config.enabled);
         }
       } catch (e) {}
     };
@@ -96,9 +117,20 @@ function RootLayoutNav() {
       language,
       setLanguage,
       user,
-      setUser
+      setUser,
+      alertNotifications,
+      toggleAlertNotifications
     }),
-    [toggleTheme, isThemeDark, language, setLanguage, user, setUser]
+    [
+      toggleTheme,
+      isThemeDark,
+      language,
+      setLanguage,
+      user,
+      setUser,
+      alertNotifications,
+      toggleAlertNotifications
+    ]
   );
 
   if (Platform.OS === 'android') {
@@ -111,10 +143,6 @@ function RootLayoutNav() {
         <PaperProvider theme={paperTheme}>
           <Stack>
             <Stack.Screen name='(tabs)' options={{ headerShown: false }} />
-            <Stack.Screen
-              name='notifications'
-              options={{ presentation: 'modal', title: i18n.t('navigation.notifications') }}
-            />
             <Stack.Screen
               name='registration'
               options={{ presentation: 'modal', title: i18n.t('navigation.registration') }}

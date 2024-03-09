@@ -8,6 +8,8 @@ interface PreferencesContextProps {
   setLanguage: (lang: string) => void;
   user: UserData | null;
   setUser: (user: UserData | null) => void;
+  alertNotifications: boolean;
+  toggleAlertNotifications: () => void;
 }
 
 export const PreferencesContext = createContext<PreferencesContextProps>({
@@ -16,5 +18,7 @@ export const PreferencesContext = createContext<PreferencesContextProps>({
   language: 'en',
   setLanguage: (lang: string) => {},
   user: null,
-  setUser: (user: UserData | null) => {}
+  setUser: (user: UserData | null) => {},
+  alertNotifications: true,
+  toggleAlertNotifications: () => {}
 });

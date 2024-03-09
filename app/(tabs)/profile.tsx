@@ -1,12 +1,21 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import i18n from '../../assets/localization/i18n';
-import { useContext, useEffect, useState } from 'react';
-import { Button, HelperText, Snackbar, Text, TextInput, useTheme } from 'react-native-paper';
+import {
+  Button,
+  HelperText,
+  Snackbar,
+  Text,
+  TextInput,
+  useTheme
+  } from 'react-native-paper';
+import { deletePushTokenFromServer, registerForPushNotificationsAsync, sendPushTokenToServer } from '../services/notifications-service';
 import { Link } from 'expo-router';
 import { loginUser } from '../services/auth-service';
 import { PreferencesContext } from '../context/preference-context';
+import { PushNotificationConfig } from '../models/notifications';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { StyleSheet, View } from 'react-native';
+import { useContext, useEffect, useState } from 'react';
 import { UserData } from '../models/user';
 
 export default function ProfileScreen() {
@@ -26,8 +35,31 @@ export default function ProfileScreen() {
 
   const handleLoginSuccess = async (userData: UserData) => {
     setUser(userData);
-    const userJson = JSON.stringify(userData);
-    await AsyncStorage.setItem('user', userJson);
+
+    try {
+      const value = await AsyncStorage.getItem('pushNotificationsConfig');
+      console.log(value);
+      if (value !== null) {
+        const config: PushNotificationConfig = JSON.parse(value);
+        if (config.enabled) {
+          await registerForPushNotificationsAsync().then((token) => {
+            if (token) {
+              sendPushTokenToServer(token, userData.userId);
+            }
+          });
+        }
+      } else {
+        await registerForPushNotificationsAsync().then((token) => {
+          if (token) {
+            sendPushTokenToServer(token, userData.userId);
+          }
+        });
+      }
+      const userJson = JSON.stringify(userData);
+      await AsyncStorage.setItem('user', userJson);
+    } catch (error) {
+      console.error('Failed to clear user data', error);
+    }
   };
 
   const handleLogin = async () => {
@@ -36,8 +68,11 @@ export default function ProfileScreen() {
 
   const handleSignOut = async () => {
     try {
-      await AsyncStorage.removeItem('user');
-      setUser(null);
+      if (user) {
+        await deletePushTokenFromServer(user.userId);
+        await AsyncStorage.removeItem('user');
+        setUser(null);
+      }
     } catch (error) {
       console.error('Failed to clear user data', error);
     }
