@@ -16,7 +16,19 @@
     "closestSpotFound": "Closest spot found",
     "noSpotFound": "No free spot was found",
     "closestSpotFindError": "Error finding the closest spot",
-    "noFavSpot": "No favorite spot found"
+    "noFavSpot": "No favorite spot found",
+    "parkingSpotDetail": {
+      "header": {
+        "stateFree": "free",
+        "stateOccuipied": "occupied"
+      },
+      "table": {
+        "stateColumnName": "State",
+        "updatedAtColumnName": "Updated at",
+        "stateFree": "Free",
+        "stateOccuipied": "Occupied"
+      }
+    }
   },
   "heatmap": {},
   "profile": {
@@ -69,6 +81,7 @@
   "base": {
     "loadSuccess": "Data loaded successfully",
     "loadFailed": "Failed to load data",
-    "locationPermissionDenied": "Location permission was denied. Please enable it in your device settings to continue"
+    "locationPermissionDenied": "Location permission was denied. Please enable it in your device settings to continue",
+    "close": "Close"
   }
 }

@@ -16,7 +16,19 @@
     "closestSpotFound": "Najbližšie bolo nájdené",
     "noSpotFound": "Žiadne voľné miesto nebolo nenájdené",
     "closestSpotFindError": "Chyba pri hľadaní najbližšieho miesta",
-    "noFavSpot": "Obľúbené miesto nebolo nenájdené"
+    "noFavSpot": "Obľúbené miesto nebolo nenájdené",
+    "parkingSpotDetail": {
+      "header": {
+        "stateFree": "voľné",
+        "stateOccuipied": "obsadené"
+      },
+      "table": {
+        "stateColumnName": "Stav",
+        "updatedAtColumnName": "Aktualizované",
+        "stateFree": "Voľné",
+        "stateOccuipied": "Obsadené"
+      }
+    }
   },
   "heatmap": {},
   "profile": {
@@ -68,6 +80,7 @@
   "base": {
     "loadSuccess": "Dáta boli úspešne načítané",
     "loadFailed": "Načítanie dát zlyhalo",
-    "locationPermissionDenied": "Povolenie polohy je zamietnuté. Prosím, povoľte ho vo svojich nastaveniach zariadenia"
+    "locationPermissionDenied": "Povolenie polohy je zamietnuté. Prosím, povoľte ho vo svojich nastaveniach zariadenia",
+    "close" : "Zavrieť"
   }
 }

@@ -1,5 +1,5 @@
 import { HeatmapPoint } from '../models/heatmap';
-import { ParkingSpot, ParkingSpotCoordinates } from '../models/parking-spot';
+import { ParkingSpot, ParkingSpotCoordinates, ParkingSpotDetail } from '../models/parking-spot';
 
 const API_BASE_URL = 'http://192.168.100.11:8080/parking';
 
@@ -56,6 +56,32 @@ export const fetchHeatmapData = async (): Promise<HeatmapPoint[]> => {
     return heatmapData;
   } catch (error) {
     console.error('Error fetching heatmap data:', error);
+    throw error;
+  }
+};
+
+export const fetchSpotDetailById = async (
+  userId: number,
+  spotId: number
+): Promise<ParkingSpotDetail> => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/spot-detail-by-id`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ userId, spotId })
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const jsonResponse = await response.json();
+
+    const parkingSpotDetail: ParkingSpotDetail = jsonResponse.data;
+    return parkingSpotDetail;
+  } catch (error) {
+    console.error('Error fetching spot detail by ID:', error);
     throw error;
   }
 };

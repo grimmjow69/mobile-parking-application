@@ -11,3 +11,14 @@ export interface ParkingSpotCoordinates {
   longitude: number;
   latitude: number;
 }
+
+export interface ParkingSpotDetail {
+  isFavourite: boolean;
+  isNotificationEnabled: boolean;
+  history: ParkingSpotDetailHistoryRecord[];
+}
+
+export interface ParkingSpotDetailHistoryRecord {
+  occupied: boolean;
+  updatedAt: Date;
+}
