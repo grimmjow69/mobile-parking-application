@@ -154,13 +154,13 @@ function RootLayoutNav() {
       <ThemeProvider value={reactNavigationtheme}>
         <PaperProvider theme={paperTheme}>
           <Stack>
-            <Stack.Screen name='(tabs)' options={{ headerShown: false }} />
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
             <Stack.Screen
-              name='registration'
+              name="registration"
               options={{ presentation: 'modal', title: i18n.t('navigation.registration') }}
             />
             <Stack.Screen
-              name='resend-password'
+              name="resend-password"
               options={{ presentation: 'modal', title: i18n.t('navigation.resendPassword') }}
             />
           </Stack>

@@ -1,12 +1,7 @@
 import i18n from '../../assets/localization/i18n';
 const API_BASE_URL = 'http://192.168.100.11:8080/auth';
 
-export const registerUser = async (
-  email: string,
-  password: string,
-  showSnackbar: any,
-  onSuccess: () => void
-) => {
+export const registerUser = async (email: string, password: string, showSnackbar: any, onSuccess: () => void) => {
   try {
     const response = await fetch(`${API_BASE_URL}/register`, {
       method: 'POST',

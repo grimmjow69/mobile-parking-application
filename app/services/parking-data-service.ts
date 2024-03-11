@@ -100,10 +100,7 @@ export const fetchHeatmapData = async (): Promise<HeatmapPoint[]> => {
   }
 };
 
-export const fetchSpotDetailById = async (
-  userId: number,
-  spotId: number
-): Promise<ParkingSpotDetail> => {
+export const fetchSpotDetailById = async (userId: number, spotId: number): Promise<ParkingSpotDetail> => {
   try {
     const response = await fetch(`${API_BASE_URL}/spot-detail-by-id`, {
       method: 'POST',

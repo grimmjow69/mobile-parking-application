@@ -16,7 +16,10 @@
     "closestSpotFound": "Closest spot found",
     "noSpotFound": "No free spot was found",
     "closestSpotFindError": "Error finding the closest spot",
-    "noFavSpot": "No favorite spot found",
+    "noFavSpot": "No favourite spot found",
+    "favourite": {
+      "updated": "Favourite spot successfully changed"
+    },
     "parkingSpotDetail": {
       "header": {
         "stateFree": "free",
@@ -76,9 +79,12 @@
   "notifications": {
     "notifications": "Notifications",
     "hasBeenTaken": "has been taken",
-    "isFree": "is free"
+    "isFree": "is free",
+    "subscribe": "Successful subscription to notification",
+    "unsubscribe": "Successful unsubscription for notification"
   },
   "base": {
+    "error": "An unexpected error occurred",
     "loadSuccess": "Data loaded successfully",
     "loadFailed": "Failed to load data",
     "locationPermissionDenied": "Location permission was denied. Please enable it in your device settings to continue",

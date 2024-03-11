@@ -2,16 +2,13 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import i18n from '../../assets/localization/i18n';
 import SpinnerOverlay from 'react-native-loading-spinner-overlay';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
-import {
-  Button,
-  HelperText,
-  Snackbar,
-  Text,
-  TextInput,
-  useTheme
-  } from 'react-native-paper';
+import { Button, HelperText, Snackbar, Text, TextInput, useTheme } from 'react-native-paper';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
-import { deletePushTokenFromServer, registerForPushNotificationsAsync, sendPushTokenToServer } from '../services/notifications-service';
+import {
+  deletePushTokenFromServer,
+  registerForPushNotificationsAsync,
+  sendPushTokenToServer
+} from '../services/notifications-service';
 import { Link } from 'expo-router';
 import { loginUser } from '../services/auth-service';
 import { PreferencesContext } from '../context/preference-context';
@@ -68,7 +65,7 @@ export default function ProfileScreen() {
     try {
       setLoading(true);
       await loginUser(email, password, showSnackbar, handleLoginSuccess);
-    } catch(error) {
+    } catch (error) {
     } finally {
       setLoading(false);
     }
@@ -77,7 +74,7 @@ export default function ProfileScreen() {
   const handleSignOut = async () => {
     try {
       if (user) {
-        setLoading(true)
+        setLoading(true);
         await deletePushTokenFromServer(user.userId);
         await AsyncStorage.removeItem('user');
         setUser(null);
@@ -85,7 +82,7 @@ export default function ProfileScreen() {
     } catch (error) {
       console.error('Failed to clear user data', error);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   };
 
@@ -109,13 +106,13 @@ export default function ProfileScreen() {
 
   const userContent = (
     <>
-      <Button mode='contained' style={styles.buttonRow} onPress={() => console.log('')}>
+      <Button mode="contained" style={styles.buttonRow} onPress={() => console.log('')}>
         {i18n.t('profile.changePassword')}
       </Button>
-      <Button mode='contained' style={styles.buttonRow} onPress={() => console.log('')}>
+      <Button mode="contained" style={styles.buttonRow} onPress={() => console.log('')}>
         {i18n.t('profile.changeEmail')}
       </Button>
-      <Button style={styles.signOutButton} mode='contained' onPress={() => handleSignOut()}>
+      <Button style={styles.signOutButton} mode="contained" onPress={() => handleSignOut()}>
         {i18n.t('profile.signOut')}
       </Button>
     </>
@@ -127,15 +124,15 @@ export default function ProfileScreen() {
         label={i18n.t('profile.email')}
         value={email}
         onChangeText={setEmail}
-        mode='outlined'
+        mode="outlined"
         error={emailError}
         style={styles.input}
-        autoCapitalize='none'
-        keyboardType='email-address'
-        textContentType='emailAddress'
-        right={<TextInput.Icon icon='email' color={getIconColor(emailError)} />}
+        autoCapitalize="none"
+        keyboardType="email-address"
+        textContentType="emailAddress"
+        right={<TextInput.Icon icon="email" color={getIconColor(emailError)} />}
       />
-      <HelperText type='error' visible={emailError}>
+      <HelperText type="error" visible={emailError}>
         {i18n.t('profile.errors.emailError')}
       </HelperText>
 
@@ -143,34 +140,28 @@ export default function ProfileScreen() {
         label={i18n.t('profile.password')}
         value={password}
         onChangeText={setPassword}
-        mode='outlined'
+        mode="outlined"
         error={passwordLengthError}
         style={styles.input}
         secureTextEntry
-        textContentType='password'
-        right={<TextInput.Icon icon='lock' color={getIconColor(passwordLengthError)} />}
+        textContentType="password"
+        right={<TextInput.Icon icon="lock" color={getIconColor(passwordLengthError)} />}
       />
-      <HelperText type='error' visible={passwordLengthError}>
+      <HelperText type="error" visible={passwordLengthError}>
         {i18n.t('profile.errors.passwordLengthError')}
       </HelperText>
 
-      <Button
-        mode='contained'
-        onPress={handleLogin}
-        style={styles.button}
-        icon='login'
-        disabled={!isFormValid()}
-      >
+      <Button mode="contained" onPress={handleLogin} style={styles.button} icon="login" disabled={!isFormValid()}>
         {i18n.t('profile.logIn')}
       </Button>
 
-      <Link href='/resend-password' asChild>
+      <Link href="/resend-password" asChild>
         <Button style={styles.button}>{i18n.t('profile.forgotPassword')}</Button>
       </Link>
 
       <Text style={styles.registerText}>
         {i18n.t('profile.dontHaveAccount')} {'  '}
-        <Link href='/registration' asChild>
+        <Link href="/registration" asChild>
           <Text style={styles.linkText} onPress={() => console.log('Navigate to registration')}>
             {i18n.t('profile.registerHere')}
           </Text>
@@ -188,20 +179,12 @@ export default function ProfileScreen() {
         duration={Snackbar.DURATION_SHORT}
         style={{ backgroundColor: snackbarColor }}
       >
-        <Text style={{ textAlign: 'center', fontWeight: 'bold', color: '#fff' }}>
-          {' '}
-          {snackbarMessage}
-        </Text>
+        <Text style={{ textAlign: 'center', fontWeight: 'bold', color: '#fff' }}> {snackbarMessage}</Text>
       </Snackbar>
       <SpinnerOverlay
         visible={loading}
         overlayColor={Colors[isThemeDark ? 'dark' : 'light'].spinnerOverlay}
-        customIndicator={
-          <ActivityIndicator
-            size='large'
-            color={Colors[isThemeDark ? 'dark' : 'light'].spinnerColor}
-          />
-        }
+        customIndicator={<ActivityIndicator size="large" color={Colors[isThemeDark ? 'dark' : 'light'].spinnerColor} />}
       />
     </SafeAreaProvider>
   );

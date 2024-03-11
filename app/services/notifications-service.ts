@@ -60,9 +60,7 @@ export async function registerForPushNotificationsAsync() {
     }
     const projectId = Constants.manifest2?.extra?.eas?.projectId;
     if (!projectId) {
-      console.error(
-        'Project ID is required to get the Expo Push Token and was not found in the app manifest.'
-      );
+      console.error('Project ID is required to get the Expo Push Token and was not found in the app manifest.');
       return;
     }
     token = (await Notifications.getExpoPushTokenAsync({ projectId })).data;
@@ -82,10 +80,7 @@ export async function registerForPushNotificationsAsync() {
   return token;
 }
 
-export const subscribeToNotification = async (
-  parkingSpotId: number,
-  userId: number
-): Promise<void> => {
+export const subscribeToNotification = async (parkingSpotId: number, userId: number): Promise<void> => {
   try {
     const response = await fetch(`${API_BASE_URL}/subscribe`, {
       method: 'POST',
@@ -106,9 +101,7 @@ export const subscribeToNotification = async (
   }
 };
 
-export const unsubscribeFromNotificationByNotificationId = async (
-  notificationId: number
-): Promise<void> => {
+export const unsubscribeFromNotificationByNotificationId = async (notificationId: number): Promise<void> => {
   try {
     const response = await fetch(`${API_BASE_URL}/unsubscribe/${notificationId}`, {
       method: 'DELETE',

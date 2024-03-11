@@ -25,35 +25,35 @@ export default function TabLayout() {
       }}
     >
       <Tabs.Screen
-        name='index'
+        name="index"
         options={{
           title: i18n.t('navigation.parkingMap'),
           headerTitleAlign: 'center',
-          tabBarIcon: ({ color }) => <Icon source='map-marker-multiple' color={color} size={26} />
+          tabBarIcon: ({ color }) => <Icon source="map-marker-multiple" color={color} size={26} />
         }}
       />
       <Tabs.Screen
-        name='heatmap'
+        name="heatmap"
         options={{
           title: i18n.t('navigation.heatmap'),
           headerTitleAlign: 'center',
-          tabBarIcon: ({ color }) => <Icon source='map-clock' color={color} size={26} />
+          tabBarIcon: ({ color }) => <Icon source="map-clock" color={color} size={26} />
         }}
       />
       <Tabs.Screen
-        name='profile'
+        name="profile"
         options={{
           title: i18n.t('navigation.profile'),
           headerTitleAlign: 'center',
-          tabBarIcon: ({ color }) => <Icon source='account' color={color} size={26} />
+          tabBarIcon: ({ color }) => <Icon source="account" color={color} size={26} />
         }}
       />
       <Tabs.Screen
-        name='settings'
+        name="settings"
         options={{
           title: i18n.t('navigation.settings'),
           headerTitleAlign: 'center',
-          tabBarIcon: ({ color }) => <Icon source='cog' color={color} size={26} />
+          tabBarIcon: ({ color }) => <Icon source="cog" color={color} size={26} />
         }}
       />
     </Tabs>

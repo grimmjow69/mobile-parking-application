@@ -5,15 +5,7 @@ import MapView, { Circle, Marker } from 'react-native-maps';
 import moment from 'moment';
 import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import SpinnerOverlay from 'react-native-loading-spinner-overlay';
-import {
-  ActivityIndicator,
-  Button,
-  Divider,
-  IconButton,
-  Modal,
-  Snackbar,
-  Text
-} from 'react-native-paper';
+import { ActivityIndicator, Button, Divider, IconButton, Modal, Snackbar, Text } from 'react-native-paper';
 import { darkMap, LightMap } from '@/constants/map-styles';
 import { Dimensions, ScrollView, StyleSheet, View } from 'react-native';
 import {
@@ -26,12 +18,11 @@ import { ParkingSpot, ParkingSpotDetail } from '../models/parking-spot';
 import { PreferencesContext } from '../context/preference-context';
 import {
   subscribeToNotification,
-  unsubscribeFromNotificationByNotificationId,
   unsubscribeFromNotificationByUserAndParkingSpotId
 } from '../services/notifications-service';
 import { UNIZA_INITIAL_REGION } from '@/constants/coords';
-import { useFocusEffect, useIsFocused } from '@react-navigation/native';
-import { updateFavoriteSpot } from '../services/user-service';
+import { updateFavouriteSpot } from '../services/user-service';
+import { useIsFocused } from '@react-navigation/native';
 
 export interface ModalContent {
   spotName: string;
@@ -52,7 +43,7 @@ export default function MapScreen() {
   const [snackbarColor, setSnackbarColor] = useState('#323232');
   const mapRef = useRef<MapView>(null);
   const { isThemeDark, user } = useContext(PreferencesContext);
-  const [isFavorite, setIsFavorite] = useState(false);
+  const [isFavourite, setIsFavourite] = useState(false);
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [modalContent, setModalContent] = useState<ModalContent | null>(null);
@@ -107,10 +98,7 @@ export default function MapScreen() {
 
       console.log(userLocation);
 
-      const closestFreeSpot = await getClosestFreeParkingSpot(
-        userLocation.latitude,
-        userLocation.longitude
-      );
+      const closestFreeSpot = await getClosestFreeParkingSpot(userLocation.latitude, userLocation.longitude);
 
       if (closestFreeSpot) {
         setClosestSpot(closestFreeSpot);
@@ -179,8 +167,7 @@ export default function MapScreen() {
         detail: parkingSpotDetail
       });
 
-
-      setIsFavorite(parkingSpotDetail.isFavourite);
+      setIsFavourite(parkingSpotDetail.isFavourite);
       setNotificationsEnabled(parkingSpotDetail.isNotificationEnabled);
 
       setModalVisible(true);
@@ -193,10 +180,8 @@ export default function MapScreen() {
 
   const renderMarker = (spot: ParkingSpot) => {
     const isClosestSpot = spot === closestSpot;
-    const circleColor = spot.occupied ? '#DC143C' : '#228B22';
-    const updatedAtText = `${i18n.t('parkingMap.updatedAt')} ${moment(spot.updatedAt).format(
-      'HH:mm:ss'
-    )}`;
+    const circleColor = spot.occupied ? errorColor : successColor;
+    const updatedAtText = `${i18n.t('parkingMap.updatedAt')} ${moment(spot.updatedAt).format('HH:mm:ss')}`;
 
     return (
       <React.Fragment key={spot.parkingSpotId}>
@@ -250,7 +235,7 @@ export default function MapScreen() {
       }
       setSnackbarVisible(true);
     } catch (error) {
-      setSnackBarContent(i18n.t('notifications.fail'), errorColor);
+      setSnackBarContent(i18n.t('base.error'), errorColor);
     } finally {
       setSnackbarVisible(true);
       setLoading(false);
@@ -259,11 +244,12 @@ export default function MapScreen() {
 
   const handleFavouriteSpotPressed = async (userId: number, spotId: number) => {
     try {
-      setIsFavorite(!isFavorite);
+      setIsFavourite(!isFavourite);
       setLoading(true);
-      await updateFavoriteSpot(userId, isFavorite ? null : spotId);
-      setSnackBarContent(i18n.t('favorite.updated'), successColor);
+      await updateFavouriteSpot(userId, isFavourite ? null : spotId);
+      setSnackBarContent(i18n.t('parkingMap.favourite.updated'), successColor);
     } catch (error) {
+      setSnackBarContent(i18n.t('base.error'), errorColor);
     } finally {
       setSnackbarVisible(true);
       setLoading(false);
@@ -284,8 +270,8 @@ export default function MapScreen() {
         {loading ? <></> : <>{parkingSpots.map(renderMarker)}</>}
       </MapView>
       <IconButton
-        icon='refresh'
-        mode='contained'
+        icon="refresh"
+        mode="contained"
         iconColor={Colors[isThemeDark ? 'dark' : 'light'].refreshIconText}
         containerColor={Colors[isThemeDark ? 'dark' : 'light'].refreshIcon}
         size={30}
@@ -293,16 +279,11 @@ export default function MapScreen() {
         onPress={() => getData()}
       />
       <View style={styles.bottomButtons}>
-        <Button icon='magnify' mode='contained' onPress={() => findClosestSpot()}>
+        <Button icon="magnify" mode="contained" onPress={() => findClosestSpot()}>
           {i18n.t('parkingMap.findClosestSpot')}
         </Button>
         {user?.favouriteSpotId && (
-          <Button
-            icon='star'
-            mode='contained'
-            style={styles.findFavParkingSpot}
-            onPress={() => findClosestSpotToFav()}
-          >
+          <Button icon="star" mode="contained" style={styles.findFavParkingSpot} onPress={() => findClosestSpotToFav()}>
             {i18n.t('parkingMap.findClosestSpot')}
           </Button>
         )}
@@ -332,7 +313,7 @@ export default function MapScreen() {
                 onPress={() => handleNotificationPressed(user!.userId, modalContent!.spotId)}
               />
               <IconButton
-                icon={isFavorite ? 'star' : 'star-outline'}
+                icon={isFavourite ? 'star' : 'star-outline'}
                 // iconColor={modalContent?.detail?.isFavourite ? 'blue' : 'black'}
                 size={30}
                 onPress={() => handleFavouriteSpotPressed(user!.userId, modalContent!.spotId)}
@@ -369,20 +350,14 @@ export default function MapScreen() {
                 </Text>
               </View>
               <View style={styles.historyColumn}>
-                <Text style={styles.historyText}>
-                  {moment(historyItem.updatedAt).format('HH:mm:ss DD.MM.YYYY')}
-                </Text>
+                <Text style={styles.historyText}>{moment(historyItem.updatedAt).format('HH:mm:ss DD.MM.YYYY')}</Text>
               </View>
               <Divider />
             </View>
           ))}
         </ScrollView>
         <View style={styles.modalFooter}>
-          <Button
-            mode='contained'
-            style={styles.closeModalButton}
-            onPress={() => setModalVisible(false)}
-          >
+          <Button mode="contained" style={styles.closeModalButton} onPress={() => setModalVisible(false)}>
             {i18n.t('base.close')}
           </Button>
         </View>
@@ -393,20 +368,12 @@ export default function MapScreen() {
         duration={1000}
         style={{ backgroundColor: snackbarColor, alignItems: 'center' }}
       >
-        <Text style={{ textAlign: 'center', fontWeight: 'bold', color: '#fff' }}>
-          {' '}
-          {snackbarMessage}
-        </Text>
+        <Text style={{ textAlign: 'center', fontWeight: 'bold', color: '#fff' }}> {snackbarMessage}</Text>
       </Snackbar>
       <SpinnerOverlay
         visible={loading}
         overlayColor={Colors[isThemeDark ? 'dark' : 'light'].spinnerOverlay}
-        customIndicator={
-          <ActivityIndicator
-            size='large'
-            color={Colors[isThemeDark ? 'dark' : 'light'].spinnerColor}
-          />
-        }
+        customIndicator={<ActivityIndicator size="large" color={Colors[isThemeDark ? 'dark' : 'light'].spinnerColor} />}
       />
     </View>
   );

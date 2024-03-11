@@ -1,6 +1,7 @@
 import Colors from '@/constants/colors';
 import i18n from '../../assets/localization/i18n';
 import MapView, { Heatmap, PROVIDER_GOOGLE } from 'react-native-maps';
+import SpinnerOverlay from 'react-native-loading-spinner-overlay';
 import { ActivityIndicator, IconButton, Snackbar, Text } from 'react-native-paper';
 import { darkMap, LightMap } from '@/constants/map-styles';
 import { Dimensions, StyleSheet, View } from 'react-native';
@@ -9,8 +10,7 @@ import { HeatmapPoint } from '../models/heatmap';
 import { PreferencesContext } from '../context/preference-context';
 import { UNIZA_INITIAL_REGION } from '@/constants/coords';
 import { useCallback, useContext, useEffect, useState } from 'react';
-import { useFocusEffect, useIsFocused } from '@react-navigation/native';
-import SpinnerOverlay from 'react-native-loading-spinner-overlay';
+import { useIsFocused } from '@react-navigation/native';
 
 export default function HeatmapScreen() {
   const [heatmapPoints, setHeatmapPoints] = useState<HeatmapPoint[]>([]);
@@ -70,8 +70,8 @@ export default function HeatmapScreen() {
         )}
       </MapView>
       <IconButton
-        icon='refresh'
-        mode='contained'
+        icon="refresh"
+        mode="contained"
         iconColor={Colors[isThemeDark ? 'dark' : 'light'].refreshIconText}
         containerColor={Colors[isThemeDark ? 'dark' : 'light'].refreshIcon}
         size={30}
@@ -84,20 +84,12 @@ export default function HeatmapScreen() {
         duration={1000}
         style={{ backgroundColor: snackbarColor, alignItems: 'center' }}
       >
-        <Text style={{ textAlign: 'center', fontWeight: 'bold', color: '#fff' }}>
-          {' '}
-          {snackbarMessage}
-        </Text>
+        <Text style={{ textAlign: 'center', fontWeight: 'bold', color: '#fff' }}> {snackbarMessage}</Text>
       </Snackbar>
       <SpinnerOverlay
         visible={loading}
         overlayColor={Colors[isThemeDark ? 'dark' : 'light'].spinnerOverlay}
-        customIndicator={
-          <ActivityIndicator
-            size='large'
-            color={Colors[isThemeDark ? 'dark' : 'light'].spinnerColor}
-          />
-        }
+        customIndicator={<ActivityIndicator size="large" color={Colors[isThemeDark ? 'dark' : 'light'].spinnerColor} />}
       />
     </View>
   );

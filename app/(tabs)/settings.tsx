@@ -1,22 +1,20 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import i18n from '../../assets/localization/i18n';
-import React, { useContext, useState } from 'react';
 import { Button, Switch, Text } from 'react-native-paper';
-import { deletePushTokenFromServer, registerForPushNotificationsAsync, sendPushTokenToServer } from '../services/notifications-service';
+import {
+  deletePushTokenFromServer,
+  registerForPushNotificationsAsync,
+  sendPushTokenToServer
+} from '../services/notifications-service';
 import { PreferencesContext } from '../context/preference-context';
 import { PushNotificationConfig } from '../models/notifications';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { StyleSheet, View } from 'react-native';
+import { useContext, useState } from 'react';
 
 export default function SettingsScreen() {
-  const {
-    toggleTheme,
-    isThemeDark,
-    setLanguage,
-    user,
-    toggleAlertNotifications,
-    alertNotifications
-  } = useContext(PreferencesContext);
+  const { toggleTheme, isThemeDark, setLanguage, user, toggleAlertNotifications, alertNotifications } =
+    useContext(PreferencesContext);
   const [isLanguageEnglish, setIsLanguageEnglish] = useState(i18n.language === 'en');
 
   const toggleLanguage = async () => {
@@ -82,7 +80,7 @@ export default function SettingsScreen() {
           )}
 
           <View style={styles.footer}>
-            <Button icon='bug' mode='contained' style={styles.reportButton} onPress={reportBug}>
+            <Button icon="bug" mode="contained" style={styles.reportButton} onPress={reportBug}>
               {i18n.t('settings.reportBug')}
             </Button>
             <Text>{i18n.t('settings.author')}: Lukáš Fuček</Text>

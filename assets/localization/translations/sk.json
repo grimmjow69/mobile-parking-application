@@ -17,6 +17,9 @@
     "noSpotFound": "Žiadne voľné miesto nebolo nenájdené",
     "closestSpotFindError": "Chyba pri hľadaní najbližšieho miesta",
     "noFavSpot": "Obľúbené miesto nebolo nenájdené",
+    "favourite": {
+      "updated": "Obľúbené miesto úspešne zmenené"
+    },
     "parkingSpotDetail": {
       "header": {
         "stateFree": "voľné",
@@ -75,12 +78,15 @@
   },
   "notifications": {
     "hasBeenTaken": "bol obsadené",
-    "isFree": "je voľné"
+    "isFree": "je voľné",
+    "subscribe": "Úspešné prihlásenie na notifikáciu",
+    "unsubscribe": "Úspešné odhlásenie na notifikáciu"
   },
   "base": {
+    "error": "Došlo k neočakávanej chybe",
     "loadSuccess": "Dáta boli úspešne načítané",
     "loadFailed": "Načítanie dát zlyhalo",
     "locationPermissionDenied": "Povolenie polohy je zamietnuté. Prosím, povoľte ho vo svojich nastaveniach zariadenia",
-    "close" : "Zavrieť"
+    "close": "Zavrieť"
   }
 }

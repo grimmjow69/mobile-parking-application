@@ -54,15 +54,15 @@ export default function RegistrationScreen() {
           label={i18n.t('profile.email')}
           value={email}
           onChangeText={setEmail}
-          mode='outlined'
+          mode="outlined"
           style={styles.input}
           error={emailError}
-          autoCapitalize='none'
-          keyboardType='email-address'
-          textContentType='emailAddress'
-          right={<TextInput.Icon icon='email' color={getIconColor(emailError)} />}
+          autoCapitalize="none"
+          keyboardType="email-address"
+          textContentType="emailAddress"
+          right={<TextInput.Icon icon="email" color={getIconColor(emailError)} />}
         />
-        <HelperText type='error' visible={emailError}>
+        <HelperText type="error" visible={emailError}>
           {i18n.t('profile.errors.emailError')}
         </HelperText>
 
@@ -70,14 +70,14 @@ export default function RegistrationScreen() {
           label={i18n.t('profile.password')}
           value={password}
           onChangeText={setPassword}
-          mode='outlined'
+          mode="outlined"
           error={passwordLengthError}
           style={styles.input}
           secureTextEntry
-          textContentType='password'
-          right={<TextInput.Icon icon='lock' color={getIconColor(passwordLengthError)} />}
+          textContentType="password"
+          right={<TextInput.Icon icon="lock" color={getIconColor(passwordLengthError)} />}
         />
-        <HelperText type='error' visible={passwordLengthError}>
+        <HelperText type="error" visible={passwordLengthError}>
           {i18n.t('profile.errors.passwordLengthError')}
         </HelperText>
 
@@ -85,22 +85,22 @@ export default function RegistrationScreen() {
           label={i18n.t('profile.passwordCheck')}
           value={passwordCheck}
           onChangeText={setPasswordCheck}
-          mode='outlined'
+          mode="outlined"
           error={passwordsMatchError}
           style={styles.input}
           secureTextEntry
-          textContentType='password'
-          right={<TextInput.Icon icon='lock' color={getIconColor(passwordsMatchError)} />}
+          textContentType="password"
+          right={<TextInput.Icon icon="lock" color={getIconColor(passwordsMatchError)} />}
         />
-        <HelperText type='error' visible={passwordsMatchError}>
+        <HelperText type="error" visible={passwordsMatchError}>
           {i18n.t('profile.errors.passwordsMatchError')}
         </HelperText>
 
         <Button
-          mode='contained'
+          mode="contained"
           onPress={handleRegister}
           style={styles.button}
-          icon='login-variant'
+          icon="login-variant"
           disabled={!isFormValid()}
         >
           {i18n.t('profile.register')}
@@ -112,10 +112,7 @@ export default function RegistrationScreen() {
           duration={Snackbar.DURATION_SHORT}
           style={{ backgroundColor: snackbarColor }}
         >
-          <Text style={{ textAlign: 'center', fontWeight: 'bold', color: '#fff' }}>
-            {' '}
-            {snackbarMessage}
-          </Text>
+          <Text style={{ textAlign: 'center', fontWeight: 'bold', color: '#fff' }}> {snackbarMessage}</Text>
         </Snackbar>
       </SafeAreaProvider>
     </View>

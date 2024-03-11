@@ -18,20 +18,15 @@ export default function PasswordResendScreen() {
           label={i18n.t('profile.email')}
           value={email}
           onChangeText={setEmail}
-          mode='outlined'
+          mode="outlined"
           style={styles.input}
-          autoCapitalize='none'
-          keyboardType='email-address'
-          textContentType='emailAddress'
-          right={<TextInput.Icon icon='email' />}
+          autoCapitalize="none"
+          keyboardType="email-address"
+          textContentType="emailAddress"
+          right={<TextInput.Icon icon="email" />}
         />
 
-        <Button
-          mode='contained'
-          onPress={handleForgottenPassword}
-          style={styles.button}
-          icon='login-variant'
-        >
+        <Button mode="contained" onPress={handleForgottenPassword} style={styles.button} icon="login-variant">
           {i18n.t('profile.resendPassword')}
         </Button>
       </SafeAreaProvider>
