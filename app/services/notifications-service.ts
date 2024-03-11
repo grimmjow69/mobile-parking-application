@@ -81,3 +81,70 @@ export async function registerForPushNotificationsAsync() {
 
   return token;
 }
+
+export const subscribeToNotification = async (
+  parkingSpotId: number,
+  userId: number
+): Promise<void> => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/subscribe`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        parkingSpotId: parkingSpotId,
+        userId: userId
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error(`Server responded with status: ${response.status}`);
+    }
+  } catch (error) {
+    console.error('Error subscribing to notification:', error);
+  }
+};
+
+export const unsubscribeFromNotificationByNotificationId = async (
+  notificationId: number
+): Promise<void> => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/unsubscribe/${notificationId}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error(`Server responded with status: ${response.status}`);
+    }
+  } catch (error) {
+    console.error('Error unsubscribing from notifications:', error);
+  }
+};
+
+export const unsubscribeFromNotificationByUserAndParkingSpotId = async (
+  userId: number,
+  parkingSpotId: number
+): Promise<void> => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/unsubscribe`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        userId,
+        parkingSpotId
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error(`Server responded with status: ${response.status}`);
+    }
+  } catch (error) {
+    console.error('Error unsubscribing from notifications:', error);
+  }
+};

@@ -4,6 +4,7 @@ import i18n from '../../assets/localization/i18n';
 import MapView, { Circle, Marker } from 'react-native-maps';
 import moment from 'moment';
 import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import SpinnerOverlay from 'react-native-loading-spinner-overlay';
 import {
   ActivityIndicator,
   Button,
@@ -18,20 +19,29 @@ import { Dimensions, ScrollView, StyleSheet, View } from 'react-native';
 import {
   fetchAllSpotsData,
   fetchSpotDetailById,
-  getClosestFreeParkingSpot,
-  fetchUserFavouriteSpot
+  fetchUserFavouriteSpot,
+  getClosestFreeParkingSpot
 } from '../services/parking-data-service';
 import { ParkingSpot, ParkingSpotDetail } from '../models/parking-spot';
 import { PreferencesContext } from '../context/preference-context';
+import {
+  subscribeToNotification,
+  unsubscribeFromNotificationByNotificationId,
+  unsubscribeFromNotificationByUserAndParkingSpotId
+} from '../services/notifications-service';
 import { UNIZA_INITIAL_REGION } from '@/constants/coords';
 import { useFocusEffect, useIsFocused } from '@react-navigation/native';
-import SpinnerOverlay from 'react-native-loading-spinner-overlay';
+import { updateFavoriteSpot } from '../services/user-service';
 
 export interface ModalContent {
   spotName: string;
   occupied: boolean;
+  spotId: number;
   detail: ParkingSpotDetail | null;
 }
+
+export const errorColor: string = '#D32F2F';
+export const successColor: string = '#56ae57';
 
 export default function MapScreen() {
   const [parkingSpots, setParkingSpots] = useState<ParkingSpot[]>([]);
@@ -55,11 +65,9 @@ export default function MapScreen() {
     try {
       const allSpotsData = await fetchAllSpotsData();
       setParkingSpots(allSpotsData);
-      setSnackbarMessage(i18n.t('base.loadSuccess'));
-      setSnackbarColor('#56ae57');
+      setSnackBarContent(i18n.t('base.loadSuccess'), successColor);
     } catch (error) {
-      setSnackbarMessage(i18n.t('base.loadFailed'));
-      setSnackbarColor('#D32F2F');
+      setSnackBarContent(i18n.t('base.loadFailed'), errorColor);
     } finally {
       setSnackbarVisible(true);
       setLoading(false);
@@ -74,11 +82,15 @@ export default function MapScreen() {
 
   useEffect(() => {}, [modalContent]);
 
+  function setSnackBarContent(message: string, color: string) {
+    setSnackbarColor(color);
+    setSnackbarMessage(message);
+  }
+
   const findClosestSpot = useCallback(async () => {
     let { status } = await Location.requestForegroundPermissionsAsync();
     if (status !== 'granted') {
-      setSnackbarMessage(i18n.t('base.locationPermissionDenied'));
-      setSnackbarColor('#D32F2F');
+      setSnackBarContent(i18n.t('base.locationPermissionDenied'), errorColor);
       setSnackbarVisible(true);
       return;
     }
@@ -94,7 +106,7 @@ export default function MapScreen() {
       };
 
       console.log(userLocation);
-      
+
       const closestFreeSpot = await getClosestFreeParkingSpot(
         userLocation.latitude,
         userLocation.longitude
@@ -102,8 +114,7 @@ export default function MapScreen() {
 
       if (closestFreeSpot) {
         setClosestSpot(closestFreeSpot);
-        setSnackbarMessage(i18n.t('parkingMap.closestSpotFound'));
-        setSnackbarColor('#56ae57');
+        setSnackBarContent(i18n.t('parkingMap.closestSpotFound'), successColor);
         mapRef.current?.animateToRegion({
           latitude: closestFreeSpot.latitude,
           longitude: closestFreeSpot.longitude,
@@ -111,12 +122,10 @@ export default function MapScreen() {
           longitudeDelta: 0.001
         });
       } else {
-        setSnackbarMessage(i18n.t('parkingMap.noSpotFound'));
-        setSnackbarColor('#D32F2F');
+        setSnackBarContent(i18n.t('parkingMap.noSpotFound'), errorColor);
       }
     } catch (error) {
-      setSnackbarMessage(i18n.t('parkingMap.closestSpotFindError'));
-      setSnackbarColor('#D32F2F');
+      setSnackBarContent(i18n.t('parkingMap.closestSpotFindError'), errorColor);
     } finally {
       setLoading(false);
       setSnackbarVisible(true);
@@ -136,8 +145,8 @@ export default function MapScreen() {
 
           if (closestFreeSpot) {
             setClosestSpot(closestFreeSpot);
-            setSnackbarMessage(i18n.t('parkingMap.closestSpotFound'));
-            setSnackbarColor('#56ae57');
+
+            setSnackBarContent(i18n.t('parkingMap.closestSpotFound'), successColor);
             mapRef.current?.animateToRegion({
               latitude: closestFreeSpot.latitude,
               longitude: closestFreeSpot.longitude,
@@ -145,16 +154,13 @@ export default function MapScreen() {
               longitudeDelta: 0.001
             });
           } else {
-            setSnackbarMessage(i18n.t('parkingMap.closestSpotFound'));
-            setSnackbarColor('#56ae57');
+            setSnackBarContent(i18n.t('parkingMap.noSpotFound'), errorColor);
           }
         } else {
-          setSnackbarMessage(i18n.t('parkingMap.noFavSpot'));
-          setSnackbarColor('#D32F2F');
+          setSnackBarContent(i18n.t('parkingMap.noFavSpot'), errorColor);
         }
       } catch (error) {
-        setSnackbarMessage(i18n.t('parkingMap.closestSpotFindError'));
-        setSnackbarColor('#D32F2F');
+        setSnackBarContent(i18n.t('parkingMap.closestSpotFindError'), errorColor);
       } finally {
         setLoading(false);
         setSnackbarVisible(true);
@@ -169,8 +175,13 @@ export default function MapScreen() {
       setModalContent({
         spotName: spotName,
         occupied: occupied,
+        spotId: spotId,
         detail: parkingSpotDetail
       });
+
+
+      setIsFavorite(parkingSpotDetail.isFavourite);
+      setNotificationsEnabled(parkingSpotDetail.isNotificationEnabled);
 
       setModalVisible(true);
     } catch (error) {
@@ -225,6 +236,39 @@ export default function MapScreen() {
   };
 
   const onDismissSnackBar = () => setSnackbarVisible(false);
+
+  const handleNotificationPressed = async (userId: number, spotId: number) => {
+    try {
+      setLoading(true);
+      setNotificationsEnabled(!notificationsEnabled);
+      if (notificationsEnabled) {
+        await unsubscribeFromNotificationByUserAndParkingSpotId(userId, spotId);
+        setSnackBarContent(i18n.t('notifications.unsubscribe'), successColor);
+      } else {
+        await subscribeToNotification(spotId, userId);
+        setSnackBarContent(i18n.t('notifications.subscribe'), successColor);
+      }
+      setSnackbarVisible(true);
+    } catch (error) {
+      setSnackBarContent(i18n.t('notifications.fail'), errorColor);
+    } finally {
+      setSnackbarVisible(true);
+      setLoading(false);
+    }
+  };
+
+  const handleFavouriteSpotPressed = async (userId: number, spotId: number) => {
+    try {
+      setIsFavorite(!isFavorite);
+      setLoading(true);
+      await updateFavoriteSpot(userId, isFavorite ? null : spotId);
+      setSnackBarContent(i18n.t('favorite.updated'), successColor);
+    } catch (error) {
+    } finally {
+      setSnackbarVisible(true);
+      setLoading(false);
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -282,20 +326,16 @@ export default function MapScreen() {
           {user && (
             <View style={styles.modalActionIcons}>
               <IconButton
-                icon={modalContent?.detail?.isNotificationEnabled ? 'bell' : 'bell-outline'}
+                icon={notificationsEnabled ? 'bell' : 'bell-outline'}
                 // iconColor={modalContent?.detail?.isNotificationEnabled ? 'blue' : 'black'}
                 size={30}
-                onPress={() => {
-                  setNotificationsEnabled(!notificationsEnabled);
-                }}
+                onPress={() => handleNotificationPressed(user!.userId, modalContent!.spotId)}
               />
               <IconButton
-                icon={modalContent?.detail?.isFavourite ? 'star' : 'star-outline'}
+                icon={isFavorite ? 'star' : 'star-outline'}
                 // iconColor={modalContent?.detail?.isFavourite ? 'blue' : 'black'}
                 size={30}
-                onPress={() => {
-                  setIsFavorite(!isFavorite);
-                }}
+                onPress={() => handleFavouriteSpotPressed(user!.userId, modalContent!.spotId)}
               />
             </View>
           )}
