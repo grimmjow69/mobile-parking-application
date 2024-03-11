@@ -9,7 +9,8 @@ import { HeatmapPoint } from '../models/heatmap';
 import { PreferencesContext } from '../context/preference-context';
 import { UNIZA_INITIAL_REGION } from '@/constants/coords';
 import { useCallback, useContext, useEffect, useState } from 'react';
-import { useIsFocused } from '@react-navigation/native';
+import { useFocusEffect, useIsFocused } from '@react-navigation/native';
+import SpinnerOverlay from 'react-native-loading-spinner-overlay';
 
 export default function HeatmapScreen() {
   const [heatmapPoints, setHeatmapPoints] = useState<HeatmapPoint[]>([]);
@@ -46,39 +47,37 @@ export default function HeatmapScreen() {
 
   return (
     <View style={styles.container}>
-      {loading ? (
-        <ActivityIndicator animating={true} size={'large'} />
-      ) : (
-        <>
-          <MapView
-            initialRegion={UNIZA_INITIAL_REGION}
-            showsPointsOfInterest={false}
-            provider={PROVIDER_GOOGLE}
-            customMapStyle={isThemeDark ? darkMap : LightMap}
-            style={styles.map}
-          >
-            <Heatmap
-              points={heatmapPoints}
-              gradient={{
-                colors: ['transparent', '#BBCF4C', '#EEC20B', '#F29305', '#E50000'],
-                startPoints: [0, 0.25, 0.5, 0.75, 1],
-                colorMapSize: 500
-              }}
-              radius={10}
-              opacity={0.7}
-            />
-          </MapView>
-          <IconButton
-            icon='refresh'
-            mode='contained'
-            iconColor={Colors[isThemeDark ? 'dark' : 'light'].refreshIconText}
-            containerColor={Colors[isThemeDark ? 'dark' : 'light'].refreshIcon}
-            size={30}
-            style={styles.refreshButton}
-            onPress={() => getData()}
+      <MapView
+        initialRegion={UNIZA_INITIAL_REGION}
+        showsPointsOfInterest={false}
+        provider={PROVIDER_GOOGLE}
+        customMapStyle={isThemeDark ? darkMap : LightMap}
+        style={styles.map}
+      >
+        {loading ? (
+          <></>
+        ) : (
+          <Heatmap
+            points={heatmapPoints}
+            gradient={{
+              colors: ['transparent', '#BBCF4C', '#EEC20B', '#F29305', '#E50000'],
+              startPoints: [0, 0.25, 0.5, 0.75, 1],
+              colorMapSize: 500
+            }}
+            radius={10}
+            opacity={0.7}
           />
-        </>
-      )}
+        )}
+      </MapView>
+      <IconButton
+        icon='refresh'
+        mode='contained'
+        iconColor={Colors[isThemeDark ? 'dark' : 'light'].refreshIconText}
+        containerColor={Colors[isThemeDark ? 'dark' : 'light'].refreshIcon}
+        size={30}
+        style={styles.refreshButton}
+        onPress={() => getData()}
+      />
       <Snackbar
         visible={snackbarVisible}
         onDismiss={onDismissSnackBar}
@@ -90,6 +89,16 @@ export default function HeatmapScreen() {
           {snackbarMessage}
         </Text>
       </Snackbar>
+      <SpinnerOverlay
+        visible={loading}
+        overlayColor={Colors[isThemeDark ? 'dark' : 'light'].spinnerOverlay}
+        customIndicator={
+          <ActivityIndicator
+            size='large'
+            color={Colors[isThemeDark ? 'dark' : 'light'].spinnerColor}
+          />
+        }
+      />
     </View>
   );
 }

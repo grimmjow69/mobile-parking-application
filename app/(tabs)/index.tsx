@@ -4,7 +4,15 @@ import i18n from '../../assets/localization/i18n';
 import MapView, { Circle, Marker } from 'react-native-maps';
 import moment from 'moment';
 import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
-import { Button, Divider, IconButton, Modal, Snackbar, Text } from 'react-native-paper';
+import {
+  ActivityIndicator,
+  Button,
+  Divider,
+  IconButton,
+  Modal,
+  Snackbar,
+  Text
+} from 'react-native-paper';
 import { darkMap, LightMap } from '@/constants/map-styles';
 import { Dimensions, ScrollView, StyleSheet, View } from 'react-native';
 import {
@@ -15,7 +23,8 @@ import {
 import { ParkingSpot, ParkingSpotDetail } from '../models/parking-spot';
 import { PreferencesContext } from '../context/preference-context';
 import { UNIZA_INITIAL_REGION } from '@/constants/coords';
-import { useIsFocused } from '@react-navigation/native';
+import { useFocusEffect, useIsFocused } from '@react-navigation/native';
+import SpinnerOverlay from 'react-native-loading-spinner-overlay';
 
 export interface ModalContent {
   spotName: string;
@@ -190,6 +199,7 @@ export default function MapScreen() {
 
   const handleMarkerPress = async (spotName: string, occupied: boolean, spotId: number) => {
     try {
+      setLoading(true)
       const parkingSpotDetail = await fetchSpotDetailById(user ? user.userId : 0, spotId);
       setModalContent({
         spotName: spotName,
@@ -200,6 +210,8 @@ export default function MapScreen() {
       setModalVisible(true);
     } catch (error) {
       console.error('Failed to fetch parking spot details:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -261,7 +273,6 @@ export default function MapScreen() {
         customMapStyle={isThemeDark ? darkMap : LightMap}
       >
         {loading ? <></> : <>{parkingSpots.map(renderMarker)}</>}
-        {parkingSpots.map(renderMarker)}
       </MapView>
       <IconButton
         icon='refresh'
@@ -290,21 +301,21 @@ export default function MapScreen() {
       <Modal
         visible={modalVisible}
         onDismiss={() => setModalVisible(false)}
-        contentContainerStyle={styles.modalContainer}
+        contentContainerStyle={[styles.modalContainer, {backgroundColor: Colors[isThemeDark ? 'dark' : 'light'].modalContainer}]}
       >
         <View style={styles.modalHeader}>
           <Text style={styles.modalTitle}>
             {modalContent?.spotName}
             {' - '}
             {modalContent?.occupied
-              ? i18n.t('parkingMap.parkingSpotDetail.header.stateOccuipied')
+              ? i18n.t('parkingMap.parkingSpotDetail.header.stateOccupied')
               : i18n.t('parkingMap.parkingSpotDetail.header.stateFree')}
           </Text>
           {user && (
             <View style={styles.modalActionIcons}>
               <IconButton
                 icon={modalContent?.detail?.isNotificationEnabled ? 'bell' : 'bell-outline'}
-                iconColor={modalContent?.detail?.isNotificationEnabled ? 'blue' : 'black'}
+                // iconColor={modalContent?.detail?.isNotificationEnabled ? 'blue' : 'black'}
                 size={30}
                 onPress={() => {
                   setNotificationsEnabled(!notificationsEnabled);
@@ -312,7 +323,7 @@ export default function MapScreen() {
               />
               <IconButton
                 icon={modalContent?.detail?.isFavourite ? 'star' : 'star-outline'}
-                iconColor={modalContent?.detail?.isFavourite ? 'blue' : 'black'}
+                // iconColor={modalContent?.detail?.isFavourite ? 'blue' : 'black'}
                 size={30}
                 onPress={() => {
                   setIsFavorite(!isFavorite);
@@ -323,7 +334,7 @@ export default function MapScreen() {
         </View>
         <Divider />
         <ScrollView style={styles.modalScrollContent}>
-          <View style={styles.historyHeaderRow}>
+          <View style={[styles.historyHeaderRow, {backgroundColor: Colors[isThemeDark ? 'dark' : 'light'].modalContainerTableHeader}]}>
             <View style={styles.historyHeaderColumn}>
               <Text style={styles.historyHeaderText}>
                 {i18n.t('parkingMap.parkingSpotDetail.table.stateColumnName')}
@@ -340,8 +351,9 @@ export default function MapScreen() {
               <View style={styles.historyColumn}>
                 <Text style={styles.historyText}>
                   {historyItem.occupied
-                    ? i18n.t('parkingMap.parkingSpotDetail.table.stateFree')
-                    : i18n.t('parkingMap.parkingSpotDetail.table.stateOccuipied')}
+                    ? 
+                    i18n.t('parkingMap.parkingSpotDetail.table.stateOccupied')
+                    :  i18n.t('parkingMap.parkingSpotDetail.table.stateFree')}
                 </Text>
               </View>
               <View style={styles.historyColumn}>
@@ -374,7 +386,7 @@ export default function MapScreen() {
           {snackbarMessage}
         </Text>
       </Snackbar>
-      {/* <SpinnerOverlay
+      <SpinnerOverlay
         visible={loading}
         overlayColor={Colors[isThemeDark ? 'dark' : 'light'].spinnerOverlay}
         customIndicator={
@@ -383,7 +395,7 @@ export default function MapScreen() {
             color={Colors[isThemeDark ? 'dark' : 'light'].spinnerColor}
           />
         }
-      /> */}
+      />
     </View>
   );
 }
@@ -404,12 +416,10 @@ const styles = StyleSheet.create({
     left: 8
   },
   modalContainer: {
-    backgroundColor: 'white',
     padding: 20,
     margin: 20,
     height: Dimensions.get('window').height * 0.65
   },
-
   modalHeader: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -447,7 +457,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingVertical: 8,
-    backgroundColor: '#f0f0f0'
   },
   historyHeaderColumn: {
     flex: 1,

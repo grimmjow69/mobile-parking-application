@@ -1,5 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import i18n from '../../assets/localization/i18n';
+import SpinnerOverlay from 'react-native-loading-spinner-overlay';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import {
   Button,
   HelperText,
@@ -8,24 +10,25 @@ import {
   TextInput,
   useTheme
   } from 'react-native-paper';
+import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { deletePushTokenFromServer, registerForPushNotificationsAsync, sendPushTokenToServer } from '../services/notifications-service';
 import { Link } from 'expo-router';
 import { loginUser } from '../services/auth-service';
 import { PreferencesContext } from '../context/preference-context';
 import { PushNotificationConfig } from '../models/notifications';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { StyleSheet, View } from 'react-native';
 import { useContext, useEffect, useState } from 'react';
 import { UserData } from '../models/user';
 
 export default function ProfileScreen() {
-  const { user, setUser } = useContext(PreferencesContext);
+  const { user, isThemeDark, setUser } = useContext(PreferencesContext);
+  const { colors } = useTheme();
+  const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarColor, setSnackbarColor] = useState('#56ae57');
-  const { colors } = useTheme();
 
   const showSnackbar = (message: string, color = '#56ae57') => {
     setSnackbarMessage(message);
@@ -38,7 +41,6 @@ export default function ProfileScreen() {
 
     try {
       const value = await AsyncStorage.getItem('pushNotificationsConfig');
-      console.log(value);
       if (value !== null) {
         const config: PushNotificationConfig = JSON.parse(value);
         if (config.enabled) {
@@ -63,18 +65,27 @@ export default function ProfileScreen() {
   };
 
   const handleLogin = async () => {
-    await loginUser(email, password, showSnackbar, handleLoginSuccess);
+    try {
+      setLoading(true);
+      await loginUser(email, password, showSnackbar, handleLoginSuccess);
+    } catch(error) {
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleSignOut = async () => {
     try {
       if (user) {
+        setLoading(true)
         await deletePushTokenFromServer(user.userId);
         await AsyncStorage.removeItem('user');
         setUser(null);
       }
     } catch (error) {
       console.error('Failed to clear user data', error);
+    } finally {
+      setLoading(false)
     }
   };
 
@@ -182,6 +193,16 @@ export default function ProfileScreen() {
           {snackbarMessage}
         </Text>
       </Snackbar>
+      <SpinnerOverlay
+        visible={loading}
+        overlayColor={Colors[isThemeDark ? 'dark' : 'light'].spinnerOverlay}
+        customIndicator={
+          <ActivityIndicator
+            size='large'
+            color={Colors[isThemeDark ? 'dark' : 'light'].spinnerColor}
+          />
+        }
+      />
     </SafeAreaProvider>
   );
 }

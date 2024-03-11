@@ -20,13 +20,13 @@
     "parkingSpotDetail": {
       "header": {
         "stateFree": "voľné",
-        "stateOccuipied": "obsadené"
+        "stateOccupied": "obsadené"
       },
       "table": {
         "stateColumnName": "Stav",
         "updatedAtColumnName": "Aktualizované",
         "stateFree": "Voľné",
-        "stateOccuipied": "Obsadené"
+        "stateOccupied": "Obsadené"
       }
     }
   },

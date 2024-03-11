@@ -20,13 +20,13 @@
     "parkingSpotDetail": {
       "header": {
         "stateFree": "free",
-        "stateOccuipied": "occupied"
+        "stateOccupied": "occupied"
       },
       "table": {
         "stateColumnName": "State",
         "updatedAtColumnName": "Updated at",
         "stateFree": "Free",
-        "stateOccuipied": "Occupied"
+        "stateOccupied": "Occupied"
       }
     }
   },

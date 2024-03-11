@@ -105,7 +105,12 @@ export default {
     tabIconSelected: '#303c64',
     refreshIcon: '#303c64',
     refreshIconText: '#fff',
-    navigationBar: '#fff'
+    navigationBar: '#fff',
+    spinnerOverlay: 'rgba(0, 0, 0, 0.4)',
+    spinnerColor: '#303c64',
+    modalContainer: '#fff',
+    modalContainerTableHeader: '#f0f0f0'
+
   },
   dark: {
     text: '#fff',
@@ -115,6 +120,10 @@ export default {
     tabIconSelected: '#303c64',
     refreshIcon: '#fff',
     refreshIconText: '#2c2c2c',
-    navigationBar: 'rgb(18, 18, 18)'
+    navigationBar: 'rgb(18, 18, 18)',
+    spinnerOverlay: 'rgba(44, 44, 44, 0.8)',
+    spinnerColor: '#fff',
+    modalContainer: '#5b5b5b',
+    modalContainerTableHeader: '#444444'
   }
 };
