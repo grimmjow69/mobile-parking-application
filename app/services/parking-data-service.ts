@@ -3,6 +3,46 @@ import { ParkingSpot, ParkingSpotCoordinates, ParkingSpotDetail } from '../model
 
 const API_BASE_URL = 'http://192.168.100.11:8080/parking';
 
+export const getClosestFreeParkingSpot = async (startLatitude: number, startLongitude: number) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/find-closest-free-spot`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ latitude: startLatitude, longitude: startLongitude })
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const closestSpotDetail = await response.json();
+    return closestSpotDetail;
+  } catch (error) {
+    console.error('Error fetching closest free parking spot:', error);
+    throw error;
+  }
+};
+
+export const fetchUserFavouriteSpot = async (userId: number): Promise<ParkingSpot | null> => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/favourite-spot/${userId}`);
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const jsonResponse = await response.json();
+
+    const favouriteSpot: ParkingSpot | null = jsonResponse.favouriteSpot;
+    return favouriteSpot;
+  } catch (error) {
+    console.error('Error fetching user favourite spot:', error);
+    throw error;
+  }
+};
+
 export const fetchSpotCoordinates = async (spotId: number): Promise<ParkingSpotCoordinates> => {
   try {
     const response = await fetch(`${API_BASE_URL}/spot-coordinates/${spotId}`);

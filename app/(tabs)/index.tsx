@@ -17,8 +17,9 @@ import { darkMap, LightMap } from '@/constants/map-styles';
 import { Dimensions, ScrollView, StyleSheet, View } from 'react-native';
 import {
   fetchAllSpotsData,
-  fetchSpotCoordinates,
-  fetchSpotDetailById
+  fetchSpotDetailById,
+  getClosestFreeParkingSpot,
+  fetchUserFavouriteSpot
 } from '../services/parking-data-service';
 import { ParkingSpot, ParkingSpotDetail } from '../models/parking-spot';
 import { PreferencesContext } from '../context/preference-context';
@@ -50,6 +51,7 @@ export default function MapScreen() {
 
   const getData = useCallback(async () => {
     setLoading(true);
+    setClosestSpot(null);
     try {
       const allSpotsData = await fetchAllSpotsData();
       setParkingSpots(allSpotsData);
@@ -80,43 +82,31 @@ export default function MapScreen() {
       setSnackbarVisible(true);
       return;
     }
-    setLoading(true);
-    let location = await Location.getCurrentPositionAsync({});
-    const userLocation = {
-      latitude: location.coords.latitude,
-      longitude: location.coords.longitude,
-      latitudeDelta: 0.005,
-      longitudeDelta: 0.005
-    };
 
-    if (userLocation) {
-      const availableSpots = parkingSpots.filter((spot) => !spot.occupied);
-      let closestSpot = availableSpots.reduce(
-        (closest: { spot: ParkingSpot | null; distance: number }, spot: ParkingSpot) => {
-          const spotDistance = getDistance(
-            userLocation.latitude,
-            userLocation.longitude,
-            spot.latitude,
-            spot.longitude
-          );
-          if (spotDistance < closest.distance) {
-            return {
-              spot,
-              distance: spotDistance
-            };
-          }
-          return closest;
-        },
-        { spot: null, distance: Infinity }
+    setLoading(true);
+
+    try {
+      let location = await Location.getCurrentPositionAsync({});
+
+      const userLocation = {
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude
+      };
+
+      console.log(userLocation);
+      
+      const closestFreeSpot = await getClosestFreeParkingSpot(
+        userLocation.latitude,
+        userLocation.longitude
       );
-      setLoading(false);
-      if (closestSpot.spot) {
-        setClosestSpot(closestSpot.spot);
+
+      if (closestFreeSpot) {
+        setClosestSpot(closestFreeSpot);
         setSnackbarMessage(i18n.t('parkingMap.closestSpotFound'));
         setSnackbarColor('#56ae57');
         mapRef.current?.animateToRegion({
-          latitude: closestSpot.spot.latitude,
-          longitude: closestSpot.spot.longitude,
+          latitude: closestFreeSpot.latitude,
+          longitude: closestFreeSpot.longitude,
           latitudeDelta: 0.001,
           longitudeDelta: 0.001
         });
@@ -124,49 +114,44 @@ export default function MapScreen() {
         setSnackbarMessage(i18n.t('parkingMap.noSpotFound'));
         setSnackbarColor('#D32F2F');
       }
-
+    } catch (error) {
+      setSnackbarMessage(i18n.t('parkingMap.closestSpotFindError'));
+      setSnackbarColor('#D32F2F');
+    } finally {
+      setLoading(false);
       setSnackbarVisible(true);
     }
-  }, [parkingSpots]);
+  }, []);
 
   const findClosestSpotToFav = useCallback(async () => {
-    if (user?.favouriteSpotId) {
+    if (user) {
       try {
         setLoading(true);
-        const favSpotCoordinates = await fetchSpotCoordinates(user.favouriteSpotId);
-        const availableSpots = parkingSpots.filter((spot) => !spot.occupied);
-        let closestSpot = availableSpots.reduce(
-          (closest: { spot: ParkingSpot | null; distance: number }, spot: ParkingSpot) => {
-            const spotDistance = getDistance(
-              favSpotCoordinates.latitude,
-              favSpotCoordinates.longitude,
-              spot.latitude,
-              spot.longitude
-            );
-            if (spotDistance < closest.distance) {
-              return {
-                spot,
-                distance: spotDistance
-              };
-            }
-            return closest;
-          },
-          { spot: null, distance: Infinity }
-        );
+        const favouriteParkingSpot = await fetchUserFavouriteSpot(user?.userId);
+        if (favouriteParkingSpot) {
+          const closestFreeSpot = await getClosestFreeParkingSpot(
+            favouriteParkingSpot.latitude,
+            favouriteParkingSpot.longitude
+          );
 
-        setClosestSpot(closestSpot.spot);
-
-        if (closestSpot.spot) {
-          mapRef.current?.animateToRegion({
-            latitude: closestSpot.spot.latitude,
-            longitude: closestSpot.spot.longitude,
-            latitudeDelta: 0.001,
-            longitudeDelta: 0.001
-          });
+          if (closestFreeSpot) {
+            setClosestSpot(closestFreeSpot);
+            setSnackbarMessage(i18n.t('parkingMap.closestSpotFound'));
+            setSnackbarColor('#56ae57');
+            mapRef.current?.animateToRegion({
+              latitude: closestFreeSpot.latitude,
+              longitude: closestFreeSpot.longitude,
+              latitudeDelta: 0.001,
+              longitudeDelta: 0.001
+            });
+          } else {
+            setSnackbarMessage(i18n.t('parkingMap.closestSpotFound'));
+            setSnackbarColor('#56ae57');
+          }
+        } else {
+          setSnackbarMessage(i18n.t('parkingMap.noFavSpot'));
+          setSnackbarColor('#D32F2F');
         }
-
-        setSnackbarMessage(i18n.t('parkingMap.closestSpotFound'));
-        setSnackbarColor('#56ae57');
       } catch (error) {
         setSnackbarMessage(i18n.t('parkingMap.closestSpotFindError'));
         setSnackbarColor('#D32F2F');
@@ -174,32 +159,12 @@ export default function MapScreen() {
         setLoading(false);
         setSnackbarVisible(true);
       }
-    } else {
-      setSnackbarMessage(i18n.t('parkingMap.noFavSpot'));
-      setSnackbarColor('#D32F2F');
-      setSnackbarVisible(true);
     }
-  }, [user?.favouriteSpotId, parkingSpots]);
-
-  const getDistance = (lat1: number, lon1: number, lat2: number, lon2: number): number => {
-    const R = 6371;
-    const dLat = deg2rad(lat2 - lat1);
-    const dLon = deg2rad(lon2 - lon1);
-    const a =
-      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    const distance = R * c;
-    return distance;
-  };
-
-  const deg2rad = (deg: number): number => {
-    return deg * (Math.PI / 180);
-  };
+  }, [parkingSpots]);
 
   const handleMarkerPress = async (spotName: string, occupied: boolean, spotId: number) => {
     try {
-      setLoading(true)
+      setLoading(true);
       const parkingSpotDetail = await fetchSpotDetailById(user ? user.userId : 0, spotId);
       setModalContent({
         spotName: spotName,
@@ -224,12 +189,12 @@ export default function MapScreen() {
 
     return (
       <React.Fragment key={spot.parkingSpotId}>
-        {isClosestSpot && (
+        {closestSpot && (
           <Marker
             key={'closest-overlay'}
             coordinate={{
-              latitude: spot.latitude,
-              longitude: spot.longitude
+              latitude: closestSpot.latitude,
+              longitude: closestSpot.longitude
             }}
           />
         )}
@@ -301,7 +266,10 @@ export default function MapScreen() {
       <Modal
         visible={modalVisible}
         onDismiss={() => setModalVisible(false)}
-        contentContainerStyle={[styles.modalContainer, {backgroundColor: Colors[isThemeDark ? 'dark' : 'light'].modalContainer}]}
+        contentContainerStyle={[
+          styles.modalContainer,
+          { backgroundColor: Colors[isThemeDark ? 'dark' : 'light'].modalContainer }
+        ]}
       >
         <View style={styles.modalHeader}>
           <Text style={styles.modalTitle}>
@@ -334,7 +302,12 @@ export default function MapScreen() {
         </View>
         <Divider />
         <ScrollView style={styles.modalScrollContent}>
-          <View style={[styles.historyHeaderRow, {backgroundColor: Colors[isThemeDark ? 'dark' : 'light'].modalContainerTableHeader}]}>
+          <View
+            style={[
+              styles.historyHeaderRow,
+              { backgroundColor: Colors[isThemeDark ? 'dark' : 'light'].modalContainerTableHeader }
+            ]}
+          >
             <View style={styles.historyHeaderColumn}>
               <Text style={styles.historyHeaderText}>
                 {i18n.t('parkingMap.parkingSpotDetail.table.stateColumnName')}
@@ -351,9 +324,8 @@ export default function MapScreen() {
               <View style={styles.historyColumn}>
                 <Text style={styles.historyText}>
                   {historyItem.occupied
-                    ? 
-                    i18n.t('parkingMap.parkingSpotDetail.table.stateOccupied')
-                    :  i18n.t('parkingMap.parkingSpotDetail.table.stateFree')}
+                    ? i18n.t('parkingMap.parkingSpotDetail.table.stateOccupied')
+                    : i18n.t('parkingMap.parkingSpotDetail.table.stateFree')}
                 </Text>
               </View>
               <View style={styles.historyColumn}>
@@ -456,7 +428,7 @@ const styles = StyleSheet.create({
   historyHeaderRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingVertical: 8,
+    paddingVertical: 8
   },
   historyHeaderColumn: {
     flex: 1,

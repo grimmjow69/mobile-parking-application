@@ -5,7 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Colors, { darkTheme, lightTheme } from '@/constants/colors';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import i18n from '../assets/localization/i18n';
-import React from 'react';
+import React, { useCallback } from 'react';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { PaperProvider } from 'react-native-paper';
 import { Platform } from 'react-native';
@@ -60,6 +60,16 @@ function RootLayoutNav() {
   const [alertNotifications, setAlertNotifications] = useState(true);
   const [language, setLanguage] = useState('en');
   const [user, setUser] = useState<UserData | null>(null);
+
+  const setFavouriteSpotId = useCallback((id: number) => {
+    setUser((currentUser) => {
+      if (!currentUser) return currentUser;
+      return {
+        ...currentUser,
+        favouriteSpotId: id
+      };
+    });
+  }, []);
 
   const toggleTheme = React.useCallback(() => {
     return setIsThemeDark(!isThemeDark);
@@ -119,7 +129,8 @@ function RootLayoutNav() {
       user,
       setUser,
       alertNotifications,
-      toggleAlertNotifications
+      toggleAlertNotifications,
+      setFavouriteSpotId
     }),
     [
       toggleTheme,
@@ -129,7 +140,8 @@ function RootLayoutNav() {
       user,
       setUser,
       alertNotifications,
-      toggleAlertNotifications
+      toggleAlertNotifications,
+      setFavouriteSpotId
     ]
   );
 
