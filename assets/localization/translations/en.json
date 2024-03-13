@@ -98,6 +98,7 @@
     "loadFailed": "Failed to load data",
     "locationPermissionDenied": "Location permission was denied. Please enable it in your device settings to continue",
     "close": "Close",
-    "confirm": "Confirm"
+    "confirm": "Confirm",
+    "wait": "Please wait"
   }
 }

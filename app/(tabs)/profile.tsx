@@ -105,7 +105,7 @@ export default function ProfileScreen() {
   const onDismissSnackBar = () => setSnackbarVisible(false);
 
   const userContent = (
-    <>
+    <View style={styles.userContent}>
       <Button mode="contained" style={styles.buttonRow} onPress={() => console.log('')}>
         {i18n.t('profile.changePassword')}
       </Button>
@@ -120,11 +120,11 @@ export default function ProfileScreen() {
       <Button style={styles.signOutButton} mode="contained" onPress={() => handleSignOut()}>
         {i18n.t('profile.signOut')}
       </Button>
-    </>
+    </View>
   );
 
   const loginForm = (
-    <>
+    <View style={styles.loginForm}>
       <TextInput
         label={i18n.t('profile.email')}
         value={email}
@@ -172,12 +172,12 @@ export default function ProfileScreen() {
           </Text>
         </Link>
       </Text>
-    </>
+    </View>
   );
 
   return (
     <SafeAreaProvider style={styles.container}>
-      <View style={styles.container}>{user ? userContent : loginForm}</View>
+      {user ? userContent : loginForm}
       <Snackbar
         visible={snackbarVisible}
         onDismiss={onDismissSnackBar}
@@ -187,6 +187,9 @@ export default function ProfileScreen() {
         <Text style={{ textAlign: 'center', fontWeight: 'bold', color: '#fff' }}> {snackbarMessage}</Text>
       </Snackbar>
       <SpinnerOverlay
+        textContent={i18n.t('base.wait')}
+        textStyle={isThemeDark ? { color: '#fff' } : { color: '#303c64' }}
+        animation="fade"
         visible={loading}
         overlayColor={Colors[isThemeDark ? 'dark' : 'light'].spinnerOverlay}
         customIndicator={<ActivityIndicator size="large" color={Colors[isThemeDark ? 'dark' : 'light'].spinnerColor} />}
@@ -197,9 +200,16 @@ export default function ProfileScreen() {
 
 const styles = StyleSheet.create({
   container: {
+    padding: 16,
+    paddingTop: 60
+  },
+  userContent: {
     flex: 1,
-    alignItems: 'center',
-    padding: 16
+    alignItems: 'center'
+  },
+  loginForm: {
+    flex: 1,
+    alignItems: 'center'
   },
   input: {
     width: 240
@@ -208,6 +218,7 @@ const styles = StyleSheet.create({
     marginTop: 40
   },
   registerText: {
+    textAlign: 'center',
     marginTop: 16
   },
   linkText: {

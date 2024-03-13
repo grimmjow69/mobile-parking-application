@@ -78,6 +78,9 @@ export default function MyNotificationsScreen() {
     <View style={styles.page}>
       {loading ? (
         <SpinnerOverlay
+          textContent={i18n.t('base.wait')}
+          textStyle={isThemeDark ? { color: '#fff' } : { color: '#303c64' }}
+          animation="fade"
           visible={true}
           overlayColor={Colors[isThemeDark ? 'dark' : 'light'].spinnerOverlay}
           customIndicator={

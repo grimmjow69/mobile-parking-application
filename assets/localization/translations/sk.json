@@ -97,6 +97,7 @@
     "loadFailed": "Načítanie dát zlyhalo",
     "locationPermissionDenied": "Povolenie polohy je zamietnuté. Prosím, povoľte ho vo svojich nastaveniach zariadenia",
     "close": "Zavrieť",
-    "confirm": "Potvrdiť"
+    "confirm": "Potvrdiť",
+    "wait": "Prosím, počkajte"
   }
 }

@@ -12,25 +12,23 @@ export default function PasswordResendScreen() {
   };
 
   return (
-    <View style={styles.container}>
-      <SafeAreaProvider style={styles.container}>
-        <TextInput
-          label={i18n.t('profile.email')}
-          value={email}
-          onChangeText={setEmail}
-          mode="outlined"
-          style={styles.input}
-          autoCapitalize="none"
-          keyboardType="email-address"
-          textContentType="emailAddress"
-          right={<TextInput.Icon icon="email" />}
-        />
+    <SafeAreaProvider style={styles.container}>
+      <TextInput
+        label={i18n.t('profile.email')}
+        value={email}
+        onChangeText={setEmail}
+        mode="outlined"
+        style={styles.input}
+        autoCapitalize="none"
+        keyboardType="email-address"
+        textContentType="emailAddress"
+        right={<TextInput.Icon icon="email" />}
+      />
 
-        <Button mode="contained" onPress={handleForgottenPassword} style={styles.button} icon="login-variant">
-          {i18n.t('profile.resendPassword')}
-        </Button>
-      </SafeAreaProvider>
-    </View>
+      <Button mode="contained" onPress={handleForgottenPassword} style={styles.button} icon="login-variant">
+        {i18n.t('profile.resendPassword')}
+      </Button>
+    </SafeAreaProvider>
   );
 }
 
@@ -46,6 +44,7 @@ const styles = StyleSheet.create({
     marginBottom: 16
   },
   button: {
-    marginTop: 40
+    marginTop: 20,
+    marginBottom: 120
   }
 });

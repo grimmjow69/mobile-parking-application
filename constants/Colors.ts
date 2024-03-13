@@ -106,7 +106,7 @@ export default {
     refreshIcon: '#303c64',
     refreshIconText: '#fff',
     navigationBar: '#fff',
-    spinnerOverlay: 'rgba(0, 0, 0, 0.4)',
+    spinnerOverlay: 'rgba(255, 255, 255, 0.7)',
     spinnerColor: '#303c64',
     modalContainer: '#fff',
     modalContainerTableHeader: '#f0f0f0',

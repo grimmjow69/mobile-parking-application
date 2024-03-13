@@ -11,6 +11,7 @@ import { PreferencesContext } from '../context/preference-context';
 import { UNIZA_INITIAL_REGION } from '@/constants/coords';
 import { useCallback, useContext, useEffect, useState } from 'react';
 import { useIsFocused } from '@react-navigation/native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 export default function HeatmapScreen() {
   const [heatmapPoints, setHeatmapPoints] = useState<HeatmapPoint[]>([]);
@@ -46,7 +47,7 @@ export default function HeatmapScreen() {
   const onDismissSnackBar = () => setSnackbarVisible(false);
 
   return (
-    <View style={styles.container}>
+    <SafeAreaProvider style={styles.container}>
       <MapView
         initialRegion={UNIZA_INITIAL_REGION}
         showsPointsOfInterest={false}
@@ -87,11 +88,14 @@ export default function HeatmapScreen() {
         <Text style={{ textAlign: 'center', fontWeight: 'bold', color: '#fff' }}> {snackbarMessage}</Text>
       </Snackbar>
       <SpinnerOverlay
+        textContent={i18n.t('base.wait')}
+        textStyle={isThemeDark ? {color: '#fff'} : {color: '#303c64'}}
+        animation='fade'
         visible={loading}
         overlayColor={Colors[isThemeDark ? 'dark' : 'light'].spinnerOverlay}
         customIndicator={<ActivityIndicator size="large" color={Colors[isThemeDark ? 'dark' : 'light'].spinnerColor} />}
       />
-    </View>
+    </SafeAreaProvider>
   );
 }
 

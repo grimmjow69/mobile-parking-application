@@ -48,74 +48,72 @@ export default function RegistrationScreen() {
   const passwordLengthError = password !== '' && password.length < 6;
 
   return (
-    <View style={styles.container}>
-      <SafeAreaProvider style={styles.container}>
-        <TextInput
-          label={i18n.t('profile.email')}
-          value={email}
-          onChangeText={setEmail}
-          mode="outlined"
-          style={styles.input}
-          error={emailError}
-          autoCapitalize="none"
-          keyboardType="email-address"
-          textContentType="emailAddress"
-          right={<TextInput.Icon icon="email" color={getIconColor(emailError)} />}
-        />
-        <HelperText type="error" visible={emailError}>
-          {i18n.t('profile.errors.emailError')}
-        </HelperText>
+    <SafeAreaProvider style={styles.container}>
+      <TextInput
+        label={i18n.t('profile.email')}
+        value={email}
+        onChangeText={setEmail}
+        mode="outlined"
+        style={styles.input}
+        error={emailError}
+        autoCapitalize="none"
+        keyboardType="email-address"
+        textContentType="emailAddress"
+        right={<TextInput.Icon icon="email" color={getIconColor(emailError)} />}
+      />
+      <HelperText type="error" visible={emailError}>
+        {i18n.t('profile.errors.emailError')}
+      </HelperText>
 
-        <TextInput
-          label={i18n.t('profile.password')}
-          value={password}
-          onChangeText={setPassword}
-          mode="outlined"
-          error={passwordLengthError}
-          style={styles.input}
-          secureTextEntry
-          textContentType="password"
-          right={<TextInput.Icon icon="lock" color={getIconColor(passwordLengthError)} />}
-        />
-        <HelperText type="error" visible={passwordLengthError}>
-          {i18n.t('profile.errors.passwordLengthError')}
-        </HelperText>
+      <TextInput
+        label={i18n.t('profile.password')}
+        value={password}
+        onChangeText={setPassword}
+        mode="outlined"
+        error={passwordLengthError}
+        style={styles.input}
+        secureTextEntry
+        textContentType="password"
+        right={<TextInput.Icon icon="lock" color={getIconColor(passwordLengthError)} />}
+      />
+      <HelperText type="error" visible={passwordLengthError}>
+        {i18n.t('profile.errors.passwordLengthError')}
+      </HelperText>
 
-        <TextInput
-          label={i18n.t('profile.passwordCheck')}
-          value={passwordCheck}
-          onChangeText={setPasswordCheck}
-          mode="outlined"
-          error={passwordsMatchError}
-          style={styles.input}
-          secureTextEntry
-          textContentType="password"
-          right={<TextInput.Icon icon="lock" color={getIconColor(passwordsMatchError)} />}
-        />
-        <HelperText type="error" visible={passwordsMatchError}>
-          {i18n.t('profile.errors.passwordsMatchError')}
-        </HelperText>
+      <TextInput
+        label={i18n.t('profile.passwordCheck')}
+        value={passwordCheck}
+        onChangeText={setPasswordCheck}
+        mode="outlined"
+        error={passwordsMatchError}
+        style={styles.input}
+        secureTextEntry
+        textContentType="password"
+        right={<TextInput.Icon icon="lock" color={getIconColor(passwordsMatchError)} />}
+      />
+      <HelperText type="error" visible={passwordsMatchError}>
+        {i18n.t('profile.errors.passwordsMatchError')}
+      </HelperText>
 
-        <Button
-          mode="contained"
-          onPress={handleRegister}
-          style={styles.button}
-          icon="login-variant"
-          disabled={!isFormValid()}
-        >
-          {i18n.t('profile.register')}
-        </Button>
+      <Button
+        mode="contained"
+        onPress={handleRegister}
+        style={styles.button}
+        icon="login-variant"
+        disabled={!isFormValid()}
+      >
+        {i18n.t('profile.register')}
+      </Button>
 
-        <Snackbar
-          visible={snackbarVisible}
-          onDismiss={onDismissSnackBar}
-          duration={Snackbar.DURATION_SHORT}
-          style={{ backgroundColor: snackbarColor }}
-        >
-          <Text style={{ textAlign: 'center', fontWeight: 'bold', color: '#fff' }}> {snackbarMessage}</Text>
-        </Snackbar>
-      </SafeAreaProvider>
-    </View>
+      <Snackbar
+        visible={snackbarVisible}
+        onDismiss={onDismissSnackBar}
+        duration={Snackbar.DURATION_SHORT}
+        style={{ backgroundColor: snackbarColor }}
+      >
+        <Text style={{ textAlign: 'center', fontWeight: 'bold', color: '#fff' }}> {snackbarMessage}</Text>
+      </Snackbar>
+    </SafeAreaProvider>
   );
 }
 
@@ -130,6 +128,7 @@ const styles = StyleSheet.create({
     width: 260
   },
   button: {
-    marginTop: 40
+    marginTop: 20,
+    marginBottom: 120
   }
 });

@@ -23,6 +23,7 @@ import {
 import { UNIZA_INITIAL_REGION } from '@/constants/coords';
 import { updateFavouriteSpot } from '../services/user-service';
 import { useIsFocused } from '@react-navigation/native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 export interface ModalContent {
   spotName: string;
@@ -245,7 +246,7 @@ export default function MapScreen() {
       console.log('Before setting loading');
       setLoading(true);
       setNotificationsEnabled(!notificationsEnabled);
-    
+
       if (notificationsEnabled) {
         await unsubscribeFromNotificationByUserAndParkingSpotId(userId, spotId);
         setSnackBarContent(i18n.t('notifications.unsubscribe'), successColor);
@@ -276,7 +277,7 @@ export default function MapScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaProvider style={styles.container}>
       <MapView
         ref={mapRef}
         style={styles.map}
@@ -384,11 +385,14 @@ export default function MapScreen() {
         <Text style={{ textAlign: 'center', fontWeight: 'bold', color: '#fff' }}> {snackbarMessage}</Text>
       </Snackbar>
       <SpinnerOverlay
+        textContent={i18n.t('base.wait')}
+        textStyle={isThemeDark ? { color: '#fff' } : { color: '#303c64' }}
+        animation="fade"
         visible={loading}
         overlayColor={Colors[isThemeDark ? 'dark' : 'light'].spinnerOverlay}
         customIndicator={<ActivityIndicator size="large" color={Colors[isThemeDark ? 'dark' : 'light'].spinnerColor} />}
       />
-    </View>
+    </SafeAreaProvider>
   );
 }
 

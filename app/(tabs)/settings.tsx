@@ -60,7 +60,6 @@ export default function SettingsScreen() {
   };
 
   return (
-    <View style={styles.container}>
       <SafeAreaProvider style={styles.container}>
         <View style={styles.content}>
           <View style={styles.switchRow}>
@@ -99,7 +98,6 @@ export default function SettingsScreen() {
           </View>
         </View>
       </SafeAreaProvider>
-    </View>
   );
 }
 
