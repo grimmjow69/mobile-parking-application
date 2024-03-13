@@ -9,6 +9,7 @@
     "registration": "Registrácia"
   },
   "parkingMap": {
+    "stateUnknown": "Stav: neznáme",
     "findClosestSpot": "Nájsť najbližšie miesto",
     "stateOccupied": "Stav: obsadené",
     "stateFree": "Stav: voľné",
@@ -23,18 +24,21 @@
     "parkingSpotDetail": {
       "header": {
         "stateFree": "voľné",
-        "stateOccupied": "obsadené"
+        "stateOccupied": "obsadené",
+        "stateUnknown": "neznáme"
       },
       "table": {
         "stateColumnName": "Stav",
         "updatedAtColumnName": "Aktualizované",
         "stateFree": "Voľné",
-        "stateOccupied": "Obsadené"
+        "stateOccupied": "Obsadené",
+        "stateUnknown": "Neznáme"
       }
     }
   },
   "heatmap": {},
   "profile": {
+    "myNotifications": "Moje notifikácie",
     "email": "Email",
     "password": "Heslo",
     "passwordCheck": "Kontrola hesla",
@@ -77,6 +81,8 @@
     "alertPushNotifications": "Push notifikácie"
   },
   "notifications": {
+    "parkingSpot": "Parkovacie miesto",
+    "emptyNotificationList": "Žiadne notifikácie na odber",
     "hasBeenTaken": "bol obsadené",
     "isFree": "je voľné",
     "subscribe": "Úspešné prihlásenie na notifikáciu",

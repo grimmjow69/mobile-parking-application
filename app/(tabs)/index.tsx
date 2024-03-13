@@ -1,5 +1,5 @@
 import * as Location from 'expo-location';
-import Colors from '@/constants/colors';
+import Colors, { errorColor, successColor } from '@/constants/colors';
 import i18n from '../../assets/localization/i18n';
 import MapView, { Circle, Marker } from 'react-native-maps';
 import moment from 'moment';
@@ -26,13 +26,10 @@ import { useIsFocused } from '@react-navigation/native';
 
 export interface ModalContent {
   spotName: string;
-  occupied: boolean;
+  occupied: boolean | null;
   spotId: number;
   detail: ParkingSpotDetail | null;
 }
-
-export const errorColor: string = '#D32F2F';
-export const successColor: string = '#56ae57';
 
 export default function MapScreen() {
   const [parkingSpots, setParkingSpots] = useState<ParkingSpot[]>([]);
@@ -95,8 +92,6 @@ export default function MapScreen() {
         latitude: location.coords.latitude,
         longitude: location.coords.longitude
       };
-
-      console.log(userLocation);
 
       const closestFreeSpot = await getClosestFreeParkingSpot(userLocation.latitude, userLocation.longitude);
 
@@ -178,10 +173,33 @@ export default function MapScreen() {
     }
   };
 
+  function getMarkerDescription(updatedAt: Date) {
+    return `${i18n.t('parkingMap.updatedAt')} ${moment(updatedAt).format('HH:mm:ss')}`;
+  }
+
+  function getParkingSpotModalState(modalContent: ModalContent) {
+    var state = '';
+
+    if (modalContent?.occupied !== null) {
+      state = modalContent?.occupied
+        ? i18n.t('parkingMap.parkingSpotDetail.header.stateOccupied')
+        : i18n.t('parkingMap.parkingSpotDetail.header.stateFree');
+    } else {
+      state = i18n.t('parkingMap.parkingSpotDetail.header.stateUnknown');
+    }
+
+    return `${modalContent?.spotName} - ${state}`;
+  }
+
   const renderMarker = (spot: ParkingSpot) => {
     const isClosestSpot = spot === closestSpot;
-    const circleColor = spot.occupied ? errorColor : successColor;
-    const updatedAtText = `${i18n.t('parkingMap.updatedAt')} ${moment(spot.updatedAt).format('HH:mm:ss')}`;
+    var circleColor = spot.occupied != null ? errorColor : successColor;
+
+    if (spot.occupied != null) {
+      circleColor = spot.occupied ? errorColor : successColor;
+    } else {
+      circleColor = 'gray';
+    }
 
     return (
       <React.Fragment key={spot.parkingSpotId}>
@@ -199,7 +217,7 @@ export default function MapScreen() {
           opacity={0}
           icon={require('../../assets/images/icon.png')}
           title={spot.name}
-          description={updatedAtText}
+          description={getMarkerDescription(spot.updatedAt)}
           coordinate={{
             latitude: spot.latitude,
             longitude: spot.longitude
@@ -224,8 +242,10 @@ export default function MapScreen() {
 
   const handleNotificationPressed = async (userId: number, spotId: number) => {
     try {
+      console.log('Before setting loading');
       setLoading(true);
       setNotificationsEnabled(!notificationsEnabled);
+    
       if (notificationsEnabled) {
         await unsubscribeFromNotificationByUserAndParkingSpotId(userId, spotId);
         setSnackBarContent(i18n.t('notifications.unsubscribe'), successColor);
@@ -233,7 +253,6 @@ export default function MapScreen() {
         await subscribeToNotification(spotId, userId);
         setSnackBarContent(i18n.t('notifications.subscribe'), successColor);
       }
-      setSnackbarVisible(true);
     } catch (error) {
       setSnackBarContent(i18n.t('base.error'), errorColor);
     } finally {
@@ -297,13 +316,7 @@ export default function MapScreen() {
         ]}
       >
         <View style={styles.modalHeader}>
-          <Text style={styles.modalTitle}>
-            {modalContent?.spotName}
-            {' - '}
-            {modalContent?.occupied
-              ? i18n.t('parkingMap.parkingSpotDetail.header.stateOccupied')
-              : i18n.t('parkingMap.parkingSpotDetail.header.stateFree')}
-          </Text>
+          <Text style={styles.modalTitle}>{getParkingSpotModalState(modalContent!)}</Text>
           {user && (
             <View style={styles.modalActionIcons}>
               <IconButton

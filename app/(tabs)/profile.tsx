@@ -112,6 +112,11 @@ export default function ProfileScreen() {
       <Button mode="contained" style={styles.buttonRow} onPress={() => console.log('')}>
         {i18n.t('profile.changeEmail')}
       </Button>
+      <Link href="/my-notifications" asChild>
+        <Button style={styles.buttonRow} mode="contained">
+          {i18n.t('profile.myNotifications')}
+        </Button>
+      </Link>
       <Button style={styles.signOutButton} mode="contained" onPress={() => handleSignOut()}>
         {i18n.t('profile.signOut')}
       </Button>

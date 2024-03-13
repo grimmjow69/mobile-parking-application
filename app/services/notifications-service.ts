@@ -1,6 +1,7 @@
 import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
 import { Platform } from 'react-native';
+import { SpotNotification } from '../models/notifications';
 
 const API_BASE_URL = 'http://192.168.100.11:8080/notification';
 
@@ -45,6 +46,25 @@ export const deletePushTokenFromServer = async (userId: number): Promise<void> =
   }
 };
 
+export const fetchUserNotifications = async (userId: number): Promise<SpotNotification[]> => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/user-notifications/${userId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error(`Server responded with status: ${response.status}`);
+    }
+    const jsonResponse = await response.json();
+    return jsonResponse.userNotifications;
+  } catch (error) {
+    console.error('Error fetching user notifications:', error);
+    throw error;
+  }
+};
 export async function registerForPushNotificationsAsync() {
   let token;
   if (Constants.isDevice) {

@@ -9,6 +9,7 @@
     "registration": "Register"
   },
   "parkingMap": {
+    "stateUnknown": "State: unkknown",
     "findClosestSpot": "Find closest spot",
     "stateOccupied": "State: occupied",
     "stateFree": "State: free",
@@ -23,18 +24,21 @@
     "parkingSpotDetail": {
       "header": {
         "stateFree": "free",
-        "stateOccupied": "occupied"
+        "stateOccupied": "occupied",
+        "stateUnknown": "unknown"
       },
       "table": {
         "stateColumnName": "State",
         "updatedAtColumnName": "Updated at",
         "stateFree": "Free",
-        "stateOccupied": "Occupied"
+        "stateOccupied": "Occupied",
+        "stateUnknown": "Unknown"
       }
     }
   },
   "heatmap": {},
   "profile": {
+    "myNotifications": "My notifications",
     "email": "Email",
     "password": "Password",
     "passwordCheck": "Password check",
@@ -77,6 +81,8 @@
     "alertPushNotifications": "Push notifications"
   },
   "notifications": {
+    "parkingSpot": "Parking spot",
+    "emptyNotificationList": "No alert subscriptions yet",
     "notifications": "Notifications",
     "hasBeenTaken": "has been taken",
     "isFree": "is free",

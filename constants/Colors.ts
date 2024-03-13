@@ -109,7 +109,8 @@ export default {
     spinnerOverlay: 'rgba(0, 0, 0, 0.4)',
     spinnerColor: '#303c64',
     modalContainer: '#fff',
-    modalContainerTableHeader: '#f0f0f0'
+    modalContainerTableHeader: '#f0f0f0',
+    emptyIconColor: '#303c64'
 
   },
   dark: {
@@ -121,9 +122,12 @@ export default {
     refreshIcon: '#fff',
     refreshIconText: '#2c2c2c',
     navigationBar: 'rgb(18, 18, 18)',
-    spinnerOverlay: 'rgba(44, 44, 44, 0.8)',
+    spinnerOverlay: 'rgba(44, 44, 44, 0.95)',
     spinnerColor: '#fff',
     modalContainer: '#5b5b5b',
     modalContainerTableHeader: '#444444'
   }
 };
+
+export const errorColor: string = '#D32F2F';
+export const successColor: string = '#56ae57';
