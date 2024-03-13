@@ -211,7 +211,7 @@ export default function MapScreen() {
             latitude: spot.latitude,
             longitude: spot.longitude
           }}
-          radius={1}
+          radius={spot.name.startsWith('zaliv') ? 1.1 : 0.75}
           strokeWidth={1}
           strokeColor={circleColor}
           fillColor={circleColor}
