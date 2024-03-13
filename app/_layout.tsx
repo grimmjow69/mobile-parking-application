@@ -167,6 +167,10 @@ function RootLayoutNav() {
               name='my-notifications'
               options={{ presentation: 'modal', title: i18n.t('navigation.notifications') }}
             />
+            <Stack.Screen
+              name='about'
+              options={{ presentation: 'modal', title: i18n.t('navigation.about') }}
+            />
           </Stack>
         </PaperProvider>
       </ThemeProvider>

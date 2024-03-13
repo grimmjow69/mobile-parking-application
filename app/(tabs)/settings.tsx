@@ -11,6 +11,7 @@ import { PushNotificationConfig } from '../models/notifications';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { StyleSheet, View } from 'react-native';
 import { useContext, useState } from 'react';
+import { Link } from 'expo-router';
 
 export default function SettingsScreen() {
   const { toggleTheme, isThemeDark, setLanguage, user, toggleAlertNotifications, alertNotifications } =
@@ -80,7 +81,17 @@ export default function SettingsScreen() {
           )}
 
           <View style={styles.footer}>
-            <Button icon="bug" mode="contained" style={styles.reportButton} onPress={reportBug}>
+            <Link href="/about" asChild style={[styles.aboutButton, styles.footerButton]}>
+              <Button
+                icon="information"
+                mode="contained"
+                onPress={reportBug}
+              >
+                {i18n.t('navigation.about')}
+              </Button>
+            </Link>
+
+            <Button icon="bug" mode="contained" style={[styles.reportButton, styles.footerButton]} onPress={reportBug}>
               {i18n.t('settings.reportBug')}
             </Button>
             <Text>{i18n.t('settings.author')}: Lukáš Fuček</Text>
@@ -101,10 +112,16 @@ const styles = StyleSheet.create({
     height: 1,
     width: '80%'
   },
+  footerButton: {
+    width: 180
+  },
   content: {
     flex: 1,
     alignItems: 'center',
     padding: 100
+  },
+  aboutButton: {
+    marginBottom: 12
   },
   reportButton: {
     marginBottom: 30
