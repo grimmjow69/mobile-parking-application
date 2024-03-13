@@ -6,7 +6,8 @@
     "settings": "Nastavenia",
     "notifications": "Notifikácie",
     "resendPassword": "Odoslať stratené heslo",
-    "registration": "Registrácia"
+    "registration": "Registrácia",
+    "about": "O aplikacii"
   },
   "parkingMap": {
     "stateUnknown": "Stav: neznáme",
@@ -86,13 +87,16 @@
     "hasBeenTaken": "bol obsadené",
     "isFree": "je voľné",
     "subscribe": "Úspešné prihlásenie na notifikáciu",
-    "unsubscribe": "Úspešné odhlásenie na notifikáciu"
+    "unsubscribe": "Úspešné odhlásenie na notifikáciu",
+    "unsubscribeTitle": "Zmazanie notifikácie",
+    "unsubscribeContent": "Prosím, potvrďte, že si želáte zmazať túto notifikáciu"
   },
   "base": {
     "error": "Došlo k neočakávanej chybe",
     "loadSuccess": "Dáta boli úspešne načítané",
     "loadFailed": "Načítanie dát zlyhalo",
     "locationPermissionDenied": "Povolenie polohy je zamietnuté. Prosím, povoľte ho vo svojich nastaveniach zariadenia",
-    "close": "Zavrieť"
+    "close": "Zavrieť",
+    "confirm": "Potvrdiť"
   }
 }

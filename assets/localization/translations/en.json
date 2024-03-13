@@ -6,7 +6,8 @@
     "settings": "Settings",
     "notifications": "Notifications",
     "resendPassword": "Resend password",
-    "registration": "Register"
+    "registration": "Register",
+    "about": "About application"
   },
   "parkingMap": {
     "stateUnknown": "State: unkknown",
@@ -87,13 +88,16 @@
     "hasBeenTaken": "has been taken",
     "isFree": "is free",
     "subscribe": "Successful subscription to notification",
-    "unsubscribe": "Successful unsubscription for notification"
+    "unsubscribe": "Successful unsubscription for notification",
+    "unsubscribeTitle": "Unsubscribe to notification",
+    "unsubscribeContent": "Please confirm that you wish to delete this notification"
   },
   "base": {
     "error": "An unexpected error occurred",
     "loadSuccess": "Data loaded successfully",
     "loadFailed": "Failed to load data",
     "locationPermissionDenied": "Location permission was denied. Please enable it in your device settings to continue",
-    "close": "Close"
+    "close": "Close",
+    "confirm": "Confirm"
   }
 }

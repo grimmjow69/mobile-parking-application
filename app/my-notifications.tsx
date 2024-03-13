@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Icon, IconButton, List, Snackbar, Text } from 'react-native-paper';
+import { Button, Dialog, Icon, IconButton, List, Snackbar, Text } from 'react-native-paper';
 import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
 import { fetchUserNotifications, unsubscribeFromNotificationByNotificationId } from './services/notifications-service';
 import { PreferencesContext } from './context/preference-context';
@@ -13,6 +13,8 @@ export default function MyNotificationsScreen() {
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarColor, setSnackbarColor] = useState('#323232');
+  const [dialogVisible, setDialogVisible] = useState(false);
+  const [notificationId, setNotificationId] = useState<number | null>(null);
   const [userNotifications, setUserNotifications] = useState<SpotNotification[]>([]);
   const [loading, setLoading] = useState(true);
   const { isThemeDark, user } = useContext(PreferencesContext);
@@ -37,6 +39,7 @@ export default function MyNotificationsScreen() {
 
   function unsubscribe(notificationId: number) {
     try {
+      setDialogVisible(false);
       setLoading(true);
       unsubscribeFromNotificationByNotificationId(notificationId);
       const updatedNotifications = userNotifications.filter(
@@ -66,6 +69,11 @@ export default function MyNotificationsScreen() {
     setSnackbarMessage(message);
   }
 
+  function deleteNotificationRecord(notificationId: number) {
+    setNotificationId(notificationId);
+    setDialogVisible(true);
+  }
+
   return (
     <View style={styles.page}>
       {loading ? (
@@ -88,7 +96,7 @@ export default function MyNotificationsScreen() {
                   icon={'delete-circle'}
                   size={28}
                   style={styles.unsubscribeButton}
-                  onPress={() => unsubscribe(notification.notificationId)}
+                  onPress={() => deleteNotificationRecord(notification.notificationId)}
                 />
               )}
               style={styles.itemDivider}
@@ -98,6 +106,16 @@ export default function MyNotificationsScreen() {
       ) : (
         <EmptyListComponent />
       )}
+      <Dialog visible={dialogVisible} onDismiss={() => setDialogVisible(false)}>
+        <Dialog.Title>{i18n.t('notifications.unsubscribeTitle')}</Dialog.Title>
+        <Dialog.Content>
+          <Text>{i18n.t('notifications.unsubscribeContent')}</Text>
+        </Dialog.Content>
+        <Dialog.Actions>
+          <Button onPress={() => unsubscribe(notificationId!)}>{i18n.t('base.confirm')}</Button>
+          <Button onPress={() => setDialogVisible(false)}>{i18n.t('base.close')}</Button>
+        </Dialog.Actions>
+      </Dialog>
       <Snackbar
         visible={snackbarVisible}
         onDismiss={onDismissSnackBar}
