@@ -1,4 +1,4 @@
-import Colors from '@/constants/colors';
+import Colors from '@/constants/Colors';
 import i18n from '../../assets/localization/i18n';
 import { Icon } from 'react-native-paper';
 import { PreferencesContext, PreferencesContextProps } from '../context/preference-context';

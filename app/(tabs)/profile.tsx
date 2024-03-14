@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ChangeEmail from '@/components/change-email';
 import ChangePassword from '@/components/change-password';
-import Colors, { errorColor, successColor } from '@/constants/colors';
+import Colors, { errorColor, successColor } from '@/constants/Colors';
 import i18n from '../../assets/localization/i18n';
 import SpinnerOverlay from 'react-native-loading-spinner-overlay';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';

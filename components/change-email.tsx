@@ -1,4 +1,4 @@
-import Colors, { errorColor, successColor } from '@/constants/colors';
+import Colors, { errorColor, successColor } from '@/constants/Colors';
 import i18n from '@/assets/localization/i18n';
 import SpinnerOverlay from 'react-native-loading-spinner-overlay';
 import { ActivityIndicator, Button, HelperText, Modal, Snackbar, Text, TextInput, useTheme } from 'react-native-paper';
@@ -74,7 +74,7 @@ const ChangeEmail: React.FC<ChangeEmailProps> = ({ visible, onDismiss }) => {
           styles.dialog,
           {
             backgroundColor:
-              Colors[isThemeDark ? 'dark' : 'light'].modalContainer
+              Colors[isThemeDark ? 'dark' : 'light'].modalContainer2
           }
         ]}
         dismissableBackButton={true}
@@ -122,22 +122,21 @@ const ChangeEmail: React.FC<ChangeEmailProps> = ({ visible, onDismiss }) => {
           <Button
             mode="contained"
             onPress={handleChangeEmail}
-            style={styles.button}
             disabled={!isFormValid()}
           >
-            {i18n.t('profile.changeEmail')}
+            <Text>{i18n.t('profile.changeEmail')}</Text>
           </Button>
           <Button
             mode="contained"
             onPress={onDismiss}
             style={[
-              styles.button,
               {
-                backgroundColor: colors.backdrop
+                backgroundColor: '#F77D24',
+                marginTop: 12
               }
             ]}
           >
-            {i18n.t('base.close')}
+            <Text>{i18n.t('base.close')}</Text>
           </Button>
         </View>
         <Text
@@ -204,12 +203,8 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     marginTop: 20,
-    flexDirection: 'row',
-    justifyContent: 'flex-end'
-  },
-  button: {
-    flex: 1,
-    margin: 8
+    padding: 20,
+    justifyContent: 'center'
   },
   input: {
     width: 240
@@ -219,7 +214,7 @@ const styles = StyleSheet.create({
   },
   dialog: {
     flex: 1,
-    padding: 80,
+    padding: 60
   }
 });
 

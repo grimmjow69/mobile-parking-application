@@ -22,7 +22,7 @@ export const darkTheme = {
     onSurface: 'rgb(231, 225, 229)',
     surfaceVariant: 'rgb(74, 69, 78)',
     onSurfaceVariant: 'rgb(211, 211, 211)',
-    outline: 'rgb(150, 142, 152)',
+    outline: '#fff',
     outlineVariant: 'rgb(74, 69, 78)',
     shadow: 'rgb(0, 0, 0)',
     scrim: 'rgb(0, 0, 0)',
@@ -65,7 +65,7 @@ export const lightTheme = {
     onError: '#fff',
     errorContainer: 'rgb(255, 218, 214)',
     onErrorContainer: 'rgb(65, 0, 2)',
-    background: 'rgb(255, 251, 255)',
+    background: '#fff',
     onBackground: 'rgb(29, 27, 30)',
     surface: 'rgb(255, 251, 255)',
     onSurface: 'rgb(29, 27, 30)',
@@ -109,6 +109,7 @@ export default {
     spinnerOverlay: 'rgba(255, 255, 255, 0.7)',
     spinnerColor: '#303c64',
     modalContainer: '#fff',
+    modalContainer2: '#fff',
     modalContainerTableHeader: '#f0f0f0',
     emptyIconColor: '#303c64'
 
@@ -125,6 +126,7 @@ export default {
     spinnerOverlay: 'rgba(44, 44, 44, 0.95)',
     spinnerColor: '#fff',
     modalContainer: '#5b5b5b',
+    modalContainer2: 'rgba(0, 0, 0, 1)',
     modalContainerTableHeader: '#444444'
   }
 };

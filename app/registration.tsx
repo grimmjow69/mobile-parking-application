@@ -1,4 +1,4 @@
-import Colors, { errorColor, successColor } from '@/constants/colors';
+import Colors, { errorColor, successColor } from '@/constants/Colors';
 import i18n from '../assets/localization/i18n';
 import SpinnerOverlay from 'react-native-loading-spinner-overlay';
 import { ActivityIndicator, Button, HelperText, Snackbar, Text, TextInput, useTheme } from 'react-native-paper';
@@ -85,7 +85,7 @@ export default function RegistrationScreen() {
         textContentType="emailAddress"
         right={<TextInput.Icon icon="email" color={getIconColor(emailError)} />}
       />
-      
+
       <HelperText type="error" visible={emailError}>
         {i18n.t('profile.errors.emailError')}
       </HelperText>

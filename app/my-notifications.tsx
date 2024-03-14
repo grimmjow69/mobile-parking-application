@@ -3,7 +3,7 @@ import SpinnerOverlay from 'react-native-loading-spinner-overlay';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { Button, Dialog, Icon, IconButton, List, Snackbar, Text } from 'react-native-paper';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
-import { errorColor, successColor } from '@/constants/colors';
+import { errorColor, successColor } from '@/constants/Colors';
 import { fetchUserNotifications, unsubscribeFromNotificationByNotificationId } from './services/notifications-service';
 import { PreferencesContext, PreferencesContextProps } from './context/preference-context';
 import { SpotNotification } from './models/notifications';
@@ -143,7 +143,7 @@ export default function MyNotificationsScreen() {
           </Button>
         </Dialog.Actions>
       </Dialog>
-      
+
       <Snackbar
         visible={snackbarVisible}
         onDismiss={onDismissSnackBar}

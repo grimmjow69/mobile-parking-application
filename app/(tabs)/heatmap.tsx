@@ -1,4 +1,4 @@
-import Colors from '@/constants/colors';
+import Colors from '@/constants/Colors';
 import i18n from '../../assets/localization/i18n';
 import MapView, { Heatmap, PROVIDER_GOOGLE } from 'react-native-maps';
 import SpinnerOverlay from 'react-native-loading-spinner-overlay';

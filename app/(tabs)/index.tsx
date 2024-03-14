@@ -1,5 +1,5 @@
 import * as Location from 'expo-location';
-import Colors, { errorColor, successColor } from '@/constants/colors';
+import Colors, { errorColor, successColor } from '@/constants/Colors';
 import i18n from '../../assets/localization/i18n';
 import MapView, { Circle, Marker } from 'react-native-maps';
 import moment from 'moment';
