@@ -60,8 +60,10 @@ const ChangePassword: React.FC<ChangePasswordProps> = ({
     newPassword !== '' &&
     confirmNewPassword !== '' &&
     newPassword !== confirmNewPassword;
+
   const passwordLengthError =
     currentPassword !== '' && currentPassword.length < 6;
+
   const newPasswordLengthError = newPassword !== '' && newPassword.length < 6;
 
   const isFormValid = () => {
@@ -128,6 +130,7 @@ const ChangePassword: React.FC<ChangePasswordProps> = ({
         <HelperText type="error" visible={newPasswordLengthError}>
           {i18n.t('profile.errors.passwordLengthError')}
         </HelperText>
+
         <TextInput
           label={i18n.t('profile.confirmPassword')}
           value={confirmNewPassword}
@@ -142,6 +145,7 @@ const ChangePassword: React.FC<ChangePasswordProps> = ({
             />
           }
         />
+        
         <HelperText type="error" visible={passwordsMatchError}>
           {i18n.t('profile.errors.passwordsMatchError')}
         </HelperText>
@@ -169,6 +173,7 @@ const ChangePassword: React.FC<ChangePasswordProps> = ({
           {' '}
           {snackbarMessage}
         </Text>
+
         <SpinnerOverlay
           textContent={i18n.t('base.wait')}
           textStyle={isThemeDark ? { color: '#fff' } : { color: '#303c64' }}
@@ -183,6 +188,7 @@ const ChangePassword: React.FC<ChangePasswordProps> = ({
           }
         />
       </Modal>
+
       <Snackbar
         visible={snackbarVisible}
         onDismiss={onDismissSnackBar}

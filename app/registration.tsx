@@ -85,6 +85,7 @@ export default function RegistrationScreen() {
         textContentType="emailAddress"
         right={<TextInput.Icon icon="email" color={getIconColor(emailError)} />}
       />
+      
       <HelperText type="error" visible={emailError}>
         {i18n.t('profile.errors.emailError')}
       </HelperText>
@@ -105,6 +106,7 @@ export default function RegistrationScreen() {
           />
         }
       />
+
       <HelperText type="error" visible={passwordLengthError}>
         {i18n.t('profile.errors.passwordLengthError')}
       </HelperText>
@@ -125,6 +127,7 @@ export default function RegistrationScreen() {
           />
         }
       />
+
       <HelperText type="error" visible={passwordsMatchError}>
         {i18n.t('profile.errors.passwordsMatchError')}
       </HelperText>
@@ -138,17 +141,10 @@ export default function RegistrationScreen() {
       >
         {i18n.t('profile.register')}
       </Button>
+
       <SpinnerOverlay
         textContent={i18n.t('base.wait')}
-        textStyle={
-          isThemeDark
-            ? {
-                color: '#fff'
-              }
-            : {
-                color: '#303c64'
-              }
-        }
+        textStyle={isThemeDark ? { color: '#fff' } : { color: '#303c64' }}
         animation="fade"
         visible={loading}
         overlayColor={Colors[isThemeDark ? 'dark' : 'light'].spinnerOverlay}

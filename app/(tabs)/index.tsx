@@ -431,6 +431,7 @@ export default function MapScreen() {
           {snackbarMessage}
         </Text>
       </Snackbar>
+      
       <SpinnerOverlay
         textContent={i18n.t('base.wait')}
         textStyle={isThemeDark ? { color: '#fff' } : { color: '#303c64' }}

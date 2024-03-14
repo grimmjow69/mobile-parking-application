@@ -107,6 +107,7 @@ export default function HeatmapScreen() {
           {snackbarMessage}
         </Text>
       </Snackbar>
+
       <SpinnerOverlay
         textContent={i18n.t('base.wait')}
         textStyle={

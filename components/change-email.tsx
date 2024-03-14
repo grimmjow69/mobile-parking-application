@@ -150,6 +150,7 @@ const ChangeEmail: React.FC<ChangeEmailProps> = ({ visible, onDismiss }) => {
           {' '}
           {snackbarMessage}
         </Text>
+        
         <SpinnerOverlay
           textContent={i18n.t('base.wait')}
           textStyle={

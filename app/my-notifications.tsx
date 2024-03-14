@@ -128,6 +128,7 @@ export default function MyNotificationsScreen() {
       ) : (
         <EmptyListComponent />
       )}
+
       <Dialog visible={dialogVisible} onDismiss={() => setDialogVisible(false)}>
         <Dialog.Title>{i18n.t('notifications.unsubscribeTitle')}</Dialog.Title>
         <Dialog.Content>
@@ -142,6 +143,7 @@ export default function MyNotificationsScreen() {
           </Button>
         </Dialog.Actions>
       </Dialog>
+      
       <Snackbar
         visible={snackbarVisible}
         onDismiss={onDismissSnackBar}

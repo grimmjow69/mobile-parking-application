@@ -1,13 +1,12 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ChangeEmail from '@/components/change-email';
 import ChangePassword from '@/components/change-password';
+import Colors, { errorColor, successColor } from '@/constants/colors';
 import i18n from '../../assets/localization/i18n';
 import SpinnerOverlay from 'react-native-loading-spinner-overlay';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { Button, HelperText, Snackbar, Text, TextInput, useTheme } from 'react-native-paper';
-import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { deletePushTokenFromServer, registerForPushNotificationsAsync, sendPushTokenToServer } from '../services/notifications-service';
-import { errorColor, successColor } from '@/constants/colors';
 import { Link } from 'expo-router';
 import { loginUser } from '../services/auth-service';
 import { PreferencesContext, PreferencesContextProps } from '../context/preference-context';
@@ -251,17 +250,10 @@ export default function ProfileScreen() {
           {snackbarMessage}
         </Text>
       </Snackbar>
+      
       <SpinnerOverlay
         textContent={i18n.t('base.wait')}
-        textStyle={
-          isThemeDark
-            ? {
-                color: '#fff'
-              }
-            : {
-                color: '#303c64'
-              }
-        }
+        textStyle={isThemeDark ? { color: '#fff' } : { color: '#303c64' }}
         animation="fade"
         visible={loading}
         overlayColor={Colors[isThemeDark ? 'dark' : 'light'].spinnerOverlay}
@@ -278,7 +270,6 @@ export default function ProfileScreen() {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 16,
     paddingTop: 60
   },
   userContent: {
@@ -304,7 +295,7 @@ const styles = StyleSheet.create({
   },
   signOutButton: {
     position: 'absolute',
-    bottom: 8
+    bottom: 48
   },
   buttonRow: {
     marginBottom: 10,
