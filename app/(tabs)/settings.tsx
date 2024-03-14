@@ -67,18 +67,18 @@ export default function SettingsScreen() {
     <SafeAreaProvider style={styles.container}>
       <View style={styles.content}>
         <View style={styles.switchRow}>
-          <Text>{i18n.t('settings.darkTheme')}</Text>
+          <Text variant="bodyLarge">{i18n.t('settings.darkTheme')}</Text>
           <Switch value={isThemeDark} onValueChange={toggleDarkTheme} />
         </View>
 
         <View style={styles.switchRow}>
-          <Text>{i18n.t('settings.useEnglish')}</Text>
+          <Text variant="bodyLarge">{i18n.t('settings.useEnglish')}</Text>
           <Switch value={isLanguageEnglish} onValueChange={toggleLanguage} />
         </View>
 
         {user && (
           <View style={styles.switchRow}>
-            <Text>{i18n.t('settings.alertPushNotifications')}</Text>
+            <Text variant="bodyLarge">{i18n.t('settings.alertPushNotifications')}</Text>
             <Switch value={alertNotifications} onValueChange={toggleAlert} />
           </View>
         )}
@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     alignItems: 'center',
-    padding: 100
+    padding: 80
   },
   aboutButton: {
     marginBottom: 12

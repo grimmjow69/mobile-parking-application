@@ -348,7 +348,6 @@ export default function MapScreen() {
             <View style={styles.modalActionIcons}>
               <IconButton
                 icon={notificationsEnabled ? 'bell' : 'bell-outline'}
-                // iconColor={modalContent?.detail?.isNotificationEnabled ? 'blue' : 'black'}
                 size={30}
                 onPress={() =>
                   handleNotificationPressed(user!.userId, modalContent!.spotId)
@@ -356,7 +355,6 @@ export default function MapScreen() {
               />
               <IconButton
                 icon={isFavourite ? 'star' : 'star-outline'}
-                // iconColor={modalContent?.detail?.isFavourite ? 'blue' : 'black'}
                 size={30}
                 onPress={() =>
                   handleFavouriteSpotPressed(user!.userId, modalContent!.spotId)

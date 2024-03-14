@@ -27,7 +27,7 @@ export const darkTheme = {
     shadow: 'rgb(0, 0, 0)',
     scrim: 'rgb(0, 0, 0)',
     inverseSurface: 'rgb(231, 225, 229)',
-    inverseOnSurface: '#fff',
+    inverseOnSurface: 'balck',
     inversePrimary: 'rgb(120, 69, 172)',
     elevation: {
       level0: 'transparent',
