@@ -279,7 +279,7 @@ export default function MapScreen() {
       setIsFavourite(!isFavourite);
       setLoading(true);
       const result = await updateFavouriteSpot(userId, isFavourite ? null : spotId);
-      setSnackBarContent(result.message, result.success ? successColor : err);
+      setSnackBarContent(result.message, result.success ? successColor : errorColor);
     } catch (error) {
       setSnackBarContent(i18n.t('base.error'), errorColor);
     } finally {
