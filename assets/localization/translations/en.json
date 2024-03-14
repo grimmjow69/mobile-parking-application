@@ -1,27 +1,44 @@
 {
+  "base": {
+    "close": "Close",
+    "confirm": "Confirm",
+    "error": "An unexpected error occurred",
+    "loadFailed": "Failed to load data",
+    "loadSuccess": "Data loaded successfully",
+    "locationPermissionDenied": "Location permission was denied. Please enable it in your device settings to continue",
+    "wait": "Please wait"
+  },
+  "heatmap": {},
   "navigation": {
-    "parkingMap": "Parking map",
+    "about": "About application",
     "heatmap": "Heatmap",
-    "profile": "Profile",
-    "settings": "Settings",
     "notifications": "Notifications",
-    "resendPassword": "Resend password",
+    "parkingMap": "Parking map",
+    "profile": "Profile",
     "registration": "Register",
-    "about": "About application"
+    "resendPassword": "Resend password",
+    "settings": "Settings"
+  },
+  "notifications": {
+    "emptyNotificationList": "No alert subscriptions yet",
+    "hasBeenTaken": "has been taken",
+    "isFree": "is free",
+    "notifications": "Notifications",
+    "parkingSpot": "Parking spot",
+    "subscribe": "Successful subscription to notification",
+    "unsubscribe": "Successful unsubscription for notification",
+    "unsubscribeContent": "Please confirm that you wish to delete this notification",
+    "unsubscribeTitle": "Unsubscribe to notification"
   },
   "parkingMap": {
-    "stateUnknown": "State: unkknown",
-    "findClosestSpot": "Find closest spot",
-    "stateOccupied": "State: occupied",
-    "stateFree": "State: free",
-    "updatedAt": "Updated at:",
-    "closestSpotFound": "Closest spot found",
-    "noSpotFound": "No free spot was found",
     "closestSpotFindError": "Error finding the closest spot",
-    "noFavSpot": "No favourite spot found",
+    "closestSpotFound": "Closest spot found",
     "favourite": {
       "updated": "Favourite spot successfully changed"
     },
+    "findClosestSpot": "Find closest spot",
+    "noFavSpot": "No favourite spot found",
+    "noSpotFound": "No free spot was found",
     "parkingSpotDetail": {
       "header": {
         "stateFree": "free",
@@ -30,85 +47,68 @@
       },
       "table": {
         "stateColumnName": "State",
-        "updatedAtColumnName": "Updated at",
         "stateFree": "Free",
         "stateOccupied": "Occupied",
-        "stateUnknown": "Unknown"
+        "stateUnknown": "Unknown",
+        "updatedAtColumnName": "Updated at"
       }
-    }
+    },
+    "stateFree": "State: free",
+    "stateOccupied": "State: occupied",
+    "stateUnknown": "State: unkknown",
+    "updatedAt": "Updated at:"
   },
-  "heatmap": {},
   "profile": {
-    "currentPassword": "Current password",
-    "newEmail" : "New email",
-    "newPassword": "New password",
-    "confirmPassword": "Confirm password",
-    "myNotifications": "My notifications",
-    "email": "Email",
-    "password": "Password",
-    "passwordCheck": "Password check",
-    "logIn": "Log in",
-    "register": "Register",
-    "forgotPassword": "Forgot password ?",
-    "dontHaveAccount": "Don't have account ?",
-    "registerHere": "Register here",
-    "resendPassword": "Resend password",
-    "signOut": "Sign out",
-    "changePassword": "Change password",
     "changeEmail": "Change email",
+    "changePassword": "Change password",
+    "confirmPassword": "Confirm password",
+    "currentPassword": "Current password",
+    "dontHaveAccount": "Don't have account ?",
+    "email": "Email",
     "errors": {
       "emailError": "Invalid email format",
-      "passwordLengthError": "Password must be at least 6 characters",
-      "passwordsMatchError": "Passwords do not match",
       "emailRequired": "Email is required",
+      "passwordCheckRequired": "Please confirm your password",
+      "passwordLengthError": "Password must be at least 6 characters",
       "passwordRequired": "Password is required",
-      "passwordCheckRequired": "Please confirm your password"
+      "passwordsMatchError": "Passwords do not match"
     },
+    "forgotPassword": "Forgot password ?",
+    "logIn": "Log in",
+    "loginResponse": {
+      "loginFailed": "Invalid email or password",
+      "loginSuccessful": "Login successful",
+      "networkError": "Unable to connect to the server. Please check your network connection",
+      "unexpectedError": "An unexpected error occurred during login"
+    },
+    "myNotifications": "My notifications",
+    "newEmail": "New email",
+    "newPassword": "New password",
+    "password": "Password",
+    "passwordCheck": "Password check",
+    "register": "Register",
+    "registerHere": "Register here",
     "registrationResponse": {
-      "registrationSucess": "Registration successful",
+      "emailAlreadyTaken": "Email is already taken",
       "registrationFail": "An unexpected error occurred",
-      "emailAlreadyTaken": "Email is already taken"
+      "registrationSucess": "Registration successful"
     },
+    "resendPassword": "Resend password",
+    "signOut": "Sign out",
     "updateResponse": {
+      "emailAlreadyInUse": "Email already in use",
       "emailUpdateSuccessfuly": "Email updated successfully",
       "passwordUpdatedSucessfuly": "Password updated successfully",
-      "passwordVerificationFailed": "Password verification failed",
-      "emailAlreadyInUse": "Email already in use"
-    },
-    "loginResponse": {
-      "loginSuccessful": "Login successful",
-      "loginFailed": "Invalid email or password",
-      "unexpectedError": "An unexpected error occurred during login",
-      "networkError": "Unable to connect to the server. Please check your network connection"
+      "passwordVerificationFailed": "Password verification failed"
     }
   },
   "settings": {
+    "alertPushNotifications": "Push notifications",
+    "author": "Author",
     "darkTheme": "Dark theme",
-    "useEnglish": "English language",
     "locationServices": "Location services",
     "reportBug": "Report bug",
-    "author": "Author",
-    "version": "Version",
-    "alertPushNotifications": "Push notifications"
-  },
-  "notifications": {
-    "parkingSpot": "Parking spot",
-    "emptyNotificationList": "No alert subscriptions yet",
-    "notifications": "Notifications",
-    "hasBeenTaken": "has been taken",
-    "isFree": "is free",
-    "subscribe": "Successful subscription to notification",
-    "unsubscribe": "Successful unsubscription for notification",
-    "unsubscribeTitle": "Unsubscribe to notification",
-    "unsubscribeContent": "Please confirm that you wish to delete this notification"
-  },
-  "base": {
-    "error": "An unexpected error occurred",
-    "loadSuccess": "Data loaded successfully",
-    "loadFailed": "Failed to load data",
-    "locationPermissionDenied": "Location permission was denied. Please enable it in your device settings to continue",
-    "close": "Close",
-    "confirm": "Confirm",
-    "wait": "Please wait"
+    "useEnglish": "English language",
+    "version": "Version"
   }
 }

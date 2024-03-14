@@ -1,24 +1,28 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { Button, Dialog, Icon, IconButton, List, Snackbar, Text } from 'react-native-paper';
-import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
-import { fetchUserNotifications, unsubscribeFromNotificationByNotificationId } from './services/notifications-service';
-import { PreferencesContext } from './context/preference-context';
-import { SpotNotification } from './models/notifications';
-import SpinnerOverlay from 'react-native-loading-spinner-overlay';
-import { Colors } from 'react-native/Libraries/NewAppScreen';
 import i18n from '@/assets/localization/i18n';
+import SpinnerOverlay from 'react-native-loading-spinner-overlay';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { Button, Dialog, Icon, IconButton, List, Snackbar, Text } from 'react-native-paper';
+import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { errorColor, successColor } from '@/constants/colors';
+import { fetchUserNotifications, unsubscribeFromNotificationByNotificationId } from './services/notifications-service';
+import { PreferencesContext, PreferencesContextProps } from './context/preference-context';
+import { SpotNotification } from './models/notifications';
+import { useContext, useEffect, useState } from 'react';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 export default function MyNotificationsScreen() {
-  const [snackbarVisible, setSnackbarVisible] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState('');
-  const [snackbarColor, setSnackbarColor] = useState('#323232');
-  const [dialogVisible, setDialogVisible] = useState(false);
+  const [snackbarVisible, setSnackbarVisible] = useState<boolean>(false);
+  const [snackbarMessage, setSnackbarMessage] = useState<string>('');
+  const [snackbarColor, setSnackbarColor] = useState<string>('');
+  const [dialogVisible, setDialogVisible] = useState<boolean>(false);
   const [notificationId, setNotificationId] = useState<number | null>(null);
-  const [userNotifications, setUserNotifications] = useState<SpotNotification[]>([]);
-  const [loading, setLoading] = useState(true);
-  const { isThemeDark, user } = useContext(PreferencesContext);
-
+  const [userNotifications, setUserNotifications] = useState<
+    SpotNotification[]
+  >([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const { isThemeDark, user } =
+    useContext<PreferencesContextProps>(PreferencesContext);
+    
   useEffect(() => {
     async function loadNotifications() {
       try {
@@ -60,7 +64,9 @@ export default function MyNotificationsScreen() {
   const EmptyListComponent = () => (
     <View style={styles.centered}>
       <Icon source={'delete-empty'} size={72} />
-      <Text style={styles.emptyText}>{i18n.t('notifications.emptyNotificationList')}</Text>
+      <Text style={styles.emptyText}>
+        {i18n.t('notifications.emptyNotificationList')}
+      </Text>
     </View>
   );
 
@@ -75,16 +81,27 @@ export default function MyNotificationsScreen() {
   }
 
   return (
-    <View style={styles.page}>
+    <SafeAreaProvider style={styles.container}>
       {loading ? (
         <SpinnerOverlay
           textContent={i18n.t('base.wait')}
-          textStyle={isThemeDark ? { color: '#fff' } : { color: '#303c64' }}
+          textStyle={
+            isThemeDark
+              ? {
+                  color: '#fff'
+                }
+              : {
+                  color: '#303c64'
+                }
+          }
           animation="fade"
           visible={true}
           overlayColor={Colors[isThemeDark ? 'dark' : 'light'].spinnerOverlay}
           customIndicator={
-            <ActivityIndicator size="large" color={Colors[isThemeDark ? 'dark' : 'light'].spinnerColor} />
+            <ActivityIndicator
+              size="large"
+              color={Colors[isThemeDark ? 'dark' : 'light'].spinnerColor}
+            />
           }
         />
       ) : userNotifications.length > 0 ? (
@@ -99,7 +116,9 @@ export default function MyNotificationsScreen() {
                   icon={'delete-circle'}
                   size={28}
                   style={styles.unsubscribeButton}
-                  onPress={() => deleteNotificationRecord(notification.notificationId)}
+                  onPress={() =>
+                    deleteNotificationRecord(notification.notificationId)
+                  }
                 />
               )}
               style={styles.itemDivider}
@@ -115,24 +134,40 @@ export default function MyNotificationsScreen() {
           <Text>{i18n.t('notifications.unsubscribeContent')}</Text>
         </Dialog.Content>
         <Dialog.Actions>
-          <Button onPress={() => unsubscribe(notificationId!)}>{i18n.t('base.confirm')}</Button>
-          <Button onPress={() => setDialogVisible(false)}>{i18n.t('base.close')}</Button>
+          <Button onPress={() => unsubscribe(notificationId!)}>
+            {i18n.t('base.confirm')}
+          </Button>
+          <Button onPress={() => setDialogVisible(false)}>
+            {i18n.t('base.close')}
+          </Button>
         </Dialog.Actions>
       </Dialog>
       <Snackbar
         visible={snackbarVisible}
         onDismiss={onDismissSnackBar}
         duration={1000}
-        style={{ backgroundColor: snackbarColor, alignItems: 'center' }}
+        style={{
+          backgroundColor: snackbarColor,
+          alignItems: 'center'
+        }}
       >
-        <Text style={{ textAlign: 'center', fontWeight: 'bold', color: '#fff' }}> {snackbarMessage}</Text>
+        <Text
+          style={{
+            textAlign: 'center',
+            fontWeight: 'bold',
+            color: '#fff'
+          }}
+        >
+          {' '}
+          {snackbarMessage}
+        </Text>
       </Snackbar>
-    </View>
+    </SafeAreaProvider>
   );
 }
 
 const styles = StyleSheet.create({
-  page: {
+  container: {
     flex: 1
   },
   emptyText: {

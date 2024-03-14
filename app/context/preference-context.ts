@@ -1,7 +1,7 @@
 import { createContext } from 'react';
 import { UserData } from '../models/user';
 
-interface PreferencesContextProps {
+export interface PreferencesContextProps {
   toggleTheme: () => void;
   isThemeDark: boolean;
   language: string;
@@ -11,7 +11,6 @@ interface PreferencesContextProps {
   alertNotifications: boolean;
   toggleAlertNotifications: () => void;
 }
-
 export const PreferencesContext = createContext<PreferencesContextProps>({
   toggleTheme: () => {},
   isThemeDark: false,

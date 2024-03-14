@@ -1,27 +1,43 @@
 {
+  "base": {
+    "close": "Zavrieť",
+    "confirm": "Potvrdiť",
+    "error": "Došlo k neočakávanej chybe",
+    "loadFailed": "Načítanie dát zlyhalo",
+    "loadSuccess": "Dáta boli úspešne načítané",
+    "locationPermissionDenied": "Povolenie polohy je zamietnuté. Prosím, povoľte ho vo svojich nastaveniach zariadenia",
+    "wait": "Prosím, počkajte"
+  },
+  "heatmap": {},
   "navigation": {
-    "parkingMap": "Parkovisko",
+    "about": "O aplikacii",
     "heatmap": "Heatmapa",
-    "profile": "Profil",
-    "settings": "Nastavenia",
     "notifications": "Notifikácie",
-    "resendPassword": "Odoslať stratené heslo",
+    "parkingMap": "Parkovisko",
+    "profile": "Profil",
     "registration": "Registrácia",
-    "about": "O aplikacii"
+    "resendPassword": "Odoslať stratené heslo",
+    "settings": "Nastavenia"
+  },
+  "notifications": {
+    "emptyNotificationList": "Žiadne notifikácie na odber",
+    "hasBeenTaken": "bol obsadené",
+    "isFree": "je voľné",
+    "parkingSpot": "Parkovacie miesto",
+    "subscribe": "Úspešné prihlásenie na notifikáciu",
+    "unsubscribe": "Úspešné odhlásenie na notifikáciu",
+    "unsubscribeContent": "Prosím, potvrďte, že si želáte zmazať túto notifikáciu",
+    "unsubscribeTitle": "Zmazanie notifikácie"
   },
   "parkingMap": {
-    "stateUnknown": "Stav: neznáme",
-    "findClosestSpot": "Nájsť najbližšie miesto",
-    "stateOccupied": "Stav: obsadené",
-    "stateFree": "Stav: voľné",
-    "updatedAt": "Aktualizované:",
-    "closestSpotFound": "Najbližšie bolo nájdené",
-    "noSpotFound": "Žiadne voľné miesto nebolo nenájdené",
     "closestSpotFindError": "Chyba pri hľadaní najbližšieho miesta",
-    "noFavSpot": "Obľúbené miesto nebolo nenájdené",
+    "closestSpotFound": "Najbližšie bolo nájdené",
     "favourite": {
       "updated": "Obľúbené miesto úspešne zmenené"
     },
+    "findClosestSpot": "Nájsť najbližšie miesto",
+    "noFavSpot": "Obľúbené miesto nebolo nenájdené",
+    "noSpotFound": "Žiadne voľné miesto nebolo nenájdené",
     "parkingSpotDetail": {
       "header": {
         "stateFree": "voľné",
@@ -30,84 +46,68 @@
       },
       "table": {
         "stateColumnName": "Stav",
-        "updatedAtColumnName": "Aktualizované",
         "stateFree": "Voľné",
         "stateOccupied": "Obsadené",
-        "stateUnknown": "Neznáme"
+        "stateUnknown": "Neznáme",
+        "updatedAtColumnName": "Aktualizované"
       }
-    }
+    },
+    "stateFree": "Stav: voľné",
+    "stateOccupied": "Stav: obsadené",
+    "stateUnknown": "Stav: neznáme",
+    "updatedAt": "Aktualizované:"
   },
-  "heatmap": {},
   "profile": {
-    "currentPassword": "Aktuálne heslo",
-    "newEmail": "Nový email",
-    "newPassword": "Nové heslo",
-    "confirmPassword": "Potvrďte heslo",
-    "myNotifications": "Moje notifikácie",
-    "email": "Email",
-    "password": "Heslo",
-    "passwordCheck": "Kontrola hesla",
-    "logIn": "Prihlásiť sa",
-    "register": "Zaregistrovať sa",
-    "forgotPassword": "Zabudli ste heslo?",
-    "dontHaveAccount": "Nemáte účet?",
-    "registerHere": "Registrovať",
-    "resendPassword": "Odoslať heslo",
-    "signOut": "Odhlásiť",
-    "changePassword": "Zmeniť heslo",
     "changeEmail": "Zmeniť email",
+    "changePassword": "Zmeniť heslo",
+    "confirmPassword": "Potvrďte heslo",
+    "currentPassword": "Aktuálne heslo",
+    "dontHaveAccount": "Nemáte účet?",
+    "email": "Email",
     "errors": {
       "emailError": "Formát emailovej adresy je neplatný",
-      "passwordLengthError": "Heslo musí mať aspoň 6 znakov",
-      "passwordsMatchError": "Heslá sa nezhodujú",
       "emailRequired": "Email je povinný",
+      "passwordCheckRequired": "Prosím, potvrďte svoje heslo",
+      "passwordLengthError": "Heslo musí mať aspoň 6 znakov",
       "passwordRequired": "Heslo je povinné",
-      "passwordCheckRequired": "Prosím, potvrďte svoje heslo"
+      "passwordsMatchError": "Heslá sa nezhodujú"
     },
+    "forgotPassword": "Zabudli ste heslo?",
+    "logIn": "Prihlásiť sa",
+    "loginResponse": {
+      "loginFailed": "Nesprávny email alebo heslo",
+      "loginSuccessful": "Prihlásenie bolo úspešné",
+      "networkError": "Nedá sa pripojiť k serveru. Skontrolujte prosím vaše sieťové pripojenie",
+      "unexpectedError": "Počas prihlásenia došlo k neočakávanej chybe"
+    },
+    "myNotifications": "Moje notifikácie",
+    "newEmail": "Nový email",
+    "newPassword": "Nové heslo",
+    "password": "Heslo",
+    "passwordCheck": "Kontrola hesla",
+    "register": "Zaregistrovať sa",
+    "registerHere": "Registrovať",
     "registrationResponse": {
-      "registrationSucess": "Registrácia prebehla úspešne",
+      "emailAlreadyTaken": "Email je už obsadený",
       "registrationFail": "Nastala neočakávaná chyba",
-      "emailAlreadyTaken": "Email je už obsadený"
+      "registrationSucess": "Registrácia prebehla úspešne"
     },
+    "resendPassword": "Odoslať heslo",
+    "signOut": "Odhlásiť",
     "updateResponse": {
+      "emailAlreadyInUse": "Email už je obsadený",
       "emailUpdatedSuccessfuly": "Email bol úspešne aktualizovaný",
       "passwordUpdatedSucessfuly": "Heslo bolo úspešne aktualizované",
-      "passwordVerificationFailed": "Overenie hesla zlyhalo",
-      "emailAlreadyInUse": "Email už je obsadený"
-    },
-    "loginResponse": {
-      "loginSuccessful": "Prihlásenie bolo úspešné",
-      "loginFailed": "Nesprávny email alebo heslo",
-      "unexpectedError": "Počas prihlásenia došlo k neočakávanej chybe",
-      "networkError": "Nedá sa pripojiť k serveru. Skontrolujte prosím vaše sieťové pripojenie"
+      "passwordVerificationFailed": "Overenie hesla zlyhalo"
     }
   },
   "settings": {
+    "alertPushNotifications": "Push notifikácie",
+    "author": "Autor",
     "darkTheme": "Tmavá téma",
-    "useEnglish": "Použiť Angličtinu",
     "locationServices": "Lokalizačné služby",
     "reportBug": "Nahlásiť chybu",
-    "author": "Autor",
-    "version": "Verzia",
-    "alertPushNotifications": "Push notifikácie"
-  },
-  "notifications": {
-    "parkingSpot": "Parkovacie miesto",
-    "emptyNotificationList": "Žiadne notifikácie na odber",
-    "hasBeenTaken": "bol obsadené",
-    "isFree": "je voľné",
-    "subscribe": "Úspešné prihlásenie na notifikáciu",
-    "unsubscribe": "Úspešné odhlásenie na notifikáciu",
-    "unsubscribeTitle": "Zmazanie notifikácie",
-    "unsubscribeContent": "Prosím, potvrďte, že si želáte zmazať túto notifikáciu"
-  },
-  "base": {
-    "error": "Došlo k neočakávanej chybe",
-    "loadSuccess": "Dáta boli úspešne načítané",
-    "loadFailed": "Načítanie dát zlyhalo",
-    "locationPermissionDenied": "Povolenie polohy je zamietnuté. Prosím, povoľte ho vo svojich nastaveniach zariadenia",
-    "close": "Zavrieť",
-    "confirm": "Potvrdiť",
-    "wait": "Prosím, počkajte"
+    "useEnglish": "Použiť Angličtinu",
+    "version": "Verzia"
   }
 }

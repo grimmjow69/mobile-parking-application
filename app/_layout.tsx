@@ -10,12 +10,11 @@ import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native
 import { PaperProvider } from 'react-native-paper';
 import { Platform } from 'react-native';
 import { PreferencesContext } from './context/preference-context';
+import { PushNotificationConfig } from './models/notifications';
 import { Stack } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { useFonts } from 'expo-font';
 import { UserData } from './models/user';
-import { PushNotificationConfig } from './models/notifications';
-
 export { ErrorBoundary } from 'expo-router';
 
 export const unstable_settings = {
@@ -56,18 +55,15 @@ export default function RootLayout() {
 }
 
 function RootLayoutNav() {
-  const [isThemeDark, setIsThemeDark] = useState(false);
-  const [alertNotifications, setAlertNotifications] = useState(true);
-  const [language, setLanguage] = useState('en');
+  const [isThemeDark, setIsThemeDark] = useState<boolean>(false);
+  const [alertNotifications, setAlertNotifications] = useState<boolean>(true);
+  const [language, setLanguage] = useState<string>('en');
   const [user, setUser] = useState<UserData | null>(null);
 
   const setFavouriteSpotId = useCallback((id: number) => {
     setUser((currentUser) => {
       if (!currentUser) return currentUser;
-      return {
-        ...currentUser,
-        favouriteSpotId: id
-      };
+      return { ...currentUser, favouriteSpotId: id };
     });
   }, []);
 
@@ -83,17 +79,20 @@ function RootLayoutNav() {
     const loadPreferences = async () => {
       try {
         const storedTheme = await AsyncStorage.getItem('theme');
+
         if (storedTheme !== null) {
           setIsThemeDark(storedTheme === 'dark');
         }
 
         const storedLanguage = await AsyncStorage.getItem('language');
+
         if (storedLanguage !== null) {
           setLanguage(storedLanguage);
           i18n.changeLanguage(storedLanguage);
         }
 
         const value = await AsyncStorage.getItem('pushNotificationsConfig');
+
         if (value !== null) {
           const config: PushNotificationConfig = JSON.parse(value);
           setAlertNotifications(config.enabled);
@@ -104,22 +103,20 @@ function RootLayoutNav() {
     const loadUserData = async () => {
       try {
         const userJson = await AsyncStorage.getItem('user');
+
         if (userJson !== null) {
           const userData = JSON.parse(userJson);
           setUser(userData);
         }
       } catch (e) {
-        console.error('Failed to load user data', e);
       }
     };
 
     loadPreferences();
     loadUserData();
   }, []);
-
   let paperTheme = isThemeDark ? darkTheme : lightTheme;
   let reactNavigationtheme = isThemeDark ? DarkTheme : DefaultTheme;
-
   const preferences = React.useMemo(
     () => ({
       toggleTheme,
@@ -146,7 +143,9 @@ function RootLayoutNav() {
   );
 
   if (Platform.OS === 'android') {
-    NavigationBar.setBackgroundColorAsync(Colors[isThemeDark ? 'dark' : 'light'].navigationBar);
+    NavigationBar.setBackgroundColorAsync(
+      Colors[isThemeDark ? 'dark' : 'light'].navigationBar
+    );
   }
 
   return (
@@ -154,20 +153,40 @@ function RootLayoutNav() {
       <ThemeProvider value={reactNavigationtheme}>
         <PaperProvider theme={paperTheme}>
           <Stack>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen
+              name="(tabs)"
+              options={{
+                headerShown: false
+              }}
+            />
             <Stack.Screen
               name="registration"
-              options={{ presentation: 'modal', title: i18n.t('navigation.registration') }}
+              options={{
+                presentation: 'modal',
+                title: i18n.t('navigation.registration')
+              }}
             />
             <Stack.Screen
               name="resend-password"
-              options={{ presentation: 'modal', title: i18n.t('navigation.resendPassword') }}
+              options={{
+                presentation: 'modal',
+                title: i18n.t('navigation.resendPassword')
+              }}
             />
             <Stack.Screen
               name="my-notifications"
-              options={{ presentation: 'modal', title: i18n.t('navigation.notifications') }}
+              options={{
+                presentation: 'modal',
+                title: i18n.t('navigation.notifications')
+              }}
             />
-            <Stack.Screen name="about" options={{ presentation: 'modal', title: i18n.t('navigation.about') }} />
+            <Stack.Screen
+              name="about"
+              options={{
+                presentation: 'modal',
+                title: i18n.t('navigation.about')
+              }}
+            />
           </Stack>
         </PaperProvider>
       </ThemeProvider>

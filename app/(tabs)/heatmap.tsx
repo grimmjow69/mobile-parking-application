@@ -7,19 +7,21 @@ import { darkMap, LightMap } from '@/constants/map-styles';
 import { Dimensions, StyleSheet, View } from 'react-native';
 import { fetchHeatmapData } from '../services/parking-data-service';
 import { HeatmapPoint } from '../models/heatmap';
-import { PreferencesContext } from '../context/preference-context';
+import { PreferencesContext, PreferencesContextProps } from '../context/preference-context';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { UNIZA_INITIAL_REGION } from '@/constants/coords';
 import { useCallback, useContext, useEffect, useState } from 'react';
 import { useIsFocused } from '@react-navigation/native';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 export default function HeatmapScreen() {
   const [heatmapPoints, setHeatmapPoints] = useState<HeatmapPoint[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [snackbarVisible, setSnackbarVisible] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState('');
-  const [snackbarColor, setSnackbarColor] = useState('#323232');
-  const { isThemeDark } = useContext(PreferencesContext);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [snackbarVisible, setSnackbarVisible] = useState<boolean>(false);
+  const [snackbarMessage, setSnackbarMessage] = useState<string>('');
+  const [snackbarColor, setSnackbarColor] = useState<string>('');
+  const { isThemeDark } =
+    useContext<PreferencesContextProps>(PreferencesContext);
+
   const isFocused = useIsFocused();
 
   const getData = useCallback(async () => {
@@ -61,7 +63,13 @@ export default function HeatmapScreen() {
           <Heatmap
             points={heatmapPoints}
             gradient={{
-              colors: ['transparent', '#BBCF4C', '#EEC20B', '#F29305', '#E50000'],
+              colors: [
+                'transparent',
+                '#BBCF4C',
+                '#EEC20B',
+                '#F29305',
+                '#E50000'
+              ],
               startPoints: [0, 0.25, 0.5, 0.75, 1],
               colorMapSize: 500
             }}
@@ -83,17 +91,42 @@ export default function HeatmapScreen() {
         visible={snackbarVisible}
         onDismiss={onDismissSnackBar}
         duration={1000}
-        style={{ backgroundColor: snackbarColor, alignItems: 'center' }}
+        style={{
+          backgroundColor: snackbarColor,
+          alignItems: 'center'
+        }}
       >
-        <Text style={{ textAlign: 'center', fontWeight: 'bold', color: '#fff' }}> {snackbarMessage}</Text>
+        <Text
+          style={{
+            textAlign: 'center',
+            fontWeight: 'bold',
+            color: '#fff'
+          }}
+        >
+          {' '}
+          {snackbarMessage}
+        </Text>
       </Snackbar>
       <SpinnerOverlay
         textContent={i18n.t('base.wait')}
-        textStyle={isThemeDark ? {color: '#fff'} : {color: '#303c64'}}
-        animation='fade'
+        textStyle={
+          isThemeDark
+            ? {
+                color: '#fff'
+              }
+            : {
+                color: '#303c64'
+              }
+        }
+        animation="fade"
         visible={loading}
         overlayColor={Colors[isThemeDark ? 'dark' : 'light'].spinnerOverlay}
-        customIndicator={<ActivityIndicator size="large" color={Colors[isThemeDark ? 'dark' : 'light'].spinnerColor} />}
+        customIndicator={
+          <ActivityIndicator
+            size="large"
+            color={Colors[isThemeDark ? 'dark' : 'light'].spinnerColor}
+          />
+        }
       />
     </SafeAreaProvider>
   );

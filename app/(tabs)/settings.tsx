@@ -1,22 +1,26 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import i18n from '../../assets/localization/i18n';
 import { Button, Switch, Text } from 'react-native-paper';
-import {
-  deletePushTokenFromServer,
-  registerForPushNotificationsAsync,
-  sendPushTokenToServer
-} from '../services/notifications-service';
-import { PreferencesContext } from '../context/preference-context';
+import { deletePushTokenFromServer, registerForPushNotificationsAsync, sendPushTokenToServer } from '../services/notifications-service';
+import { Link } from 'expo-router';
+import { PreferencesContext, PreferencesContextProps } from '../context/preference-context';
 import { PushNotificationConfig } from '../models/notifications';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { StyleSheet, View } from 'react-native';
 import { useContext, useState } from 'react';
-import { Link } from 'expo-router';
 
 export default function SettingsScreen() {
-  const { toggleTheme, isThemeDark, setLanguage, user, toggleAlertNotifications, alertNotifications } =
-    useContext(PreferencesContext);
-  const [isLanguageEnglish, setIsLanguageEnglish] = useState(i18n.language === 'en');
+  const {
+    toggleTheme,
+    isThemeDark,
+    setLanguage,
+    user,
+    toggleAlertNotifications,
+    alertNotifications
+  } = useContext<PreferencesContextProps>(PreferencesContext);
+  const [isLanguageEnglish, setIsLanguageEnglish] = useState<boolean>(
+    i18n.language === 'en'
+  );
 
   const toggleLanguage = async () => {
     const newLanguage = isLanguageEnglish ? 'sk' : 'en';
@@ -34,12 +38,14 @@ export default function SettingsScreen() {
 
   const toggleAlert = async () => {
     toggleAlertNotifications();
-
     const pushNotificationsConfig: PushNotificationConfig = {
       enabled: !alertNotifications
     };
+    await AsyncStorage.setItem(
+      'pushNotificationsConfig',
+      JSON.stringify(pushNotificationsConfig)
+    );
 
-    await AsyncStorage.setItem('pushNotificationsConfig', JSON.stringify(pushNotificationsConfig));
     try {
       if (pushNotificationsConfig.enabled) {
         await registerForPushNotificationsAsync().then((token) => {
@@ -50,9 +56,7 @@ export default function SettingsScreen() {
       } else {
         await deletePushTokenFromServer(user!.userId);
       }
-    } catch (error) {
-      console.error('Failed when setting up notifications', error);
-    }
+    } catch (error) {}
   };
 
   const reportBug = () => {
@@ -60,44 +64,49 @@ export default function SettingsScreen() {
   };
 
   return (
-      <SafeAreaProvider style={styles.container}>
-        <View style={styles.content}>
-          <View style={styles.switchRow}>
-            <Text>{i18n.t('settings.darkTheme')}</Text>
-            <Switch value={isThemeDark} onValueChange={toggleDarkTheme} />
-          </View>
-
-          <View style={styles.switchRow}>
-            <Text>{i18n.t('settings.useEnglish')}</Text>
-            <Switch value={isLanguageEnglish} onValueChange={toggleLanguage} />
-          </View>
-
-          {user && (
-            <View style={styles.switchRow}>
-              <Text>{i18n.t('settings.alertPushNotifications')}</Text>
-              <Switch value={alertNotifications} onValueChange={toggleAlert} />
-            </View>
-          )}
-
-          <View style={styles.footer}>
-            <Link href="/about" asChild style={[styles.aboutButton, styles.footerButton]}>
-              <Button
-                icon="information"
-                mode="contained"
-                onPress={reportBug}
-              >
-                {i18n.t('navigation.about')}
-              </Button>
-            </Link>
-
-            <Button icon="bug" mode="contained" style={[styles.reportButton, styles.footerButton]} onPress={reportBug}>
-              {i18n.t('settings.reportBug')}
-            </Button>
-            <Text>{i18n.t('settings.author')}: Lukáš Fuček</Text>
-            <Text>{i18n.t('settings.version')}: 1.0.0</Text>
-          </View>
+    <SafeAreaProvider style={styles.container}>
+      <View style={styles.content}>
+        <View style={styles.switchRow}>
+          <Text>{i18n.t('settings.darkTheme')}</Text>
+          <Switch value={isThemeDark} onValueChange={toggleDarkTheme} />
         </View>
-      </SafeAreaProvider>
+
+        <View style={styles.switchRow}>
+          <Text>{i18n.t('settings.useEnglish')}</Text>
+          <Switch value={isLanguageEnglish} onValueChange={toggleLanguage} />
+        </View>
+
+        {user && (
+          <View style={styles.switchRow}>
+            <Text>{i18n.t('settings.alertPushNotifications')}</Text>
+            <Switch value={alertNotifications} onValueChange={toggleAlert} />
+          </View>
+        )}
+
+        <View style={styles.footer}>
+          <Link
+            href="/about"
+            asChild
+            style={[styles.aboutButton, styles.footerButton]}
+          >
+            <Button icon="information" mode="contained" onPress={reportBug}>
+              {i18n.t('navigation.about')}
+            </Button>
+          </Link>
+
+          <Button
+            icon="bug"
+            mode="contained"
+            style={[styles.reportButton, styles.footerButton]}
+            onPress={reportBug}
+          >
+            {i18n.t('settings.reportBug')}
+          </Button>
+          <Text>{i18n.t('settings.author')}: Lukáš Fuček</Text>
+          <Text>{i18n.t('settings.version')}: 1.0.0</Text>
+        </View>
+      </View>
+    </SafeAreaProvider>
   );
 }
 

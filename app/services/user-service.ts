@@ -1,13 +1,11 @@
 import i18n from '@/assets/localization/i18n';
-
+import { UpdateUserResponse } from '../models/user';
 const API_BASE_URL = 'http://192.168.100.11:8080/user';
 
-export interface UpdateUserResponse {
-  success: boolean;
-  message: string;
-}
-
-export const updateFavouriteSpot = async (userId: number, spotId: number | null): Promise<void> => {
+export const updateFavouriteSpot = async (
+  userId: number,
+  spotId: number | null
+): Promise<UpdateUserResponse> => {
   try {
     const response = await fetch(`${API_BASE_URL}/update-favourite-spot`, {
       method: 'PUT',
@@ -21,10 +19,21 @@ export const updateFavouriteSpot = async (userId: number, spotId: number | null)
     });
 
     if (!response.ok) {
-      throw new Error(`Server responded with status: ${response.status}`);
+      return {
+        success: false,
+        message: i18n.t('base.error')
+      };
+    } else {
+      return {
+        success: true,
+        message: i18n.t('parkingMap.favourite.updated')
+      };
     }
   } catch (error) {
-    console.error('Error updateing favourite spot:', error);
+    return {
+      success: true,
+      message: i18n.t('base.error')
+    };
   }
 };
 
@@ -47,14 +56,26 @@ export const updateUserPassword = async (
     });
 
     if (response.ok) {
-      return { success: true, message: i18n.t('updateResponse.passwordUpdatedSucessfuly') };
+      return {
+        success: true,
+        message: i18n.t('updateResponse.passwordUpdatedSucessfuly')
+      };
     } else if (response.status === 401) {
-      return { success: false, message: i18n.t('updateResponse.passwordVerificationFailed') };
+      return {
+        success: false,
+        message: i18n.t('updateResponse.passwordVerificationFailed')
+      };
     } else {
-      return { success: false, message: i18n.t('base.error') };
+      return {
+        success: false,
+        message: i18n.t('base.error')
+      };
     }
   } catch (error) {
-    return { success: false, message: 'An unexpected error occurred' };
+    return {
+      success: false,
+      message: i18n.t('base.error')
+    };
   }
 };
 
@@ -77,15 +98,30 @@ export const updateUserEmail = async (
     });
 
     if (response.ok) {
-      return { success: true, message: i18n.t('updateResponse.emailUpdatedSuccessfuly') };
+      return {
+        success: true,
+        message: i18n.t('updateResponse.emailUpdatedSuccessfuly')
+      };
     } else if (response.status === 401) {
-      return { success: false, message: i18n.t('updateResponse.passwordVerificationFailed') };
+      return {
+        success: false,
+        message: i18n.t('updateResponse.passwordVerificationFailed')
+      };
     } else if (response.status === 409) {
-      return { success: false, message: i18n.t('updateResponse.emailAlreadyInUse') };
+      return {
+        success: false,
+        message: i18n.t('updateResponse.emailAlreadyInUse')
+      };
     } else {
-      return { success: false, message: i18n.t('base.error') };
+      return {
+        success: false,
+        message: i18n.t('base.error')
+      };
     }
   } catch (error) {
-    return { success: false, message: 'base.error' };
+    return {
+      success: false,
+      message: i18n.t('base.error')
+    };
   }
 };

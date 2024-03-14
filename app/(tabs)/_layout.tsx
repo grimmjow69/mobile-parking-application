@@ -1,12 +1,14 @@
 import Colors from '@/constants/colors';
 import i18n from '../../assets/localization/i18n';
 import { Icon } from 'react-native-paper';
-import { PreferencesContext } from '../context/preference-context';
+import { PreferencesContext, PreferencesContextProps } from '../context/preference-context';
 import { Tabs } from 'expo-router';
 import { useContext } from 'react';
 
 export default function TabLayout() {
-  const { isThemeDark } = useContext(PreferencesContext);
+  const { isThemeDark } =
+    useContext<PreferencesContextProps>(PreferencesContext);
+    
   return (
     <Tabs
       screenOptions={{
@@ -27,7 +29,9 @@ export default function TabLayout() {
         options={{
           title: i18n.t('navigation.parkingMap'),
           headerTitleAlign: 'center',
-          tabBarIcon: ({ color }) => <Icon source="map-marker-multiple" color={color} size={26} />
+          tabBarIcon: ({ color }) => (
+            <Icon source="map-marker-multiple" color={color} size={26} />
+          )
         }}
       />
       <Tabs.Screen
@@ -35,7 +39,9 @@ export default function TabLayout() {
         options={{
           title: i18n.t('navigation.heatmap'),
           headerTitleAlign: 'center',
-          tabBarIcon: ({ color }) => <Icon source="map-clock" color={color} size={26} />
+          tabBarIcon: ({ color }) => (
+            <Icon source="map-clock" color={color} size={26} />
+          )
         }}
       />
       <Tabs.Screen
@@ -43,7 +49,9 @@ export default function TabLayout() {
         options={{
           title: i18n.t('navigation.profile'),
           headerTitleAlign: 'center',
-          tabBarIcon: ({ color }) => <Icon source="account" color={color} size={26} />
+          tabBarIcon: ({ color }) => (
+            <Icon source="account" color={color} size={26} />
+          )
         }}
       />
       <Tabs.Screen
@@ -51,7 +59,9 @@ export default function TabLayout() {
         options={{
           title: i18n.t('navigation.settings'),
           headerTitleAlign: 'center',
-          tabBarIcon: ({ color }) => <Icon source="cog" color={color} size={26} />
+          tabBarIcon: ({ color }) => (
+            <Icon source="cog" color={color} size={26} />
+          )
         }}
       />
     </Tabs>

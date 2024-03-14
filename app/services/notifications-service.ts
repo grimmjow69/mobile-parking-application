@@ -5,7 +5,10 @@ import { SpotNotification } from '../models/notifications';
 
 const API_BASE_URL = 'http://192.168.100.11:8080/notification';
 
-export const sendPushTokenToServer = async (token: string, userId: number): Promise<void> => {
+export const sendPushTokenToServer = async (
+  token: string,
+  userId: number
+): Promise<void> => {
   try {
     const response = await fetch(`${API_BASE_URL}/register-push-token`, {
       method: 'POST',
@@ -13,20 +16,20 @@ export const sendPushTokenToServer = async (token: string, userId: number): Prom
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        userId,
-        token
+        userId: userId,
+        token: token
       })
     });
 
     if (!response.ok) {
       throw new Error(`Server responded with status: ${response.status}`);
     }
-  } catch (error) {
-    console.error('Error sending push token to server:', error);
-  }
+  } catch (error) {}
 };
 
-export const deletePushTokenFromServer = async (userId: number): Promise<void> => {
+export const deletePushTokenFromServer = async (
+  userId: number
+): Promise<void> => {
   try {
     const response = await fetch(`${API_BASE_URL}/delete-push-token`, {
       method: 'POST',
@@ -34,26 +37,29 @@ export const deletePushTokenFromServer = async (userId: number): Promise<void> =
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        userId
+        userId: userId
       })
     });
 
     if (!response.ok) {
       throw new Error(`Server responded with status: ${response.status}`);
     }
-  } catch (error) {
-    console.error('Error removing push token to server:', error);
-  }
+  } catch (error) {}
 };
 
-export const fetchUserNotifications = async (userId: number): Promise<SpotNotification[]> => {
+export const fetchUserNotifications = async (
+  userId: number
+): Promise<SpotNotification[]> => {
   try {
-    const response = await fetch(`${API_BASE_URL}/user-notifications/${userId}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
+    const response = await fetch(
+      `${API_BASE_URL}/user-notifications/${userId}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
       }
-    });
+    );
 
     if (!response.ok) {
       throw new Error(`Server responded with status: ${response.status}`);
@@ -61,14 +67,15 @@ export const fetchUserNotifications = async (userId: number): Promise<SpotNotifi
     const jsonResponse = await response.json();
     return jsonResponse.userNotifications;
   } catch (error) {
-    console.error('Error fetching user notifications:', error);
     throw error;
   }
 };
+
 export async function registerForPushNotificationsAsync() {
   let token;
   if (Constants.isDevice) {
-    const { status: existingStatus } = await Notifications.getPermissionsAsync();
+    const { status: existingStatus } =
+      await Notifications.getPermissionsAsync();
     let finalStatus = existingStatus;
     if (existingStatus !== 'granted') {
       const { status } = await Notifications.requestPermissionsAsync();
@@ -80,7 +87,6 @@ export async function registerForPushNotificationsAsync() {
     }
     const projectId = Constants.manifest2?.extra?.eas?.projectId;
     if (!projectId) {
-      console.error('Project ID is required to get the Expo Push Token and was not found in the app manifest.');
       return;
     }
     token = (await Notifications.getExpoPushTokenAsync({ projectId })).data;
@@ -100,7 +106,10 @@ export async function registerForPushNotificationsAsync() {
   return token;
 }
 
-export const subscribeToNotification = async (parkingSpotId: number, userId: number): Promise<void> => {
+export const subscribeToNotification = async (
+  parkingSpotId: number,
+  userId: number
+): Promise<void> => {
   try {
     const response = await fetch(`${API_BASE_URL}/subscribe`, {
       method: 'POST',
@@ -116,26 +125,27 @@ export const subscribeToNotification = async (parkingSpotId: number, userId: num
     if (!response.ok) {
       throw new Error(`Server responded with status: ${response.status}`);
     }
-  } catch (error) {
-    console.error('Error subscribing to notification:', error);
-  }
+  } catch (error) {}
 };
 
-export const unsubscribeFromNotificationByNotificationId = async (notificationId: number): Promise<void> => {
+export const unsubscribeFromNotificationByNotificationId = async (
+  notificationId: number
+): Promise<void> => {
   try {
-    const response = await fetch(`${API_BASE_URL}/unsubscribe/${notificationId}`, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json'
+    const response = await fetch(
+      `${API_BASE_URL}/unsubscribe/${notificationId}`,
+      {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json'
+        }
       }
-    });
+    );
 
     if (!response.ok) {
       throw new Error(`Server responded with status: ${response.status}`);
     }
-  } catch (error) {
-    console.error('Error unsubscribing from notifications:', error);
-  }
+  } catch (error) {}
 };
 
 export const unsubscribeFromNotificationByUserAndParkingSpotId = async (
@@ -149,15 +159,13 @@ export const unsubscribeFromNotificationByUserAndParkingSpotId = async (
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        userId,
-        parkingSpotId
+        userId: userId,
+        parkingSpotId: parkingSpotId
       })
     });
 
     if (!response.ok) {
       throw new Error(`Server responded with status: ${response.status}`);
     }
-  } catch (error) {
-    console.error('Error unsubscribing from notifications:', error);
-  }
+  } catch (error) {}
 };

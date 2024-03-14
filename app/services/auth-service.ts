@@ -1,7 +1,12 @@
 import i18n from '../../assets/localization/i18n';
+import { LoginUserResponse, RegisterUserResponse } from '../models/user';
+
 const API_BASE_URL = 'http://192.168.100.11:8080/auth';
 
-export const registerUser = async (email: string, password: string, showSnackbar: any, onSuccess: () => void) => {
+export const registerUser = async (
+  email: string,
+  password: string
+): Promise<RegisterUserResponse> => {
   try {
     const response = await fetch(`${API_BASE_URL}/register`, {
       method: 'POST',
@@ -14,27 +19,34 @@ export const registerUser = async (email: string, password: string, showSnackbar
       })
     });
 
-    const data = await response.json();
-
-    if (response.status === 200) {
-      showSnackbar(i18n.t('profile.registrationResponse.registrationSucess'), '#56ae57');
-      onSuccess();
-    } else if (response.status === 400) {
-      showSnackbar(i18n.t(`profile.registrationResponse.${data.error}`), '#D32F2F');
+    if (response.status === 201) {
+      return {
+        success: true,
+        message: i18n.t('profile.registrationResponse.registrationSucess')
+      };
+    } else if (response.status === 409) {
+      return {
+        success: false,
+        message: i18n.t(`profile.registrationResponse.emailAlreadyTaken`)
+      };
     } else {
-      showSnackbar(i18n.t('profile.registrationResponse.registrationFailed'), '#D32F2F');
+      return {
+        success: false,
+        message: i18n.t('profile.registrationResponse.registrationFailed')
+      };
     }
   } catch (error) {
-    showSnackbar(i18n.t('profile.registrationResponse.unexpectedFailed'), '#D32F2F');
+    return {
+      success: false,
+      message: i18n.t('base.error')
+    };
   }
 };
 
 export const loginUser = async (
   email: string,
-  password: string,
-  showSnackbar: any,
-  onSuccess: (userData: any) => void
-) => {
+  password: string
+): Promise<LoginUserResponse> => {
   try {
     const response = await fetch(`${API_BASE_URL}/login`, {
       method: 'POST',
@@ -46,18 +58,32 @@ export const loginUser = async (
         password: password
       })
     });
-
     const data = await response.json();
 
     if (response.status === 200 && data.loginSuccessfull) {
-      showSnackbar(i18n.t('profile.loginResponse.loginSuccessful'), '#56ae57');
-      onSuccess(data.user);
+      return {
+        success: true,
+        message: i18n.t('profile.loginResponse.loginSuccessful'),
+        user: data.user
+      };
     } else if (response.status === 401) {
-      showSnackbar(i18n.t('profile.loginResponse.loginFailed'), '#D32F2F');
+      return {
+        success: false,
+        message: i18n.t('profile.loginResponse.loginFailed'),
+        user: null
+      };
     } else {
-      showSnackbar(i18n.t('profile.loginResponse.unexpectedError'), '#D32F2F');
+      return {
+        success: false,
+        message: i18n.t('profile.loginResponse.unexpectedError'),
+        user: null
+      };
     }
   } catch (error) {
-    showSnackbar(i18n.t('profile.loginResponse.networkError'), '#D32F2F');
+    return {
+      success: false,
+      message: i18n.t('base.error'),
+      user: null
+    };
   }
 };

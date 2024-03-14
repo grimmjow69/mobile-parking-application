@@ -1,19 +1,10 @@
-import { PreferencesContext } from '@/app/context/preference-context';
-import i18n from '@/assets/localization/i18n';
 import Colors, { errorColor, successColor } from '@/constants/colors';
+import i18n from '@/assets/localization/i18n';
+import { useContext, useState } from 'react';
 import SpinnerOverlay from 'react-native-loading-spinner-overlay';
+import { ActivityIndicator, Button, HelperText, Modal, Snackbar, Text, TextInput, useTheme } from 'react-native-paper';
+import { PreferencesContext } from '@/app/context/preference-context';
 import { StyleSheet, View } from 'react-native';
-import React, { useContext, useState } from 'react';
-import {
-  Modal,
-  TextInput,
-  Button,
-  useTheme,
-  HelperText,
-  ActivityIndicator,
-  Text,
-  Snackbar
-} from 'react-native-paper';
 import { updateUserPassword } from '@/app/services/user-service';
 
 interface ChangePasswordProps {

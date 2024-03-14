@@ -1,49 +1,43 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import ChangeEmail from '@/components/change-email';
+import ChangePassword from '@/components/change-password';
 import i18n from '../../assets/localization/i18n';
 import SpinnerOverlay from 'react-native-loading-spinner-overlay';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { Button, HelperText, Snackbar, Text, TextInput, useTheme } from 'react-native-paper';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
-import {
-  deletePushTokenFromServer,
-  registerForPushNotificationsAsync,
-  sendPushTokenToServer
-} from '../services/notifications-service';
+import { deletePushTokenFromServer, registerForPushNotificationsAsync, sendPushTokenToServer } from '../services/notifications-service';
+import { errorColor, successColor } from '@/constants/colors';
 import { Link } from 'expo-router';
 import { loginUser } from '../services/auth-service';
-import { PreferencesContext } from '../context/preference-context';
+import { PreferencesContext, PreferencesContextProps } from '../context/preference-context';
 import { PushNotificationConfig } from '../models/notifications';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useContext, useEffect, useState } from 'react';
 import { UserData } from '../models/user';
-import ChangeEmail from '@/components/change-email';
-import ChangePassword from '@/components/change-password';
 
 export default function ProfileScreen() {
-  const { user, isThemeDark, setUser } = useContext(PreferencesContext);
+  const { user, isThemeDark, setUser } =
+    useContext<PreferencesContextProps>(PreferencesContext);
   const { colors } = useTheme();
-  const [loading, setLoading] = useState(false);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [snackbarVisible, setSnackbarVisible] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState('');
-  const [snackbarColor, setSnackbarColor] = useState('#56ae57');
-  const [isChangeEmailVisible, setIsChangeEmailVisible] = useState(false);
-  const [isChangePasswordVisible, setIsChangePasswordVisible] = useState(false);
-
-  const showSnackbar = (message: string, color = '#56ae57') => {
-    setSnackbarMessage(message);
-    setSnackbarColor(color);
-    setSnackbarVisible(true);
-  };
+  const [loading, setLoading] = useState<boolean>(false);
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [snackbarVisible, setSnackbarVisible] = useState<boolean>(false);
+  const [snackbarMessage, setSnackbarMessage] = useState<string>('');
+  const [snackbarColor, setSnackbarColor] = useState<string>('');
+  const [isChangeEmailVisible, setIsChangeEmailVisible] =
+    useState<boolean>(false);
+  const [isChangePasswordVisible, setIsChangePasswordVisible] =
+    useState<boolean>(false);
 
   const handleLoginSuccess = async (userData: UserData) => {
     setUser(userData);
-
     try {
       const value = await AsyncStorage.getItem('pushNotificationsConfig');
       if (value !== null) {
         const config: PushNotificationConfig = JSON.parse(value);
+
         if (config.enabled) {
           await registerForPushNotificationsAsync().then((token) => {
             if (token) {
@@ -60,10 +54,13 @@ export default function ProfileScreen() {
       }
       const userJson = JSON.stringify(userData);
       await AsyncStorage.setItem('user', userJson);
-    } catch (error) {
-      console.error('Failed to clear user data', error);
-    }
+    } catch (error) {}
   };
+
+  function setSnackBarContent(message: string, color: string) {
+    setSnackbarColor(color);
+    setSnackbarMessage(message);
+  }
 
   const toggleChangeEmailModal = () => {
     setIsChangeEmailVisible(!isChangeEmailVisible);
@@ -76,9 +73,19 @@ export default function ProfileScreen() {
   const handleLogin = async () => {
     try {
       setLoading(true);
-      await loginUser(email, password, showSnackbar, handleLoginSuccess);
+      const result = await loginUser(email, password);
+      setSnackBarContent(
+        i18n.t(result.message),
+        result.success ? successColor : errorColor
+      );
+
+      if (result.success && result.user) {
+        handleLoginSuccess(result.user);
+      }
     } catch (error) {
+      setSnackBarContent(i18n.t('base.error'), errorColor);
     } finally {
+      setSnackbarVisible(true);
       setLoading(false);
     }
   };
@@ -92,7 +99,6 @@ export default function ProfileScreen() {
         setUser(null);
       }
     } catch (error) {
-      console.error('Failed to clear user data', error);
     } finally {
       setLoading(false);
     }
@@ -107,21 +113,29 @@ export default function ProfileScreen() {
     return validateEmail(email) && password.length >= 6;
   };
 
-  const getIconColor = (hasError: boolean) => (hasError ? colors.error : colors.secondary);
+  const getIconColor = (hasError: boolean) =>
+    hasError ? colors.error : colors.secondary;
 
   const emailError = email !== '' && !validateEmail(email);
   const passwordLengthError = password !== '' && password.length < 6;
-
   useEffect(() => {}, [user]);
 
   const onDismissSnackBar = () => setSnackbarVisible(false);
 
   const userContent = (
     <View style={styles.userContent}>
-      <Button mode="contained" style={styles.buttonRow} onPress={() => toggleChangePasswordModal()}>
+      <Button
+        mode="contained"
+        style={styles.buttonRow}
+        onPress={() => toggleChangePasswordModal()}
+      >
         {i18n.t('profile.changePassword')}
       </Button>
-      <Button mode="contained" style={styles.buttonRow} onPress={() => toggleChangeEmailModal()}>
+      <Button
+        mode="contained"
+        style={styles.buttonRow}
+        onPress={() => toggleChangeEmailModal()}
+      >
         {i18n.t('profile.changeEmail')}
       </Button>
       <Link href="/my-notifications" asChild>
@@ -129,11 +143,21 @@ export default function ProfileScreen() {
           {i18n.t('profile.myNotifications')}
         </Button>
       </Link>
-      <Button style={styles.signOutButton} mode="contained" onPress={() => handleSignOut()}>
+      <Button
+        style={styles.signOutButton}
+        mode="contained"
+        onPress={() => handleSignOut()}
+      >
         {i18n.t('profile.signOut')}
       </Button>
-      <ChangeEmail visible={isChangeEmailVisible} onDismiss={toggleChangeEmailModal} />
-      <ChangePassword visible={isChangePasswordVisible} onDismiss={toggleChangePasswordModal} />
+      <ChangeEmail
+        visible={isChangeEmailVisible}
+        onDismiss={toggleChangeEmailModal}
+      />
+      <ChangePassword
+        visible={isChangePasswordVisible}
+        onDismiss={toggleChangePasswordModal}
+      />
     </View>
   );
 
@@ -164,24 +188,40 @@ export default function ProfileScreen() {
         style={styles.input}
         secureTextEntry
         textContentType="password"
-        right={<TextInput.Icon icon="lock" color={getIconColor(passwordLengthError)} />}
+        right={
+          <TextInput.Icon
+            icon="lock"
+            color={getIconColor(passwordLengthError)}
+          />
+        }
       />
       <HelperText type="error" visible={passwordLengthError}>
         {i18n.t('profile.errors.passwordLengthError')}
       </HelperText>
 
-      <Button mode="contained" onPress={handleLogin} style={styles.button} icon="login" disabled={!isFormValid()}>
+      <Button
+        mode="contained"
+        onPress={handleLogin}
+        style={styles.button}
+        icon="login"
+        disabled={!isFormValid()}
+      >
         {i18n.t('profile.logIn')}
       </Button>
 
       <Link href="/resend-password" asChild>
-        <Button style={styles.button}>{i18n.t('profile.forgotPassword')}</Button>
+        <Button style={styles.button}>
+          {i18n.t('profile.forgotPassword')}
+        </Button>
       </Link>
 
       <Text style={styles.registerText}>
         {i18n.t('profile.dontHaveAccount')} {'  '}
         <Link href="/registration" asChild>
-          <Text style={styles.linkText} onPress={() => console.log('Navigate to registration')}>
+          <Text
+            style={styles.linkText}
+            onPress={() => console.log('Navigate to registration')}
+          >
             {i18n.t('profile.registerHere')}
           </Text>
         </Link>
@@ -196,17 +236,41 @@ export default function ProfileScreen() {
         visible={snackbarVisible}
         onDismiss={onDismissSnackBar}
         duration={Snackbar.DURATION_SHORT}
-        style={{ backgroundColor: snackbarColor }}
+        style={{
+          backgroundColor: snackbarColor
+        }}
       >
-        <Text style={{ textAlign: 'center', fontWeight: 'bold', color: '#fff' }}> {snackbarMessage}</Text>
+        <Text
+          style={{
+            textAlign: 'center',
+            fontWeight: 'bold',
+            color: '#fff'
+          }}
+        >
+          {' '}
+          {snackbarMessage}
+        </Text>
       </Snackbar>
       <SpinnerOverlay
         textContent={i18n.t('base.wait')}
-        textStyle={isThemeDark ? { color: '#fff' } : { color: '#303c64' }}
+        textStyle={
+          isThemeDark
+            ? {
+                color: '#fff'
+              }
+            : {
+                color: '#303c64'
+              }
+        }
         animation="fade"
         visible={loading}
         overlayColor={Colors[isThemeDark ? 'dark' : 'light'].spinnerOverlay}
-        customIndicator={<ActivityIndicator size="large" color={Colors[isThemeDark ? 'dark' : 'light'].spinnerColor} />}
+        customIndicator={
+          <ActivityIndicator
+            size="large"
+            color={Colors[isThemeDark ? 'dark' : 'light'].spinnerColor}
+          />
+        }
       />
     </SafeAreaProvider>
   );

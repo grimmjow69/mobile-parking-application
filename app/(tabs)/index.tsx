@@ -3,27 +3,19 @@ import Colors, { errorColor, successColor } from '@/constants/colors';
 import i18n from '../../assets/localization/i18n';
 import MapView, { Circle, Marker } from 'react-native-maps';
 import moment from 'moment';
-import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useRef, useState} from 'react';
 import SpinnerOverlay from 'react-native-loading-spinner-overlay';
 import { ActivityIndicator, Button, Divider, IconButton, Modal, Snackbar, Text } from 'react-native-paper';
 import { darkMap, LightMap } from '@/constants/map-styles';
 import { Dimensions, ScrollView, StyleSheet, View } from 'react-native';
-import {
-  fetchAllSpotsData,
-  fetchSpotDetailById,
-  fetchUserFavouriteSpot,
-  getClosestFreeParkingSpot
-} from '../services/parking-data-service';
+import { fetchAllSpotsData, fetchSpotDetailById, fetchUserFavouriteSpot, getClosestFreeParkingSpot } from '../services/parking-data-service';
 import { ParkingSpot, ParkingSpotDetail } from '../models/parking-spot';
-import { PreferencesContext } from '../context/preference-context';
-import {
-  subscribeToNotification,
-  unsubscribeFromNotificationByUserAndParkingSpotId
-} from '../services/notifications-service';
+import { PreferencesContext, PreferencesContextProps } from '../context/preference-context';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { subscribeToNotification, unsubscribeFromNotificationByUserAndParkingSpotId } from '../services/notifications-service';
 import { UNIZA_INITIAL_REGION } from '@/constants/coords';
 import { updateFavouriteSpot } from '../services/user-service';
 import { useIsFocused } from '@react-navigation/native';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 export interface ModalContent {
   spotName: string;
@@ -34,16 +26,18 @@ export interface ModalContent {
 
 export default function MapScreen() {
   const [parkingSpots, setParkingSpots] = useState<ParkingSpot[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const [closestSpot, setClosestSpot] = useState<ParkingSpot | null>(null);
-  const [snackbarVisible, setSnackbarVisible] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState('');
-  const [snackbarColor, setSnackbarColor] = useState('#323232');
+  const [snackbarVisible, setSnackbarVisible] = useState<boolean>(false);
+  const [snackbarMessage, setSnackbarMessage] = useState<string>('');
+  const [snackbarColor, setSnackbarColor] = useState<string>('');
   const mapRef = useRef<MapView>(null);
-  const { isThemeDark, user } = useContext(PreferencesContext);
-  const [isFavourite, setIsFavourite] = useState(false);
-  const [notificationsEnabled, setNotificationsEnabled] = useState(false);
-  const [modalVisible, setModalVisible] = useState(false);
+  const { isThemeDark, user } =
+    useContext<PreferencesContextProps>(PreferencesContext);
+  const [isFavourite, setIsFavourite] = useState<boolean>(false);
+  const [notificationsEnabled, setNotificationsEnabled] =
+    useState<boolean>(false);
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [modalContent, setModalContent] = useState<ModalContent | null>(null);
 
   const isFocused = useIsFocused();
@@ -94,7 +88,10 @@ export default function MapScreen() {
         longitude: location.coords.longitude
       };
 
-      const closestFreeSpot = await getClosestFreeParkingSpot(userLocation.latitude, userLocation.longitude);
+      const closestFreeSpot = await getClosestFreeParkingSpot(
+        userLocation.latitude,
+        userLocation.longitude
+      );
 
       if (closestFreeSpot) {
         setClosestSpot(closestFreeSpot);
@@ -130,7 +127,10 @@ export default function MapScreen() {
           if (closestFreeSpot) {
             setClosestSpot(closestFreeSpot);
 
-            setSnackBarContent(i18n.t('parkingMap.closestSpotFound'), successColor);
+            setSnackBarContent(
+              i18n.t('parkingMap.closestSpotFound'),
+              successColor
+            );
             mapRef.current?.animateToRegion({
               latitude: closestFreeSpot.latitude,
               longitude: closestFreeSpot.longitude,
@@ -144,7 +144,10 @@ export default function MapScreen() {
           setSnackBarContent(i18n.t('parkingMap.noFavSpot'), errorColor);
         }
       } catch (error) {
-        setSnackBarContent(i18n.t('parkingMap.closestSpotFindError'), errorColor);
+        setSnackBarContent(
+          i18n.t('parkingMap.closestSpotFindError'),
+          errorColor
+        );
       } finally {
         setLoading(false);
         setSnackbarVisible(true);
@@ -152,10 +155,17 @@ export default function MapScreen() {
     }
   }, [parkingSpots]);
 
-  const handleMarkerPress = async (spotName: string, occupied: boolean, spotId: number) => {
+  const handleMarkerPress = async (
+    spotName: string,
+    occupied: boolean,
+    spotId: number
+  ) => {
     try {
       setLoading(true);
-      const parkingSpotDetail = await fetchSpotDetailById(user ? user.userId : 0, spotId);
+      const parkingSpotDetail = await fetchSpotDetailById(
+        user ? user.userId : 0,
+        spotId
+      );
       setModalContent({
         spotName: spotName,
         occupied: occupied,
@@ -168,14 +178,15 @@ export default function MapScreen() {
 
       setModalVisible(true);
     } catch (error) {
-      console.error('Failed to fetch parking spot details:', error);
     } finally {
       setLoading(false);
     }
   };
 
   function getMarkerDescription(updatedAt: Date) {
-    return `${i18n.t('parkingMap.updatedAt')} ${moment(updatedAt).format('HH:mm:ss')}`;
+    return `${i18n.t('parkingMap.updatedAt')} ${moment(updatedAt).format(
+      'HH:mm:ss'
+    )}`;
   }
 
   function getParkingSpotModalState(modalContent: ModalContent) {
@@ -223,7 +234,9 @@ export default function MapScreen() {
             latitude: spot.latitude,
             longitude: spot.longitude
           }}
-          onCalloutPress={() => handleMarkerPress(spot.name, spot.occupied, spot.parkingSpotId)}
+          onCalloutPress={() =>
+            handleMarkerPress(spot.name, spot.occupied, spot.parkingSpotId)
+          }
         />
         <Circle
           center={{
@@ -265,8 +278,8 @@ export default function MapScreen() {
     try {
       setIsFavourite(!isFavourite);
       setLoading(true);
-      await updateFavouriteSpot(userId, isFavourite ? null : spotId);
-      setSnackBarContent(i18n.t('parkingMap.favourite.updated'), successColor);
+      const result = await updateFavouriteSpot(userId, isFavourite ? null : spotId);
+      setSnackBarContent(result.message, result.success ? successColor : err);
     } catch (error) {
       setSnackBarContent(i18n.t('base.error'), errorColor);
     } finally {
@@ -298,11 +311,20 @@ export default function MapScreen() {
         onPress={() => getData()}
       />
       <View style={styles.bottomButtons}>
-        <Button icon="magnify" mode="contained" onPress={() => findClosestSpot()}>
+        <Button
+          icon="magnify"
+          mode="contained"
+          onPress={() => findClosestSpot()}
+        >
           {i18n.t('parkingMap.findClosestSpot')}
         </Button>
         {user?.favouriteSpotId && (
-          <Button icon="star" mode="contained" style={styles.findFavParkingSpot} onPress={() => findClosestSpotToFav()}>
+          <Button
+            icon="star"
+            mode="contained"
+            style={styles.findFavParkingSpot}
+            onPress={() => findClosestSpotToFav()}
+          >
             {i18n.t('parkingMap.findClosestSpot')}
           </Button>
         )}
@@ -312,24 +334,33 @@ export default function MapScreen() {
         onDismiss={() => setModalVisible(false)}
         contentContainerStyle={[
           styles.modalContainer,
-          { backgroundColor: Colors[isThemeDark ? 'dark' : 'light'].modalContainer }
+          {
+            backgroundColor:
+              Colors[isThemeDark ? 'dark' : 'light'].modalContainer
+          }
         ]}
       >
         <View style={styles.modalHeader}>
-          <Text style={styles.modalTitle}>{getParkingSpotModalState(modalContent!)}</Text>
+          <Text style={styles.modalTitle}>
+            {getParkingSpotModalState(modalContent!)}
+          </Text>
           {user && (
             <View style={styles.modalActionIcons}>
               <IconButton
                 icon={notificationsEnabled ? 'bell' : 'bell-outline'}
                 // iconColor={modalContent?.detail?.isNotificationEnabled ? 'blue' : 'black'}
                 size={30}
-                onPress={() => handleNotificationPressed(user!.userId, modalContent!.spotId)}
+                onPress={() =>
+                  handleNotificationPressed(user!.userId, modalContent!.spotId)
+                }
               />
               <IconButton
                 icon={isFavourite ? 'star' : 'star-outline'}
                 // iconColor={modalContent?.detail?.isFavourite ? 'blue' : 'black'}
                 size={30}
-                onPress={() => handleFavouriteSpotPressed(user!.userId, modalContent!.spotId)}
+                onPress={() =>
+                  handleFavouriteSpotPressed(user!.userId, modalContent!.spotId)
+                }
               />
             </View>
           )}
@@ -339,7 +370,11 @@ export default function MapScreen() {
           <View
             style={[
               styles.historyHeaderRow,
-              { backgroundColor: Colors[isThemeDark ? 'dark' : 'light'].modalContainerTableHeader }
+              {
+                backgroundColor:
+                  Colors[isThemeDark ? 'dark' : 'light']
+                    .modalContainerTableHeader
+              }
             ]}
           >
             <View style={styles.historyHeaderColumn}>
@@ -349,7 +384,9 @@ export default function MapScreen() {
             </View>
             <View style={styles.historyHeaderColumn}>
               <Text style={styles.historyHeaderText}>
-                {i18n.t('parkingMap.parkingSpotDetail.table.updatedAtColumnName')}
+                {i18n.t(
+                  'parkingMap.parkingSpotDetail.table.updatedAtColumnName'
+                )}
               </Text>
             </View>
           </View>
@@ -363,14 +400,20 @@ export default function MapScreen() {
                 </Text>
               </View>
               <View style={styles.historyColumn}>
-                <Text style={styles.historyText}>{moment(historyItem.updatedAt).format('HH:mm:ss DD.MM.YYYY')}</Text>
+                <Text style={styles.historyText}>
+                  {moment(historyItem.updatedAt).format('HH:mm:ss DD.MM.YYYY')}
+                </Text>
               </View>
               <Divider />
             </View>
           ))}
         </ScrollView>
         <View style={styles.modalFooter}>
-          <Button mode="contained" style={styles.closeModalButton} onPress={() => setModalVisible(false)}>
+          <Button
+            mode="contained"
+            style={styles.closeModalButton}
+            onPress={() => setModalVisible(false)}
+          >
             {i18n.t('base.close')}
           </Button>
         </View>
@@ -381,7 +424,12 @@ export default function MapScreen() {
         duration={1000}
         style={{ backgroundColor: snackbarColor, alignItems: 'center' }}
       >
-        <Text style={{ textAlign: 'center', fontWeight: 'bold', color: '#fff' }}> {snackbarMessage}</Text>
+        <Text
+          style={{ textAlign: 'center', fontWeight: 'bold', color: '#fff' }}
+        >
+          {' '}
+          {snackbarMessage}
+        </Text>
       </Snackbar>
       <SpinnerOverlay
         textContent={i18n.t('base.wait')}
@@ -389,7 +437,12 @@ export default function MapScreen() {
         animation="fade"
         visible={loading}
         overlayColor={Colors[isThemeDark ? 'dark' : 'light'].spinnerOverlay}
-        customIndicator={<ActivityIndicator size="large" color={Colors[isThemeDark ? 'dark' : 'light'].spinnerColor} />}
+        customIndicator={
+          <ActivityIndicator
+            size="large"
+            color={Colors[isThemeDark ? 'dark' : 'light'].spinnerColor}
+          />
+        }
       />
     </SafeAreaProvider>
   );
