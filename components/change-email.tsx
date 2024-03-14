@@ -150,7 +150,7 @@ const ChangeEmail: React.FC<ChangeEmailProps> = ({ visible, onDismiss }) => {
           {' '}
           {snackbarMessage}
         </Text>
-        
+
         <SpinnerOverlay
           textContent={i18n.t('base.wait')}
           textStyle={
@@ -173,6 +173,7 @@ const ChangeEmail: React.FC<ChangeEmailProps> = ({ visible, onDismiss }) => {
           }
         />
       </Modal>
+
       <Snackbar
         visible={snackbarVisible}
         onDismiss={onDismissSnackBar}
@@ -217,9 +218,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold'
   },
   dialog: {
-    backgroundColor: '#fff',
     flex: 1,
-    padding: 30
+    padding: 80,
   }
 });
 

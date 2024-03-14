@@ -7,13 +7,14 @@ import SpinnerOverlay from 'react-native-loading-spinner-overlay';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { Button, HelperText, Snackbar, Text, TextInput, useTheme } from 'react-native-paper';
 import { deletePushTokenFromServer, registerForPushNotificationsAsync, sendPushTokenToServer } from '../services/notifications-service';
-import { Link } from 'expo-router';
+import { Link, useNavigation } from 'expo-router';
 import { loginUser } from '../services/auth-service';
 import { PreferencesContext, PreferencesContextProps } from '../context/preference-context';
 import { PushNotificationConfig } from '../models/notifications';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useContext, useEffect, useState } from 'react';
 import { UserData } from '../models/user';
+import { useIsFocused } from '@react-navigation/native';
 
 export default function ProfileScreen() {
   const { user, isThemeDark, setUser } =
@@ -29,6 +30,8 @@ export default function ProfileScreen() {
     useState<boolean>(false);
   const [isChangePasswordVisible, setIsChangePasswordVisible] =
     useState<boolean>(false);
+    
+  const navigation = useNavigation();
 
   const handleLoginSuccess = async (userData: UserData) => {
     setUser(userData);
@@ -117,6 +120,16 @@ export default function ProfileScreen() {
 
   const emailError = email !== '' && !validateEmail(email);
   const passwordLengthError = password !== '' && password.length < 6;
+
+  useEffect(() => {
+    const blurListener = navigation.addListener('blur', () => {
+      setIsChangeEmailVisible(false);
+      setIsChangePasswordVisible(false);
+    });
+
+    return blurListener;
+  }, [navigation]);
+
   useEffect(() => {}, [user]);
 
   const onDismissSnackBar = () => setSnackbarVisible(false);
@@ -270,15 +283,17 @@ export default function ProfileScreen() {
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: 60
+    // paddingTop: 60
   },
   userContent: {
     flex: 1,
-    alignItems: 'center'
+    alignItems: 'center',
+    paddingTop: 48
   },
   loginForm: {
     flex: 1,
-    alignItems: 'center'
+    alignItems: 'center',
+    paddingTop: 48
   },
   input: {
     width: 240

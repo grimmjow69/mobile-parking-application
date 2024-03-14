@@ -145,7 +145,7 @@ const ChangePassword: React.FC<ChangePasswordProps> = ({
             />
           }
         />
-        
+
         <HelperText type="error" visible={passwordsMatchError}>
           {i18n.t('profile.errors.passwordsMatchError')}
         </HelperText>
@@ -221,7 +221,7 @@ const styles = StyleSheet.create({
   },
   dialog: {
     flex: 1,
-    padding: 30
+    padding: 80
   }
 });
 

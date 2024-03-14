@@ -318,7 +318,7 @@ export default function MapScreen() {
         >
           {i18n.t('parkingMap.findClosestSpot')}
         </Button>
-        {user?.favouriteSpotId && (
+        {user && (
           <Button
             icon="star"
             mode="contained"
@@ -431,7 +431,7 @@ export default function MapScreen() {
           {snackbarMessage}
         </Text>
       </Snackbar>
-      
+
       <SpinnerOverlay
         textContent={i18n.t('base.wait')}
         textStyle={isThemeDark ? { color: '#fff' } : { color: '#303c64' }}
