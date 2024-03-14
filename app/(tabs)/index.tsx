@@ -243,7 +243,6 @@ export default function MapScreen() {
 
   const handleNotificationPressed = async (userId: number, spotId: number) => {
     try {
-      console.log('Before setting loading');
       setLoading(true);
       setNotificationsEnabled(!notificationsEnabled);
 

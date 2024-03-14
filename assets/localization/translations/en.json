@@ -39,6 +39,10 @@
   },
   "heatmap": {},
   "profile": {
+    "currentPassword": "Current password",
+    "newEmail" : "New email",
+    "newPassword": "New password",
+    "confirmPassword": "Confirm password",
     "myNotifications": "My notifications",
     "email": "Email",
     "password": "Password",
@@ -64,6 +68,12 @@
       "registrationSucess": "Registration successful",
       "registrationFail": "An unexpected error occurred",
       "emailAlreadyTaken": "Email is already taken"
+    },
+    "updateResponse": {
+      "emailUpdateSuccessfuly": "Email updated successfully",
+      "passwordUpdatedSucessfuly": "Password updated successfully",
+      "passwordVerificationFailed": "Password verification failed",
+      "emailAlreadyInUse": "Email already in use"
     },
     "loginResponse": {
       "loginSuccessful": "Login successful",

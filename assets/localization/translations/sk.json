@@ -39,6 +39,10 @@
   },
   "heatmap": {},
   "profile": {
+    "currentPassword": "Aktuálne heslo",
+    "newEmail": "Nový email",
+    "newPassword": "Nové heslo",
+    "confirmPassword": "Potvrďte heslo",
     "myNotifications": "Moje notifikácie",
     "email": "Email",
     "password": "Heslo",
@@ -64,6 +68,12 @@
       "registrationSucess": "Registrácia prebehla úspešne",
       "registrationFail": "Nastala neočakávaná chyba",
       "emailAlreadyTaken": "Email je už obsadený"
+    },
+    "updateResponse": {
+      "emailUpdatedSuccessfuly": "Email bol úspešne aktualizovaný",
+      "passwordUpdatedSucessfuly": "Heslo bolo úspešne aktualizované",
+      "passwordVerificationFailed": "Overenie hesla zlyhalo",
+      "emailAlreadyInUse": "Email už je obsadený"
     },
     "loginResponse": {
       "loginSuccessful": "Prihlásenie bolo úspešné",

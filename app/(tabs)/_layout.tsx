@@ -3,7 +3,6 @@ import i18n from '../../assets/localization/i18n';
 import { Icon } from 'react-native-paper';
 import { PreferencesContext } from '../context/preference-context';
 import { Tabs } from 'expo-router';
-import { useClientOnlyValue } from '@/components/useClientOnlyValue';
 import { useContext } from 'react';
 
 export default function TabLayout() {
@@ -12,7 +11,6 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: Colors[isThemeDark ? 'dark' : 'light'].tint,
-        headerShown: useClientOnlyValue(false, true),
         tabBarStyle: {
           height: 60
         },

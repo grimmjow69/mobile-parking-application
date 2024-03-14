@@ -16,6 +16,8 @@ import { PushNotificationConfig } from '../models/notifications';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useContext, useEffect, useState } from 'react';
 import { UserData } from '../models/user';
+import ChangeEmail from '@/components/change-email';
+import ChangePassword from '@/components/change-password';
 
 export default function ProfileScreen() {
   const { user, isThemeDark, setUser } = useContext(PreferencesContext);
@@ -26,6 +28,8 @@ export default function ProfileScreen() {
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarColor, setSnackbarColor] = useState('#56ae57');
+  const [isChangeEmailVisible, setIsChangeEmailVisible] = useState(false);
+  const [isChangePasswordVisible, setIsChangePasswordVisible] = useState(false);
 
   const showSnackbar = (message: string, color = '#56ae57') => {
     setSnackbarMessage(message);
@@ -59,6 +63,14 @@ export default function ProfileScreen() {
     } catch (error) {
       console.error('Failed to clear user data', error);
     }
+  };
+
+  const toggleChangeEmailModal = () => {
+    setIsChangeEmailVisible(!isChangeEmailVisible);
+  };
+
+  const toggleChangePasswordModal = () => {
+    setIsChangePasswordVisible(!isChangePasswordVisible);
   };
 
   const handleLogin = async () => {
@@ -106,10 +118,10 @@ export default function ProfileScreen() {
 
   const userContent = (
     <View style={styles.userContent}>
-      <Button mode="contained" style={styles.buttonRow} onPress={() => console.log('')}>
+      <Button mode="contained" style={styles.buttonRow} onPress={() => toggleChangePasswordModal()}>
         {i18n.t('profile.changePassword')}
       </Button>
-      <Button mode="contained" style={styles.buttonRow} onPress={() => console.log('')}>
+      <Button mode="contained" style={styles.buttonRow} onPress={() => toggleChangeEmailModal()}>
         {i18n.t('profile.changeEmail')}
       </Button>
       <Link href="/my-notifications" asChild>
@@ -120,6 +132,8 @@ export default function ProfileScreen() {
       <Button style={styles.signOutButton} mode="contained" onPress={() => handleSignOut()}>
         {i18n.t('profile.signOut')}
       </Button>
+      <ChangeEmail visible={isChangeEmailVisible} onDismiss={toggleChangeEmailModal} />
+      <ChangePassword visible={isChangePasswordVisible} onDismiss={toggleChangePasswordModal} />
     </View>
   );
 

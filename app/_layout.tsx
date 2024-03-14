@@ -163,14 +163,11 @@ function RootLayoutNav() {
               name="resend-password"
               options={{ presentation: 'modal', title: i18n.t('navigation.resendPassword') }}
             />
-           <Stack.Screen
-              name='my-notifications'
+            <Stack.Screen
+              name="my-notifications"
               options={{ presentation: 'modal', title: i18n.t('navigation.notifications') }}
             />
-            <Stack.Screen
-              name='about'
-              options={{ presentation: 'modal', title: i18n.t('navigation.about') }}
-            />
+            <Stack.Screen name="about" options={{ presentation: 'modal', title: i18n.t('navigation.about') }} />
           </Stack>
         </PaperProvider>
       </ThemeProvider>
