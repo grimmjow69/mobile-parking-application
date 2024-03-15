@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import i18n from '../../assets/localization/i18n';
-import { Button, Switch, Text } from 'react-native-paper';
+import { Button, Switch, Text, useTheme } from 'react-native-paper';
 import { deletePushTokenFromServer, registerForPushNotificationsAsync, sendPushTokenToServer } from '../services/notifications-service';
 import { Link } from 'expo-router';
 import { PreferencesContext, PreferencesContextProps } from '../context/preference-context';
@@ -21,6 +21,8 @@ export default function SettingsScreen() {
   const [isLanguageEnglish, setIsLanguageEnglish] = useState<boolean>(
     i18n.language === 'en'
   );
+
+  const { colors } = useTheme();
 
   const toggleLanguage = async () => {
     const newLanguage = isLanguageEnglish ? 'sk' : 'en';
@@ -67,18 +69,24 @@ export default function SettingsScreen() {
     <SafeAreaProvider style={styles.container}>
       <View style={styles.content}>
         <View style={styles.switchRow}>
-          <Text variant="bodyLarge">{i18n.t('settings.darkTheme')}</Text>
+          <Text variant="bodyLarge" style={{ color: colors.tertiary }}>
+            {i18n.t('settings.darkTheme')}
+          </Text>
           <Switch value={isThemeDark} onValueChange={toggleDarkTheme} />
         </View>
 
         <View style={styles.switchRow}>
-          <Text variant="bodyLarge">{i18n.t('settings.useEnglish')}</Text>
+          <Text variant="bodyLarge" style={{ color: colors.tertiary }}>
+            {i18n.t('settings.useEnglish')}
+          </Text>
           <Switch value={isLanguageEnglish} onValueChange={toggleLanguage} />
         </View>
 
         {user && (
           <View style={styles.switchRow}>
-            <Text variant="bodyLarge">{i18n.t('settings.alertPushNotifications')}</Text>
+            <Text variant="bodyLarge" style={{ color: colors.tertiary }}>
+              {i18n.t('settings.alertPushNotifications')}
+            </Text>
             <Switch value={alertNotifications} onValueChange={toggleAlert} />
           </View>
         )}
@@ -89,21 +97,40 @@ export default function SettingsScreen() {
             asChild
             style={[styles.aboutButton, styles.footerButton]}
           >
-            <Button icon="information" mode="contained" onPress={reportBug}>
-              {i18n.t('navigation.about')}
+            <Button
+              buttonColor={colors.secondary}
+              labelStyle={{ color: colors.surfaceVariant }}
+              icon="information"
+              mode="contained"
+              onPress={reportBug}
+            >
+              <Text
+                variant="bodyLarge"
+                style={{ color: colors.surfaceVariant }}
+              >
+                {i18n.t('navigation.about')}
+              </Text>
             </Button>
           </Link>
 
           <Button
+            buttonColor={colors.secondary}
+            labelStyle={{ color: colors.surfaceVariant }}
             icon="bug"
             mode="contained"
             style={[styles.reportButton, styles.footerButton]}
             onPress={reportBug}
           >
-            {i18n.t('settings.reportBug')}
+            <Text variant="bodyLarge" style={{ color: colors.surfaceVariant }}>
+              {i18n.t('settings.reportBug')}
+            </Text>
           </Button>
-          <Text>{i18n.t('settings.author')}: Lukáš Fuček</Text>
-          <Text>{i18n.t('settings.version')}: 1.0.0</Text>
+          <Text variant="labelMedium" style={{ color: colors.tertiary }}>
+            {i18n.t('settings.author')}: Lukáš Fuček
+          </Text>
+          <Text variant="labelMedium" style={{ color: colors.tertiary }}>
+            {i18n.t('settings.version')}: 1.0.0
+          </Text>
         </View>
       </View>
     </SafeAreaProvider>
@@ -120,7 +147,7 @@ const styles = StyleSheet.create({
     width: '80%'
   },
   footerButton: {
-    width: 180
+    width: 220
   },
   content: {
     flex: 1,

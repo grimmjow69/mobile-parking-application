@@ -4,8 +4,8 @@ import ChangePassword from '@/components/change-password';
 import Colors, { errorColor, successColor } from '@/constants/Colors';
 import i18n from '../../assets/localization/i18n';
 import SpinnerOverlay from 'react-native-loading-spinner-overlay';
-import { ActivityIndicator, StyleSheet, View } from 'react-native';
-import { Button, HelperText, Snackbar, Text, TextInput, useTheme } from 'react-native-paper';
+import { StyleSheet, View } from 'react-native';
+import { ActivityIndicator, Button, HelperText, Snackbar, Text, TextInput, useTheme } from 'react-native-paper';
 import { deletePushTokenFromServer, registerForPushNotificationsAsync, sendPushTokenToServer } from '../services/notifications-service';
 import { Link, useNavigation } from 'expo-router';
 import { loginUser } from '../services/auth-service';
@@ -14,7 +14,6 @@ import { PushNotificationConfig } from '../models/notifications';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useContext, useEffect, useState } from 'react';
 import { UserData } from '../models/user';
-import { useIsFocused } from '@react-navigation/native';
 
 export default function ProfileScreen() {
   const { user, isThemeDark, setUser } =
@@ -30,7 +29,7 @@ export default function ProfileScreen() {
     useState<boolean>(false);
   const [isChangePasswordVisible, setIsChangePasswordVisible] =
     useState<boolean>(false);
-    
+
   const navigation = useNavigation();
 
   const handleLoginSuccess = async (userData: UserData) => {
@@ -139,28 +138,44 @@ export default function ProfileScreen() {
       <Button
         mode="contained"
         style={styles.buttonRow}
+        buttonColor={colors.secondary}
         onPress={() => toggleChangePasswordModal()}
       >
-        {i18n.t('profile.changePassword')}
+        <Text variant="bodyLarge" style={{ color: colors.surfaceVariant }}>
+          {i18n.t('profile.changePassword')}
+        </Text>
       </Button>
       <Button
         mode="contained"
         style={styles.buttonRow}
+        buttonColor={colors.secondary}
         onPress={() => toggleChangeEmailModal()}
       >
-        {i18n.t('profile.changeEmail')}
+        <Text variant="bodyLarge" style={{ color: colors.surfaceVariant }}>
+          {i18n.t('profile.changeEmail')}
+        </Text>
       </Button>
       <Link href="/my-notifications" asChild>
-        <Button style={styles.buttonRow} mode="contained">
-          {i18n.t('profile.myNotifications')}
+        <Button
+          style={styles.buttonRow}
+          mode="contained"
+          buttonColor={colors.secondary}
+        >
+          <Text variant="bodyLarge" style={{ color: colors.surfaceVariant }}>
+            {i18n.t('profile.myNotifications')}
+          </Text>
         </Button>
       </Link>
       <Button
         style={styles.signOutButton}
         mode="contained"
+        buttonColor={colors.secondary}
         onPress={() => handleSignOut()}
       >
-        {i18n.t('profile.signOut')}
+        <Text variant="bodyLarge" style={{ color: colors.surfaceVariant }}>
+          {' '}
+          {i18n.t('profile.signOut')}
+        </Text>
       </Button>
       <ChangeEmail
         visible={isChangeEmailVisible}
@@ -214,30 +229,45 @@ export default function ProfileScreen() {
       <Button
         mode="contained"
         onPress={handleLogin}
-        style={styles.button}
+        buttonColor={colors.secondary}
+        labelStyle={{ color: colors.surfaceVariant }}
+        style={{ marginTop: 10 }}
         icon="login"
         disabled={!isFormValid()}
       >
-        {i18n.t('profile.logIn')}
+        <Text variant="bodyLarge" style={{ color: colors.surfaceVariant }}>
+          {i18n.t('profile.logIn')}
+        </Text>
       </Button>
 
-      <Link href="/resend-password" asChild>
-        <Button style={styles.button}>
-          {i18n.t('profile.forgotPassword')}
-        </Button>
-      </Link>
-
-      <Text style={styles.registerText}>
-        {i18n.t('profile.dontHaveAccount')} {'  '}
-        <Link href="/registration" asChild>
-          <Text
-            style={styles.linkText}
-            onPress={() => console.log('Navigate to registration')}
+      <View style={styles.footerView}>
+        <Link href="/resend-password" asChild>
+          <Button
+            icon={'emoticon-sad-outline'}
+            buttonColor={colors.secondary}
+            labelStyle={{ color: colors.surfaceVariant }}
           >
-            {i18n.t('profile.registerHere')}
-          </Text>
+            <Text variant="bodyLarge" style={{ color: colors.surfaceVariant }}>
+              {i18n.t('profile.forgotPassword')}
+            </Text>
+          </Button>
         </Link>
-      </Text>
+
+        <Text
+          variant="bodyLarge"
+          style={[styles.registerText, { color: colors.tertiary }]}
+        >
+          {i18n.t('profile.dontHaveAccount')} {'  '}
+          <Link href="/registration" asChild>
+            <Text
+              variant="bodyLarge"
+              style={{ color: colors.tertiary, fontWeight: 'bold' }}
+            >
+              {i18n.t('profile.registerHere')}
+            </Text>
+          </Link>
+        </Text>
+      </View>
     </View>
   );
 
@@ -263,7 +293,7 @@ export default function ProfileScreen() {
           {snackbarMessage}
         </Text>
       </Snackbar>
-      
+
       <SpinnerOverlay
         textContent={i18n.t('base.wait')}
         textStyle={isThemeDark ? { color: '#fff' } : { color: '#303c64' }}
@@ -282,35 +312,31 @@ export default function ProfileScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    // paddingTop: 60
-  },
+  container: {},
   userContent: {
     flex: 1,
     alignItems: 'center',
-    paddingTop: 48
+    paddingTop: 60
   },
   loginForm: {
     flex: 1,
     alignItems: 'center',
-    paddingTop: 48
+    paddingTop: 60
   },
   input: {
     width: 240
-  },
-  button: {
-    marginTop: 40
   },
   registerText: {
     textAlign: 'center',
     marginTop: 16
   },
-  linkText: {
-    fontWeight: 'bold'
-  },
   signOutButton: {
     position: 'absolute',
     bottom: 48
+  },
+  footerView: {
+    position: 'relative',
+    top: 200
   },
   buttonRow: {
     marginBottom: 10,

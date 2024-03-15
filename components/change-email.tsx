@@ -120,11 +120,16 @@ const ChangeEmail: React.FC<ChangeEmailProps> = ({ visible, onDismiss }) => {
 
         <View style={styles.buttonContainer}>
           <Button
+            icon="email-sync-outline"
             mode="contained"
+            labelStyle={{ color: colors.surfaceVariant }}
+            buttonColor={colors.secondary}
             onPress={handleChangeEmail}
             disabled={!isFormValid()}
           >
-            <Text>{i18n.t('profile.changeEmail')}</Text>
+            <Text variant="bodyLarge" style={{ color: colors.surfaceVariant }}>
+              {i18n.t('profile.changeEmail')}
+            </Text>
           </Button>
           <Button
             mode="contained"
@@ -136,7 +141,9 @@ const ChangeEmail: React.FC<ChangeEmailProps> = ({ visible, onDismiss }) => {
               }
             ]}
           >
-            <Text>{i18n.t('base.close')}</Text>
+            <Text variant="bodyLarge" style={{ color: '#fff' }}>
+              {i18n.t('base.close')}
+            </Text>
           </Button>
         </View>
         <Text

@@ -152,11 +152,16 @@ const ChangePassword: React.FC<ChangePasswordProps> = ({
 
         <View style={styles.buttonContainer}>
           <Button
+            icon="key-change"
             mode="contained"
+            labelStyle={{ color: colors.surfaceVariant }}
+            buttonColor={colors.secondary}
             onPress={handleChangePassword}
             disabled={!isFormValid()}
           >
-            <Text>{i18n.t('profile.changePassword')}</Text>
+            <Text variant="bodyLarge" style={{ color: colors.surfaceVariant }}>
+              {i18n.t('profile.changePassword')}
+            </Text>
           </Button>
           <Button
             mode="contained"
@@ -168,7 +173,9 @@ const ChangePassword: React.FC<ChangePasswordProps> = ({
               }
             ]}
           >
-            <Text>{i18n.t('base.close')}</Text>
+            <Text variant="bodyLarge" style={{ color: '#fff' }}>
+              {i18n.t('base.close')}
+            </Text>
           </Button>
         </View>
         <Text

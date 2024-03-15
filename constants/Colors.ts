@@ -4,11 +4,11 @@ export const darkTheme = {
     onPrimary: 'rgb(40, 40, 43)',
     primaryContainer: 'rgb(95, 43, 146)',
     onPrimaryContainer: 'rgb(240, 219, 255)',
-    secondary: 'rgb(208, 193, 218)',
+    secondary: '#454545',
     onSecondary: 'rgb(54, 44, 63)',
     secondaryContainer: 'rgb(77, 67, 87)',
     onSecondaryContainer: 'rgb(237, 221, 246)',
-    tertiary: 'rgb(243, 183, 190)',
+    tertiary: '#fff',
     onTertiary: 'rgb(75, 37, 43)',
     tertiaryContainer: 'rgb(101, 58, 65)',
     onTertiaryContainer: 'rgb(255, 217, 221)',
@@ -19,9 +19,9 @@ export const darkTheme = {
     background: 'rgb(29, 27, 30)',
     onBackground: 'rgb(231, 225, 229)',
     surface: 'rgb(29, 27, 30)',
-    onSurface: 'rgb(231, 225, 229)',
-    surfaceVariant: 'rgb(74, 69, 78)',
-    onSurfaceVariant: 'rgb(211, 211, 211)',
+    onSurface: '#fff',
+    surfaceVariant: '#fff',
+    onSurfaceVariant: '#fff',
     outline: '#fff',
     outlineVariant: 'rgb(74, 69, 78)',
     shadow: 'rgb(0, 0, 0)',
@@ -37,8 +37,8 @@ export const darkTheme = {
       level4: 'rgb(52, 46, 57)',
       level5: 'rgb(56, 49, 62)'
     },
-    surfaceDisabled: 'rgba(231, 225, 229, 0.12)',
-    onSurfaceDisabled: 'rgba(231, 225, 229, 0.38)',
+    surfaceDisabled: 'rgba(255, 255, 255, 0.8)',
+    onSurfaceDisabled: 'rgba(255, 255, 255, 0.8)',
     backdrop: 'rgba(51, 47, 55, 0.4)',
     card: 'rgb(18, 18, 18)',
     text: 'rgb(229, 229, 231)',
@@ -46,18 +46,17 @@ export const darkTheme = {
     notification: 'rgb(255, 69, 58)'
   }
 };
-
 export const lightTheme = {
   colors: {
     primary: '#303c64',
     onPrimary: 'rgb(255, 255, 255)',
     primaryContainer: 'rgb(240, 219, 255)',
     onPrimaryContainer: 'rgb(44, 0, 81)',
-    secondary: 'rgb(102, 90, 111)',
+    secondary: '#303c64',
     onSecondary: 'rgb(255, 255, 255)',
     secondaryContainer: 'rgb(237, 221, 246)',
     onSecondaryContainer: 'rgb(33, 24, 42)',
-    tertiary: 'rgb(128, 81, 88)',
+    tertiary: 'black',
     onTertiary: 'rgb(255, 255, 255)',
     tertiaryContainer: 'rgb(255, 217, 221)',
     onTertiaryContainer: 'rgb(50, 16, 23)',
@@ -68,9 +67,9 @@ export const lightTheme = {
     background: '#fff',
     onBackground: 'rgb(29, 27, 30)',
     surface: 'rgb(255, 251, 255)',
-    onSurface: 'rgb(29, 27, 30)',
-    surfaceVariant: '#303c64',
-    onSurfaceVariant: 'rgb(74, 69, 78)',
+    onSurface: 'black',
+    surfaceVariant: '#fff',
+    onSurfaceVariant: 'black',
     outline: 'rgb(124, 117, 126)',
     outlineVariant: 'rgb(204, 196, 206)',
     shadow: 'rgb(0, 0, 0)',
@@ -95,7 +94,6 @@ export const lightTheme = {
     notification: 'rgb(255, 69, 58)'
   }
 };
-
 export default {
   light: {
     text: '#000',
@@ -112,7 +110,6 @@ export default {
     modalContainer2: '#fff',
     modalContainerTableHeader: '#f0f0f0',
     emptyIconColor: '#303c64'
-
   },
   dark: {
     text: '#fff',
@@ -130,6 +127,5 @@ export default {
     modalContainerTableHeader: '#444444'
   }
 };
-
 export const errorColor: string = '#D32F2F';
 export const successColor: string = '#56ae57';

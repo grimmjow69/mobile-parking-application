@@ -2,9 +2,9 @@ import Colors from '@/constants/Colors';
 import i18n from '../../assets/localization/i18n';
 import MapView, { Heatmap, PROVIDER_GOOGLE } from 'react-native-maps';
 import SpinnerOverlay from 'react-native-loading-spinner-overlay';
-import { ActivityIndicator, IconButton, Snackbar, Text } from 'react-native-paper';
+import { ActivityIndicator, IconButton, Snackbar, Text, useTheme } from 'react-native-paper';
 import { darkMap, LightMap } from '@/constants/map-styles';
-import { Dimensions, StyleSheet, View } from 'react-native';
+import { Dimensions, StyleSheet } from 'react-native';
 import { fetchHeatmapData } from '../services/parking-data-service';
 import { HeatmapPoint } from '../models/heatmap';
 import { PreferencesContext, PreferencesContextProps } from '../context/preference-context';
@@ -23,6 +23,7 @@ export default function HeatmapScreen() {
     useContext<PreferencesContextProps>(PreferencesContext);
 
   const isFocused = useIsFocused();
+  const { colors } = useTheme();
 
   const getData = useCallback(async () => {
     setLoading(true);
@@ -81,8 +82,8 @@ export default function HeatmapScreen() {
       <IconButton
         icon="refresh"
         mode="contained"
-        iconColor={Colors[isThemeDark ? 'dark' : 'light'].refreshIconText}
-        containerColor={Colors[isThemeDark ? 'dark' : 'light'].refreshIcon}
+        iconColor={colors.surfaceVariant}
+        containerColor={colors.secondary}
         size={30}
         style={styles.refreshButton}
         onPress={() => getData()}

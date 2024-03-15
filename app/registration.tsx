@@ -135,11 +135,15 @@ export default function RegistrationScreen() {
       <Button
         mode="contained"
         onPress={handleRegister}
+        buttonColor={colors.secondary}
+        labelStyle={{ color: colors.surfaceVariant }}
         style={styles.button}
         icon="login-variant"
         disabled={!isFormValid()}
       >
-        {i18n.t('profile.register')}
+        <Text variant="bodyLarge" style={{ color: colors.surfaceVariant }}>
+          {i18n.t('profile.register')}
+        </Text>
       </Button>
 
       <SpinnerOverlay

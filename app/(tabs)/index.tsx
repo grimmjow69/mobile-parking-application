@@ -5,7 +5,7 @@ import MapView, { Circle, Marker } from 'react-native-maps';
 import moment from 'moment';
 import React, { useCallback, useContext, useEffect, useRef, useState} from 'react';
 import SpinnerOverlay from 'react-native-loading-spinner-overlay';
-import { ActivityIndicator, Button, Divider, IconButton, Modal, Snackbar, Text } from 'react-native-paper';
+import { ActivityIndicator, Button, Divider, IconButton, Modal, Snackbar, Text, useTheme } from 'react-native-paper';
 import { darkMap, LightMap } from '@/constants/map-styles';
 import { Dimensions, ScrollView, StyleSheet, View } from 'react-native';
 import { fetchAllSpotsData, fetchSpotDetailById, fetchUserFavouriteSpot, getClosestFreeParkingSpot } from '../services/parking-data-service';
@@ -41,6 +41,7 @@ export default function MapScreen() {
   const [modalContent, setModalContent] = useState<ModalContent | null>(null);
 
   const isFocused = useIsFocused();
+  const { colors } = useTheme();
 
   const getData = useCallback(async () => {
     setLoading(true);
@@ -278,8 +279,14 @@ export default function MapScreen() {
     try {
       setIsFavourite(!isFavourite);
       setLoading(true);
-      const result = await updateFavouriteSpot(userId, isFavourite ? null : spotId);
-      setSnackBarContent(result.message, result.success ? successColor : errorColor);
+      const result = await updateFavouriteSpot(
+        userId,
+        isFavourite ? null : spotId
+      );
+      setSnackBarContent(
+        result.message,
+        result.success ? successColor : errorColor
+      );
     } catch (error) {
       setSnackBarContent(i18n.t('base.error'), errorColor);
     } finally {
@@ -304,8 +311,8 @@ export default function MapScreen() {
       <IconButton
         icon="refresh"
         mode="contained"
-        iconColor={Colors[isThemeDark ? 'dark' : 'light'].refreshIconText}
-        containerColor={Colors[isThemeDark ? 'dark' : 'light'].refreshIcon}
+        iconColor={colors.surfaceVariant}
+        containerColor={colors.secondary}
         size={30}
         style={styles.refreshButton}
         onPress={() => getData()}
@@ -314,18 +321,26 @@ export default function MapScreen() {
         <Button
           icon="magnify"
           mode="contained"
+          buttonColor={colors.secondary}
+          labelStyle={{ color: colors.surfaceVariant }}
           onPress={() => findClosestSpot()}
         >
-          {i18n.t('parkingMap.findClosestSpot')}
+          <Text variant="labelLarge" style={{ color: colors.surfaceVariant }}>
+            {i18n.t('parkingMap.findClosestSpot')}
+          </Text>
         </Button>
         {user && (
           <Button
             icon="star"
             mode="contained"
+            buttonColor={colors.secondary}
+            labelStyle={{ color: colors.surfaceVariant }}
             style={styles.findFavParkingSpot}
             onPress={() => findClosestSpotToFav()}
           >
-            {i18n.t('parkingMap.findClosestSpot')}
+            <Text variant="labelLarge" style={{ color: colors.surfaceVariant }}>
+              {i18n.t('parkingMap.findClosestSpot')}
+            </Text>
           </Button>
         )}
       </View>
@@ -341,7 +356,7 @@ export default function MapScreen() {
         ]}
       >
         <View style={styles.modalHeader}>
-          <Text style={styles.modalTitle}>
+          <Text variant="titleMedium" style={{ color: colors.tertiary }}>
             {getParkingSpotModalState(modalContent!)}
           </Text>
           {user && (
@@ -376,12 +391,12 @@ export default function MapScreen() {
             ]}
           >
             <View style={styles.historyHeaderColumn}>
-              <Text style={styles.historyHeaderText}>
+              <Text variant="titleMedium" style={{ color: colors.tertiary }}>
                 {i18n.t('parkingMap.parkingSpotDetail.table.stateColumnName')}
               </Text>
             </View>
             <View style={styles.historyHeaderColumn}>
-              <Text style={styles.historyHeaderText}>
+              <Text variant="titleMedium" style={{ color: colors.tertiary }}>
                 {i18n.t(
                   'parkingMap.parkingSpotDetail.table.updatedAtColumnName'
                 )}
@@ -391,14 +406,14 @@ export default function MapScreen() {
           {modalContent?.detail?.history?.map((historyItem, index) => (
             <View key={index} style={styles.historyRow}>
               <View style={styles.historyColumn}>
-                <Text style={styles.historyText}>
+                <Text variant="bodyMedium" style={{ color: colors.tertiary }}>
                   {historyItem.occupied
                     ? i18n.t('parkingMap.parkingSpotDetail.table.stateOccupied')
                     : i18n.t('parkingMap.parkingSpotDetail.table.stateFree')}
                 </Text>
               </View>
               <View style={styles.historyColumn}>
-                <Text style={styles.historyText}>
+                <Text style={{ color: colors.tertiary }}>
                   {moment(historyItem.updatedAt).format('HH:mm:ss DD.MM.YYYY')}
                 </Text>
               </View>
@@ -472,10 +487,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between'
   },
-  modalTitle: {
-    fontSize: 20,
-    fontWeight: 'bold'
-  },
   modalFooter: {
     alignItems: 'center'
   },
@@ -509,11 +520,6 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 8
   },
-  historyHeaderText: {
-    fontWeight: 'bold'
-  },
-  historyText: {},
-
   historyColumn: {
     flex: 1,
     paddingHorizontal: 8

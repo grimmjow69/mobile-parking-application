@@ -1,11 +1,12 @@
 import i18n from '../assets/localization/i18n';
-import { Button, TextInput } from 'react-native-paper';
+import { Button, TextInput, useTheme } from 'react-native-paper';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { StyleSheet } from 'react-native';
 import { useState } from 'react';
 
 export default function PasswordResendScreen() {
   const [email, setEmail] = useState('');
+  const { colors } = useTheme();
 
   const handleForgottenPassword = () => {
     console.log('Forgotten password:', email);
@@ -29,6 +30,7 @@ export default function PasswordResendScreen() {
         mode="contained"
         onPress={handleForgottenPassword}
         style={styles.button}
+        buttonColor={colors.secondary}
         icon="login-variant"
       >
         {i18n.t('profile.resendPassword')}

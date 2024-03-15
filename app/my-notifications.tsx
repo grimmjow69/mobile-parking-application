@@ -1,9 +1,8 @@
 import i18n from '@/assets/localization/i18n';
 import SpinnerOverlay from 'react-native-loading-spinner-overlay';
-import { ActivityIndicator, StyleSheet, View } from 'react-native';
-import { Button, Dialog, Icon, IconButton, List, Snackbar, Text } from 'react-native-paper';
-import { Colors } from 'react-native/Libraries/NewAppScreen';
-import { errorColor, successColor } from '@/constants/Colors';
+import { StyleSheet, View } from 'react-native';
+import { ActivityIndicator, Button, Dialog, Icon, IconButton, List, Snackbar, Text } from 'react-native-paper';
+import Colors, { errorColor, successColor } from '@/constants/Colors';
 import { fetchUserNotifications, unsubscribeFromNotificationByNotificationId } from './services/notifications-service';
 import { PreferencesContext, PreferencesContextProps } from './context/preference-context';
 import { SpotNotification } from './models/notifications';
@@ -22,7 +21,7 @@ export default function MyNotificationsScreen() {
   const [loading, setLoading] = useState<boolean>(true);
   const { isThemeDark, user } =
     useContext<PreferencesContextProps>(PreferencesContext);
-    
+
   useEffect(() => {
     async function loadNotifications() {
       try {
