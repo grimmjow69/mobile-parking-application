@@ -1,6 +1,6 @@
 import i18n from '@/assets/localization/i18n';
 import SpinnerOverlay from 'react-native-loading-spinner-overlay';
-import { StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 import { ActivityIndicator, Button, Dialog, Icon, IconButton, List, Snackbar, Text } from 'react-native-paper';
 import Colors, { errorColor, successColor } from '@/constants/Colors';
 import { fetchUserNotifications, unsubscribeFromNotificationByNotificationId } from './services/notifications-service';
@@ -108,17 +108,18 @@ export default function MyNotificationsScreen() {
           {userNotifications.map((notification) => (
             <List.Item
               key={notification.notificationId.toString()}
-              title={`Parking Spot ${notification.parkingSpotName}`}
+              title={`${i18n.t('notifications.parkingSpot')}: ${
+                notification.parkingSpotName
+              }`}
               left={(props) => <List.Icon {...props} icon="car" />}
               right={() => (
-                <IconButton
-                  icon={'delete-circle'}
-                  size={28}
-                  style={styles.unsubscribeButton}
+                <Pressable
                   onPress={() =>
                     deleteNotificationRecord(notification.notificationId)
                   }
-                />
+                >
+                  <Icon source="delete-circle" color='#FF5733' size={32}/>
+                </Pressable>
               )}
               style={styles.itemDivider}
             />
@@ -177,7 +178,7 @@ const styles = StyleSheet.create({
   },
   unsubscribeButton: {
     position: 'relative',
-    left: 18
+    left: 18,
   },
   centered: {
     flex: 1,

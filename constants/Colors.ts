@@ -27,13 +27,13 @@ export const darkTheme = {
     shadow: 'rgb(0, 0, 0)',
     scrim: 'rgb(0, 0, 0)',
     inverseSurface: 'rgb(231, 225, 229)',
-    inverseOnSurface: 'balck',
+    inverseOnSurface: 'black',
     inversePrimary: 'rgb(120, 69, 172)',
     elevation: {
       level0: 'transparent',
       level1: 'rgb(39, 35, 41)',
       level2: 'rgb(44, 40, 48)',
-      level3: 'rgb(50, 44, 55)',
+      level3: '#2c2c2c',
       level4: 'rgb(52, 46, 57)',
       level5: 'rgb(56, 49, 62)'
     },
@@ -81,7 +81,7 @@ export const lightTheme = {
       level0: 'transparent',
       level1: 'rgb(248, 242, 251)',
       level2: 'rgb(244, 236, 248)',
-      level3: 'rgb(240, 231, 246)',
+      level3: '#F3F2F2',
       level4: 'rgb(239, 229, 245)',
       level5: 'rgb(236, 226, 243)'
     },

@@ -30,7 +30,7 @@ export default function TabLayout() {
           title: i18n.t('navigation.parkingMap'),
           headerTitleAlign: 'center',
           tabBarIcon: ({ color }) => (
-            <Icon source="map-marker-multiple" color={color} size={26} />
+            <Icon source="parking" color={color} size={26} />
           )
         }}
       />

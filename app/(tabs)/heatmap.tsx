@@ -84,7 +84,7 @@ export default function HeatmapScreen() {
         mode="contained"
         iconColor={colors.surfaceVariant}
         containerColor={colors.secondary}
-        size={30}
+        size={28}
         style={styles.refreshButton}
         onPress={() => getData()}
       />
@@ -151,8 +151,8 @@ const styles = StyleSheet.create({
   },
   refreshButton: {
     position: 'absolute',
-    top: 8,
-    left: 8
+    top: 4,
+    left: 4
   },
   map: {
     flex: 1,

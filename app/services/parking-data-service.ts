@@ -7,6 +7,12 @@ import {
 
 const API_BASE_URL = 'http://192.168.100.11:8080/parking';
 
+type ParkingSpotsResponse = {
+  updatedAt: string;
+  data: ParkingSpot[];
+};
+
+
 export const getClosestFreeParkingSpot = async (
   startLatitude: number,
   startLongitude: number
@@ -69,7 +75,7 @@ export const fetchSpotCoordinates = async (
   }
 };
 
-export const fetchAllSpotsData = async (): Promise<ParkingSpot[]> => {
+export const fetchAllSpotsData = async (): Promise<ParkingSpotsResponse> => {
   try {
     const response = await fetch(`${API_BASE_URL}/all-spots`);
 
@@ -77,8 +83,8 @@ export const fetchAllSpotsData = async (): Promise<ParkingSpot[]> => {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
-    const data: ParkingSpot[] = await response.json();
-    return data;
+    const result: ParkingSpotsResponse = await response.json();
+    return result;
   } catch (error) {
     throw error;
   }

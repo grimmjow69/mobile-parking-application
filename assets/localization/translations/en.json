@@ -6,9 +6,12 @@
     "loadFailed": "Failed to load data",
     "loadSuccess": "Data loaded successfully",
     "locationPermissionDenied": "Location permission was denied. Please enable it in your device settings to continue",
-    "wait": "Please wait"
+    "wait": "Please wait",
+    "unknown": "unknown"
   },
-  "heatmap": {},
+  "heatmap": {
+    "updatedAt:": "Updated at: "
+  },
   "navigation": {
     "about": "About application",
     "heatmap": "Heatmap",
@@ -39,6 +42,7 @@
     "findClosestSpot": "Find closest spot",
     "noFavSpot": "No favourite spot found",
     "noSpotFound": "No free spot was found",
+    "updatedAt:": "Updated at:",
     "parkingSpotDetail": {
       "header": {
         "stateFree": "free",

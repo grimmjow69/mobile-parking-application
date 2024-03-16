@@ -6,9 +6,12 @@
     "loadFailed": "Načítanie dát zlyhalo",
     "loadSuccess": "Dáta boli úspešne načítané",
     "locationPermissionDenied": "Povolenie polohy je zamietnuté. Prosím, povoľte ho vo svojich nastaveniach zariadenia",
-    "wait": "Prosím, počkajte"
+    "wait": "Prosím, počkajte",
+    "unknown": "neznáme"
   },
-  "heatmap": {},
+  "heatmap": {
+    "updatedAt:": "Aktualizované: "
+  },
   "navigation": {
     "about": "O aplikacii",
     "heatmap": "Heatmapa",
@@ -30,6 +33,7 @@
     "unsubscribeTitle": "Zmazanie notifikácie"
   },
   "parkingMap": {
+    "updatedAt:": "Aktualizované:",
     "closestSpotFindError": "Chyba pri hľadaní najbližšieho miesta",
     "closestSpotFound": "Najbližšie bolo nájdené",
     "favourite": {

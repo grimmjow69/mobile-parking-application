@@ -5,7 +5,7 @@ import MapView, { Circle, Marker } from 'react-native-maps';
 import moment from 'moment';
 import React, { useCallback, useContext, useEffect, useRef, useState} from 'react';
 import SpinnerOverlay from 'react-native-loading-spinner-overlay';
-import { ActivityIndicator, Button, Divider, IconButton, Modal, Snackbar, Text, useTheme } from 'react-native-paper';
+import { ActivityIndicator, Button, Divider, IconButton, Modal, Snackbar, Surface, Text, useTheme } from 'react-native-paper';
 import { darkMap, LightMap } from '@/constants/map-styles';
 import { Dimensions, ScrollView, StyleSheet, View } from 'react-native';
 import { fetchAllSpotsData, fetchSpotDetailById, fetchUserFavouriteSpot, getClosestFreeParkingSpot } from '../services/parking-data-service';
@@ -39,6 +39,7 @@ export default function MapScreen() {
     useState<boolean>(false);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [modalContent, setModalContent] = useState<ModalContent | null>(null);
+  const [updatedAt, setUpdatedAt] = useState<string>(i18n.t('base.unknown'));
 
   const isFocused = useIsFocused();
   const { colors } = useTheme();
@@ -48,7 +49,8 @@ export default function MapScreen() {
     setClosestSpot(null);
     try {
       const allSpotsData = await fetchAllSpotsData();
-      setParkingSpots(allSpotsData);
+      setParkingSpots(allSpotsData.data);
+      setUpdatedAt(allSpotsData.updatedAt)
       setSnackBarContent(i18n.t('base.loadSuccess'), successColor);
     } catch (error) {
       setSnackBarContent(i18n.t('base.loadFailed'), errorColor);
@@ -313,10 +315,18 @@ export default function MapScreen() {
         mode="contained"
         iconColor={colors.surfaceVariant}
         containerColor={colors.secondary}
-        size={30}
+        size={28}
         style={styles.refreshButton}
         onPress={() => getData()}
       />
+      <View
+        style={[styles.updatedAtTitle, { backgroundColor: colors.secondary }]}
+      >
+        <Text variant="labelLarge" style={{ color: colors.surfaceVariant }}>
+          {i18n.t('parkingMap.updatedAt')}{' '}
+          {moment(updatedAt).format('HH:mm:ss')}
+        </Text>
+      </View>
       <View style={styles.bottomButtons}>
         <Button
           icon="magnify"
@@ -474,8 +484,8 @@ const styles = StyleSheet.create({
   },
   refreshButton: {
     position: 'absolute',
-    top: 8,
-    left: 8
+    top: 4,
+    left: 4
   },
   modalContainer: {
     padding: 20,
@@ -486,6 +496,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between'
+  },
+  updatedAtTitle: {
+    position: 'absolute',
+    top: 10,
+    padding: 11,
+    borderRadius: 20
   },
   modalFooter: {
     alignItems: 'center'
