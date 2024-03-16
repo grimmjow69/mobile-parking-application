@@ -4,6 +4,7 @@ import {
   ParkingSpotCoordinates,
   ParkingSpotDetail
 } from '../models/parking-spot';
+import { base64Credentials, requestHeader } from './request-header';
 
 const API_BASE_URL = 'http://192.168.100.11:8080/parking';
 
@@ -12,7 +13,6 @@ type ParkingSpotsResponse = {
   data: ParkingSpot[];
 };
 
-
 export const getClosestFreeParkingSpot = async (
   startLatitude: number,
   startLongitude: number
@@ -20,9 +20,7 @@ export const getClosestFreeParkingSpot = async (
   try {
     const response = await fetch(`${API_BASE_URL}/find-closest-free-spot`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
+      headers: requestHeader,
       body: JSON.stringify({
         latitude: startLatitude,
         longitude: startLongitude
@@ -44,7 +42,10 @@ export const fetchUserFavouriteSpot = async (
   userId: number
 ): Promise<ParkingSpot | null> => {
   try {
-    const response = await fetch(`${API_BASE_URL}/favourite-spot/${userId}`);
+    const response = await fetch(`${API_BASE_URL}/favourite-spot/${userId}`, {
+      method: 'GET',
+      headers: requestHeader
+    });
 
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
@@ -62,7 +63,10 @@ export const fetchSpotCoordinates = async (
   spotId: number
 ): Promise<ParkingSpotCoordinates> => {
   try {
-    const response = await fetch(`${API_BASE_URL}/spot-coordinates/${spotId}`);
+    const response = await fetch(`${API_BASE_URL}/spot-coordinates/${spotId}`, {
+      method: 'GET',
+      headers: requestHeader
+    });
 
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
@@ -77,7 +81,10 @@ export const fetchSpotCoordinates = async (
 
 export const fetchAllSpotsData = async (): Promise<ParkingSpotsResponse> => {
   try {
-    const response = await fetch(`${API_BASE_URL}/all-spots`);
+    const response = await fetch(`${API_BASE_URL}/all-spots`, {
+      method: 'GET',
+      headers: requestHeader
+    });
 
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
@@ -92,7 +99,10 @@ export const fetchAllSpotsData = async (): Promise<ParkingSpotsResponse> => {
 
 export const fetchHeatmapData = async (): Promise<HeatmapPoint[]> => {
   try {
-    const response = await fetch(`${API_BASE_URL}/heatmap`);
+    const response = await fetch(`${API_BASE_URL}/heatmap`, {
+      method: 'GET',
+      headers: requestHeader
+    });
 
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
@@ -119,9 +129,7 @@ export const fetchSpotDetailById = async (
   try {
     const response = await fetch(`${API_BASE_URL}/spot-detail-by-id`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
+      headers: requestHeader,
       body: JSON.stringify({
         userId,
         spotId

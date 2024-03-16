@@ -1,5 +1,6 @@
 import i18n from '../../assets/localization/i18n';
 import { LoginUserResponse, RegisterUserResponse } from '../models/user';
+import { requestHeader } from './request-header';
 
 const API_BASE_URL = 'http://192.168.100.11:8080/auth';
 
@@ -10,9 +11,7 @@ export const registerUser = async (
   try {
     const response = await fetch(`${API_BASE_URL}/register`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
+      headers: requestHeader,
       body: JSON.stringify({
         email: email,
         password: password
@@ -50,9 +49,7 @@ export const loginUser = async (
   try {
     const response = await fetch(`${API_BASE_URL}/login`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
+      headers: requestHeader,
       body: JSON.stringify({
         email: email,
         password: password

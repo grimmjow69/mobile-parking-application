@@ -2,6 +2,7 @@ import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
 import { Platform } from 'react-native';
 import { SpotNotification } from '../models/notifications';
+import { requestHeader } from './request-header';
 
 const API_BASE_URL = 'http://192.168.100.11:8080/notification';
 
@@ -12,9 +13,7 @@ export const sendPushTokenToServer = async (
   try {
     const response = await fetch(`${API_BASE_URL}/register-push-token`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
+      headers: requestHeader,
       body: JSON.stringify({
         userId: userId,
         token: token
@@ -33,9 +32,7 @@ export const deletePushTokenFromServer = async (
   try {
     const response = await fetch(`${API_BASE_URL}/delete-push-token`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
+      headers: requestHeader,
       body: JSON.stringify({
         userId: userId
       })
@@ -55,9 +52,7 @@ export const fetchUserNotifications = async (
       `${API_BASE_URL}/user-notifications/${userId}`,
       {
         method: 'GET',
-        headers: {
-          'Content-Type': 'application/json'
-        }
+        headers: requestHeader
       }
     );
 
@@ -113,9 +108,7 @@ export const subscribeToNotification = async (
   try {
     const response = await fetch(`${API_BASE_URL}/subscribe`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
+      headers: requestHeader,
       body: JSON.stringify({
         parkingSpotId: parkingSpotId,
         userId: userId
@@ -136,9 +129,7 @@ export const unsubscribeFromNotificationByNotificationId = async (
       `${API_BASE_URL}/unsubscribe/${notificationId}`,
       {
         method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json'
-        }
+        headers: requestHeader
       }
     );
 
@@ -155,9 +146,7 @@ export const unsubscribeFromNotificationByUserAndParkingSpotId = async (
   try {
     const response = await fetch(`${API_BASE_URL}/unsubscribe`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
+      headers: requestHeader,
       body: JSON.stringify({
         userId: userId,
         parkingSpotId: parkingSpotId

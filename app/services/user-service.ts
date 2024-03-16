@@ -1,5 +1,6 @@
 import i18n from '@/assets/localization/i18n';
 import { UpdateUserResponse } from '../models/user';
+import { requestHeader } from './request-header';
 const API_BASE_URL = 'http://192.168.100.11:8080/user';
 
 export const updateFavouriteSpot = async (
@@ -9,9 +10,7 @@ export const updateFavouriteSpot = async (
   try {
     const response = await fetch(`${API_BASE_URL}/update-favourite-spot`, {
       method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json'
-      },
+      headers: requestHeader,
       body: JSON.stringify({
         userId: userId,
         spotId: spotId
@@ -45,9 +44,7 @@ export const updateUserPassword = async (
   try {
     const response = await fetch(`${API_BASE_URL}/update-password`, {
       method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json'
-      },
+      headers: requestHeader,
       body: JSON.stringify({
         userId: userId,
         newPassword: newPassword,
@@ -87,9 +84,7 @@ export const updateUserEmail = async (
   try {
     const response = await fetch(`${API_BASE_URL}/update-email`, {
       method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json'
-      },
+      headers: requestHeader,
       body: JSON.stringify({
         userId: userId,
         newEmail: newEmail,
