@@ -1,4 +1,14 @@
 {
+  "about": {
+    "content1": "Our goal is to provide you with easy and efficient parking in the Žilina University campus. With this app, you can easily find the nearest available parking spot and get real-time information about the occupancy of individual parking areas.",
+    "content2": "We allow you to choose your favorite parking spot, and in such cases, we will prioritize searching for available spots in its vicinity.",
+    "content3": "We also provide a history record of parking spot statuses, which helps you track the previous conditions of individual parking spots.",
+    "content4": "If you are using an Android operating system, the app will conveniently navigate you to your desired parking spot using Google Maps.",
+    "content5": "The app also offers a Heatmap functionality where you can monitor the frequency of occupancy for individual parking spots.",
+    "content6": "The app has push notifications enabled by default, which will notify you whenever a parking area is scanned.",
+    "end": "Enjoy the comfort and convenience of parking with this app.",
+    "title": "Welcome to the Assisted Parking App at UNIZE"
+  },
   "base": {
     "close": "Close",
     "confirm": "Confirm",
@@ -6,8 +16,8 @@
     "loadFailed": "Failed to load data",
     "loadSuccess": "Data loaded successfully",
     "locationPermissionDenied": "Location permission was denied. Please enable it in your device settings to continue",
-    "wait": "Please wait",
-    "unknown": "unknown"
+    "unknown": "unknown",
+    "wait": "Please wait"
   },
   "heatmap": {
     "updatedAt:": "Updated at: "
@@ -19,7 +29,7 @@
     "parkingMap": "Parking map",
     "profile": "Profile",
     "registration": "Register",
-    "resendPassword": "Resend password",
+    "resendPassword": "Forgotten password",
     "settings": "Settings"
   },
   "notifications": {
@@ -42,7 +52,12 @@
     "findClosestSpot": "Find closest spot",
     "noFavSpot": "No favourite spot found",
     "noSpotFound": "No free spot was found",
-    "updatedAt:": "Updated at:",
+    "parkingSheet": {
+      "freeSince": "Free since",
+      "noData": "no data",
+      "occupiedSince": "Occuped since",
+      "stateUnknown": "Unknown state"
+    },
     "parkingSpotDetail": {
       "header": {
         "stateFree": "free",
@@ -57,10 +72,12 @@
         "updatedAtColumnName": "Updated at"
       }
     },
+    "showHistory": "Show history",
     "stateFree": "State: free",
     "stateOccupied": "State: occupied",
     "stateUnknown": "State: unkknown",
-    "updatedAt": "Updated at:"
+    "updatedAt": "Updated at:",
+    "updatedAt:": "Updated at:"
   },
   "profile": {
     "changeEmail": "Change email",
@@ -78,6 +95,7 @@
       "passwordsMatchError": "Passwords do not match"
     },
     "forgotPassword": "Forgot password ?",
+    "forgotPasswordSendSuccesfully": "The password loss has been reported, we will contact you soon",
     "logIn": "Log in",
     "loginResponse": {
       "loginFailed": "Invalid email or password",
@@ -112,6 +130,8 @@
     "darkTheme": "Dark theme",
     "locationServices": "Location services",
     "reportBug": "Report bug",
+    "reportBugLabel": "Describe bug...",
+    "reportBugLength": "Message need to be larger",
     "useEnglish": "English language",
     "version": "Version"
   }

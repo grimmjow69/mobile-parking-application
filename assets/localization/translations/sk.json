@@ -1,4 +1,14 @@
 {
+  "about": {
+    "content1": "Našim cieľom je umožniť Vám jednoduché a efektívne parkovanie v areáli Žilinskej univerzity. S touto aplikáciou môžete ľahko nájsť najbližšie voľné parkovacie miesto a získať aktuálne informácie o obsadenosti jednotlivých parkovísk.",
+    "content2": "Umožňujeme vám zvoliť si obľúbené parkovacie miesto, v takom prípade budeme prioritne vyhľadávať voľné miesta v jeho okolí.",
+    "content3": "Taktiež poskytujeme archiváciu stavov parkovacích miest, čo vám pomôže sledovať predchádzajúce stavy jednotlivých parkovacích miest.",
+    "content4": "Pokiaľ používate operačný systém Android, aplikácia vás pomocou Google Maps pohodlne dovedie k požadovanému parkovaciemu miestu.",
+    "content5": "Aplikácia ponúka aj funkcionalitu Heatmapy, kde môžete sledovať frekvenciu vyťaženia jednotlivých parkovacích miest.",
+    "content6": "Aplikácia má predvolené zapnuté push notifikácie, ktoré vás informujú vždy, keď sa skenuje parkovisko.",
+    "end": "Užite si pohodlie a jednoduchosť parkovania s touto aplikáciou.",
+    "title": "Vitajte v aplikácii pre asistované parkovanie na UNIZE"
+  },
   "base": {
     "close": "Zavrieť",
     "confirm": "Potvrdiť",
@@ -6,8 +16,8 @@
     "loadFailed": "Načítanie dát zlyhalo",
     "loadSuccess": "Dáta boli úspešne načítané",
     "locationPermissionDenied": "Povolenie polohy je zamietnuté. Prosím, povoľte ho vo svojich nastaveniach zariadenia",
-    "wait": "Prosím, počkajte",
-    "unknown": "neznáme"
+    "unknown": "neznáme",
+    "wait": "Prosím, počkajte"
   },
   "heatmap": {
     "updatedAt:": "Aktualizované: "
@@ -19,7 +29,7 @@
     "parkingMap": "Parkovisko",
     "profile": "Profil",
     "registration": "Registrácia",
-    "resendPassword": "Odoslať stratené heslo",
+    "resendPassword": "Nahlásiť stratené heslo",
     "settings": "Nastavenia"
   },
   "notifications": {
@@ -33,15 +43,20 @@
     "unsubscribeTitle": "Zmazanie notifikácie"
   },
   "parkingMap": {
-    "updatedAt:": "Aktualizované:",
     "closestSpotFindError": "Chyba pri hľadaní najbližšieho miesta",
-    "closestSpotFound": "Najbližšie bolo nájdené",
+    "closestSpotFound": "Najbližšie miesto bolo nájdené",
     "favourite": {
       "updated": "Obľúbené miesto úspešne zmenené"
     },
     "findClosestSpot": "Nájsť najbližšie miesto",
     "noFavSpot": "Obľúbené miesto nebolo nenájdené",
     "noSpotFound": "Žiadne voľné miesto nebolo nenájdené",
+    "parkingSheet": {
+      "freeSince": "Voľné od",
+      "noData": "žiadne dáta",
+      "occupiedSince": "Obsadené od",
+      "stateUnknown": "Neznámy stav"
+    },
     "parkingSpotDetail": {
       "header": {
         "stateFree": "voľné",
@@ -56,10 +71,12 @@
         "updatedAtColumnName": "Aktualizované"
       }
     },
+    "showHistory": "Zobraziť históriu",
     "stateFree": "Stav: voľné",
     "stateOccupied": "Stav: obsadené",
     "stateUnknown": "Stav: neznáme",
-    "updatedAt": "Aktualizované:"
+    "updatedAt": "Aktualizované:",
+    "updatedAt:": "Aktualizované:"
   },
   "profile": {
     "changeEmail": "Zmeniť email",
@@ -77,6 +94,7 @@
       "passwordsMatchError": "Heslá sa nezhodujú"
     },
     "forgotPassword": "Zabudli ste heslo?",
+    "forgotPasswordSendSuccesfully": "Strata hesla bola nahlásená, budeme Vás kontaktovať",
     "logIn": "Prihlásiť sa",
     "loginResponse": {
       "loginFailed": "Nesprávny email alebo heslo",
@@ -96,7 +114,7 @@
       "registrationFail": "Nastala neočakávaná chyba",
       "registrationSucess": "Registrácia prebehla úspešne"
     },
-    "resendPassword": "Odoslať heslo",
+    "resendPassword": "Nahlásiť stratené heslo",
     "signOut": "Odhlásiť",
     "updateResponse": {
       "emailAlreadyInUse": "Email už je obsadený",
@@ -111,6 +129,9 @@
     "darkTheme": "Tmavá téma",
     "locationServices": "Lokalizačné služby",
     "reportBug": "Nahlásiť chybu",
+    "reportBugLabel": "Popíš problém..",
+    "reportBugLength": "Správa je príliš krátka",
+    "reportSendSuccessfuly": "Problém bol úspešne nahlásený",
     "useEnglish": "Použiť Angličtinu",
     "version": "Verzia"
   }
