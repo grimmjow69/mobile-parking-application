@@ -3,12 +3,12 @@ import i18n from '../../assets/localization/i18n';
 import ReportBug from '@/components/report-bug';
 import { Button, Switch, Text, useTheme } from 'react-native-paper';
 import { deletePushTokenFromServer, registerForPushNotificationsAsync, sendPushTokenToServer } from '../services/notifications-service';
-import { Link } from 'expo-router';
+import { Link, useNavigation } from 'expo-router';
 import { PreferencesContext, PreferencesContextProps } from '../context/preference-context';
 import { PushNotificationConfig } from '../models/notifications';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { StyleSheet, View } from 'react-native';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 
 export default function SettingsScreen() {
   const {
@@ -24,6 +24,7 @@ export default function SettingsScreen() {
   );
 
   const [isReportBugVisible, setIsReportBugVisible] = useState<boolean>(false);
+  const navigation = useNavigation();
 
   const { colors } = useTheme();
 
@@ -45,6 +46,14 @@ export default function SettingsScreen() {
     setIsReportBugVisible(!isReportBugVisible);
   };
 
+  useEffect(() => {
+    const blurListener = navigation.addListener('blur', () => {
+      setIsReportBugVisible(false);
+    });
+
+    return blurListener;
+  }, [navigation]);
+  
   const toggleAlert = async () => {
     toggleAlertNotifications();
     const pushNotificationsConfig: PushNotificationConfig = {

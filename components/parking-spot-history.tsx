@@ -60,7 +60,7 @@ const ParkingSpotHistory: React.FC<ParkingSpotHistoryProps> = ({
             </View>
             <View style={styles.historyColumn}>
               <Text style={{ color: colors.tertiary }}>
-                {format(historyItem.updatedAt, 'HH:mm:ss dd.mm.yyyy')}
+                {format(historyItem.updatedAt, 'HH:mm:ss dd.MM.yyyy')}
               </Text>
             </View>
             <Divider />

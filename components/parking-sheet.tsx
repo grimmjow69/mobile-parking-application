@@ -31,7 +31,12 @@ const ParkingSheet: React.FC<ParkingSheetProps> = ({
 
   return (
     <React.Fragment>
-      <View style={styles.sheetHeader}>
+      <View
+        style={[
+          styles.sheetHeader,
+          user ? { marginBottom: 6 } : { marginBottom: 20 }
+        ]}
+      >
         <View style={styles.leftContainer}>
           <Text variant="titleMedium" style={{ color: colors.tertiary }}>
             {getSheetTitle(sheetContent)}
@@ -85,7 +90,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 20
+    paddingHorizontal: 20,
   },
   leftContainer: {
     flex: 1

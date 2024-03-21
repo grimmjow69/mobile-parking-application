@@ -276,7 +276,7 @@ export default function MapScreen() {
     } else {
       sinceDate = format(
         sheetContent.sheetData.stateSince,
-        'HH:mm:ss dd.mm.yyyy'
+        'HH:mm:ss dd.MM.yyyy'
       );
     }
 
@@ -454,7 +454,7 @@ export default function MapScreen() {
         customStyles={{
           wrapper: {
             backgroundColor:
-              Colors[isThemeDark ? 'dark' : 'light'].spinnerOverlay
+              Colors[isThemeDark ? 'dark' : 'light'].sheetOverlay
           },
           draggableIcon: {
             backgroundColor: Colors[isThemeDark ? 'dark' : 'light'].spinnerColor

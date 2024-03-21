@@ -37,14 +37,16 @@ const ReportBug: React.FC<ChangePasswordProps> = ({ visible, onDismiss }) => {
         reportMessage: reportMessage,
         category: ReportCategory.BUG
       };
+
       const result = await sendReport(request);
 
       setSnackBarContent(
-        i18n.t(`profile.${result.message}`),
+        i18n.t(result.message),
         result.success ? successColor : errorColor
       );
 
       if (result.success) {
+        setReportMessage('');
         onDismiss();
       }
     } catch (err) {
@@ -83,12 +85,11 @@ const ReportBug: React.FC<ChangePasswordProps> = ({ visible, onDismiss }) => {
         <TextInput
           multiline
           mode="outlined"
-          numberOfLines={4}
+          numberOfLines={1}
           value={reportMessage}
           label={i18n.t('settings.reportBugLabel')}
           style={{
-            height: 200,
-            width: 240,
+            width: 300,
             textAlignVertical: 'top',
             marginBottom: 10
           }}
@@ -130,13 +131,6 @@ const ReportBug: React.FC<ChangePasswordProps> = ({ visible, onDismiss }) => {
             </Text>
           </Button>
         </View>
-        <Text
-          style={{ textAlign: 'center', fontWeight: 'bold', color: '#fff' }}
-        >
-          {' '}
-          {snackbarMessage}
-        </Text>
-
         <SpinnerOverlay
           textContent={i18n.t('base.wait')}
           textStyle={isThemeDark ? { color: '#fff' } : { color: '#303c64' }}
@@ -155,7 +149,7 @@ const ReportBug: React.FC<ChangePasswordProps> = ({ visible, onDismiss }) => {
       <Snackbar
         visible={snackbarVisible}
         onDismiss={onDismissSnackBar}
-        duration={Snackbar.DURATION_SHORT}
+        duration={1000}
         style={{ backgroundColor: snackbarColor }}
       >
         <Text
