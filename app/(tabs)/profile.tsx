@@ -115,7 +115,7 @@ export default function ProfileScreen() {
   };
 
   const getIconColor = (hasError: boolean) =>
-    hasError ? colors.error : colors.secondary;
+    hasError ? colors.error : colors.outline;
 
   const emailError = email !== '' && !validateEmail(email);
   const passwordLengthError = password !== '' && password.length < 6;
@@ -232,7 +232,7 @@ export default function ProfileScreen() {
         buttonColor={colors.secondary}
         labelStyle={{ color: colors.surfaceVariant }}
         style={{ marginTop: 10 }}
-        icon="login"
+        icon="login-variant"
         disabled={!isFormValid()}
       >
         <Text variant="bodyLarge" style={{ color: colors.surfaceVariant }}>

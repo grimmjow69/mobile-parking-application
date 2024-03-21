@@ -62,7 +62,7 @@ export default function RegistrationScreen() {
   const { colors } = useTheme();
 
   const getIconColor = (hasError: boolean) =>
-    hasError ? colors.error : colors.secondary;
+    hasError ? colors.error : colors.outline;
 
   const emailError = email !== '' && !validateEmail(email);
 

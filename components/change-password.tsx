@@ -3,7 +3,7 @@ import i18n from '@/assets/localization/i18n';
 import { useContext, useState } from 'react';
 import SpinnerOverlay from 'react-native-loading-spinner-overlay';
 import { ActivityIndicator, Button, HelperText, Modal, Snackbar, Text, TextInput, useTheme } from 'react-native-paper';
-import { PreferencesContext } from '@/app/context/preference-context';
+import { PreferencesContext, PreferencesContextProps } from '@/app/context/preference-context';
 import { StyleSheet, View } from 'react-native';
 import { updateUserPassword } from '@/app/services/user-service';
 
@@ -23,7 +23,7 @@ const ChangePassword: React.FC<ChangePasswordProps> = ({
   const [currentPassword, setCurrentPassword] = useState<string>('');
   const [newPassword, setNewPassword] = useState<string>('');
   const [confirmNewPassword, setConfirmNewPassword] = useState<string>('');
-  const { user, isThemeDark } = useContext(PreferencesContext);
+  const { user, isThemeDark } = useContext<PreferencesContextProps>(PreferencesContext);
   const { colors } = useTheme();
 
   const handleChangePassword = async () => {
@@ -75,7 +75,7 @@ const ChangePassword: React.FC<ChangePasswordProps> = ({
   };
 
   const getIconColor = (hasError: boolean) =>
-    hasError ? colors.error : colors.secondary;
+    hasError ? colors.error : colors.outline;
 
   return (
     <>

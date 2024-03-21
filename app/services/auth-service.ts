@@ -57,7 +57,7 @@ export const loginUser = async (
     });
     const data = await response.json();
 
-    if (response.status === 200 && data.loginSuccessfull) {
+    if (response.status === 200 && data.success) {
       return {
         success: true,
         message: i18n.t('profile.loginResponse.loginSuccessful'),

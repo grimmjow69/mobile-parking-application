@@ -52,7 +52,7 @@ const ChangeEmail: React.FC<ChangeEmailProps> = ({ visible, onDismiss }) => {
   };
 
   const getIconColor = (hasError: boolean) =>
-    hasError ? colors.error : colors.secondary;
+    hasError ? colors.error : colors.outline;
 
   function setSnackBarContent(message: string, color: string) {
     setSnackbarColor(color);

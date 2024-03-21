@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import i18n from '../../assets/localization/i18n';
+import ReportBug from '@/components/report-bug';
 import { Button, Switch, Text, useTheme } from 'react-native-paper';
 import { deletePushTokenFromServer, registerForPushNotificationsAsync, sendPushTokenToServer } from '../services/notifications-service';
 import { Link } from 'expo-router';
@@ -22,6 +23,8 @@ export default function SettingsScreen() {
     i18n.language === 'en'
   );
 
+  const [isReportBugVisible, setIsReportBugVisible] = useState<boolean>(false);
+
   const { colors } = useTheme();
 
   const toggleLanguage = async () => {
@@ -36,6 +39,10 @@ export default function SettingsScreen() {
     toggleTheme();
     const newTheme = isThemeDark ? 'light' : 'dark';
     await AsyncStorage.setItem('theme', newTheme);
+  };
+
+  const toggleReportBugModal = () => {
+    setIsReportBugVisible(!isReportBugVisible);
   };
 
   const toggleAlert = async () => {
@@ -59,10 +66,6 @@ export default function SettingsScreen() {
         await deletePushTokenFromServer(user!.userId);
       }
     } catch (error) {}
-  };
-
-  const reportBug = () => {
-    console.log('Bug report button tapped');
   };
 
   return (
@@ -102,7 +105,6 @@ export default function SettingsScreen() {
               labelStyle={{ color: colors.surfaceVariant }}
               icon="information"
               mode="contained"
-              onPress={reportBug}
             >
               <Text
                 variant="bodyLarge"
@@ -119,7 +121,7 @@ export default function SettingsScreen() {
             icon="bug"
             mode="contained"
             style={[styles.reportButton, styles.footerButton]}
-            onPress={reportBug}
+            onPress={() => toggleReportBugModal()}
           >
             <Text variant="bodyLarge" style={{ color: colors.surfaceVariant }}>
               {i18n.t('settings.reportBug')}
@@ -133,6 +135,10 @@ export default function SettingsScreen() {
           </Text>
         </View>
       </View>
+      <ReportBug
+        visible={isReportBugVisible}
+        onDismiss={toggleReportBugModal}
+      />
     </SafeAreaProvider>
   );
 }
