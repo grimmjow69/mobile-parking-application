@@ -37,8 +37,8 @@ export const darkTheme = {
       level4: 'rgb(52, 46, 57)',
       level5: 'rgb(56, 49, 62)'
     },
-    surfaceDisabled: 'rgba(255, 255, 255, 0.8)',
-    onSurfaceDisabled: 'rgba(255, 255, 255, 0.8)',
+    surfaceDisabled: 'rgba(69, 69, 69, 0.47)',
+    onSurfaceDisabled: 'rgba(22, 22, 22, 0.92)',
     backdrop: 'rgba(51, 47, 55, 0.4)',
     card: 'rgb(18, 18, 18)',
     text: 'rgb(229, 229, 231)',
@@ -122,7 +122,7 @@ export default {
     navigationBar: 'rgb(18, 18, 18)',
     spinnerOverlay: 'rgba(44, 44, 44, 0.95)',
     spinnerColor: '#fff',
-    modalContainer: '#5b5b5b',
+    modalContainer: '#131413',
     modalContainer2: 'rgba(0, 0, 0, 1)',
     modalContainerTableHeader: '#444444'
   }

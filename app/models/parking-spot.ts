@@ -15,10 +15,16 @@ export interface ParkingSpotCoordinates {
 export interface ParkingSpotDetail {
   isFavourite: boolean;
   isNotificationEnabled: boolean;
-  history: ParkingSpotDetailHistoryRecord[];
+  stateSince: Date
 }
 
-export interface ParkingSpotDetailHistoryRecord {
+export interface SpotHistoryRecord {
   occupied: boolean;
   updatedAt: Date;
+}
+
+export interface ParkingSheetResponse {
+  isFavourite: boolean;
+  isNotificationEnabled: boolean;
+  stateSince: Date;
 }

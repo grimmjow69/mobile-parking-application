@@ -2,26 +2,34 @@ import * as Location from 'expo-location';
 import Colors, { errorColor, successColor } from '@/constants/Colors';
 import i18n from '../../assets/localization/i18n';
 import MapView, { Circle, Marker } from 'react-native-maps';
-import moment from 'moment';
-import React, { useCallback, useContext, useEffect, useRef, useState} from 'react';
+import ParkingSheet from '@/components/parking-sheet';
+import ParkingSpotHistory from '@/components/parking-spot-history';
+import RBSheet from 'react-native-raw-bottom-sheet';
+import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import SpinnerOverlay from 'react-native-loading-spinner-overlay';
-import { ActivityIndicator, Button, Divider, IconButton, Modal, Snackbar, Surface, Text, useTheme } from 'react-native-paper';
+import { ActivityIndicator, Button, IconButton, Modal, Snackbar, Text, useTheme } from 'react-native-paper';
 import { darkMap, LightMap } from '@/constants/map-styles';
-import { Dimensions, ScrollView, StyleSheet, View } from 'react-native';
-import { fetchAllSpotsData, fetchSpotDetailById, fetchUserFavouriteSpot, getClosestFreeParkingSpot } from '../services/parking-data-service';
-import { ParkingSpot, ParkingSpotDetail } from '../models/parking-spot';
+import { Dimensions, StyleSheet, View } from 'react-native';
+import { fetchAllSpotsData, fetchSpotDetailById, fetchSpotHistory, fetchUserFavouriteSpot,getClosestFreeParkingSpot } from '../services/parking-data-service';
+import { format } from 'date-fns';
+import { ParkingSheetResponse, ParkingSpot, SpotHistoryRecord } from '../models/parking-spot';
 import { PreferencesContext, PreferencesContextProps } from '../context/preference-context';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { subscribeToNotification, unsubscribeFromNotificationByUserAndParkingSpotId } from '../services/notifications-service';
 import { UNIZA_INITIAL_REGION } from '@/constants/coords';
 import { updateFavouriteSpot } from '../services/user-service';
-import { useIsFocused } from '@react-navigation/native';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
 
 export interface ModalContent {
   spotName: string;
+  history: SpotHistoryRecord[];
+}
+
+export interface ParkingSheetContent {
+  spotName: string;
   occupied: boolean | null;
   spotId: number;
-  detail: ParkingSpotDetail | null;
+  sheetData: ParkingSheetResponse;
 }
 
 export default function MapScreen() {
@@ -39,7 +47,13 @@ export default function MapScreen() {
     useState<boolean>(false);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [modalContent, setModalContent] = useState<ModalContent | null>(null);
+  const [sheetContent, setSheetContent] = useState<ParkingSheetContent | null>(
+    null
+  );
   const [updatedAt, setUpdatedAt] = useState<string>(i18n.t('base.unknown'));
+  const refRBSheet = useRef<RBSheet>(null);
+
+  const navigation = useNavigation();
 
   const isFocused = useIsFocused();
   const { colors } = useTheme();
@@ -50,7 +64,11 @@ export default function MapScreen() {
     try {
       const allSpotsData = await fetchAllSpotsData();
       setParkingSpots(allSpotsData.data);
-      setUpdatedAt(allSpotsData.updatedAt)
+      if (allSpotsData.updatedAt) {
+        setUpdatedAt(format(allSpotsData.updatedAt, 'HH:mm:ss'));
+      } else {
+        setUpdatedAt(i18n.t('base.unknown'));
+      }
       setSnackBarContent(i18n.t('base.loadSuccess'), successColor);
     } catch (error) {
       setSnackBarContent(i18n.t('base.loadFailed'), errorColor);
@@ -65,6 +83,15 @@ export default function MapScreen() {
       getData();
     }
   }, [isFocused, getData]);
+
+  useEffect(() => {
+    const blurListener = navigation.addListener('blur', () => {
+      refRBSheet.current?.close();
+      setModalVisible(false);
+    });
+
+    return blurListener;
+  }, [navigation]);
 
   useEffect(() => {}, [modalContent]);
 
@@ -169,17 +196,19 @@ export default function MapScreen() {
         user ? user.userId : 0,
         spotId
       );
-      setModalContent({
+
+      setSheetContent({
         spotName: spotName,
         occupied: occupied,
         spotId: spotId,
-        detail: parkingSpotDetail
+        sheetData: parkingSpotDetail
       });
 
       setIsFavourite(parkingSpotDetail.isFavourite);
       setNotificationsEnabled(parkingSpotDetail.isNotificationEnabled);
 
-      setModalVisible(true);
+      setLoading(false);
+      refRBSheet.current?.open();
     } catch (error) {
     } finally {
       setLoading(false);
@@ -187,27 +216,74 @@ export default function MapScreen() {
   };
 
   function getMarkerDescription(updatedAt: Date) {
-    return `${i18n.t('parkingMap.updatedAt')} ${moment(updatedAt).format(
-      'HH:mm:ss'
-    )}`;
+    return `${i18n.t('parkingMap.updatedAt')} ${format(updatedAt, 'HH:mm:ss')}`;
   }
 
-  function getParkingSpotModalState(modalContent: ModalContent) {
-    var state = '';
+  useEffect(() => {
+    if (isFocused) {
+      getData();
+    }
+  }, [isFocused, getData]);
 
-    if (modalContent?.occupied !== null) {
-      state = modalContent?.occupied
+  async function openSpotHistory(spotName: string, spotId: number) {
+    try {
+      refRBSheet.current?.close();
+      setLoading(true);
+
+      const history = await fetchSpotHistory(spotId);
+
+      setModalContent({
+        spotName: spotName,
+        history: history
+      });
+
+      setSnackBarContent(i18n.t('base.loadSuccess'), successColor);
+      setModalVisible(true);
+    } catch (err) {
+      setSnackBarContent(i18n.t('base.loadFailed'), errorColor);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function getSheetTitle(sheetContent: ParkingSheetContent) {
+    var state = '';
+    if (sheetContent?.occupied !== null) {
+      state = sheetContent?.occupied
         ? i18n.t('parkingMap.parkingSpotDetail.header.stateOccupied')
         : i18n.t('parkingMap.parkingSpotDetail.header.stateFree');
     } else {
       state = i18n.t('parkingMap.parkingSpotDetail.header.stateUnknown');
     }
 
-    return `${modalContent?.spotName} - ${state}`;
+    return `${sheetContent?.spotName} - ${state}`;
+  }
+
+  function getSheetText(sheetContent: ParkingSheetContent) {
+    var state = '';
+    if (sheetContent?.occupied !== null) {
+      state = sheetContent?.occupied
+        ? i18n.t('parkingMap.parkingSheet.occupiedSince')
+        : i18n.t('parkingMap.parkingSheet.freeSince');
+    } else {
+      return i18n.t('parkingMap.parkingSheet.stateUnknown');
+    }
+
+    var sinceDate = '';
+
+    if (sheetContent.sheetData.stateSince === null) {
+      sinceDate = i18n.t('parkingMap.parkingSheet.noData');
+    } else {
+      sinceDate = format(
+        sheetContent.sheetData.stateSince,
+        'HH:mm:ss dd.mm.yyyy'
+      );
+    }
+
+    return `${state}: ${sinceDate}`;
   }
 
   const renderMarker = (spot: ParkingSpot) => {
-    const isClosestSpot = spot === closestSpot;
     var circleColor = spot.occupied != null ? errorColor : successColor;
 
     if (spot.occupied != null) {
@@ -279,6 +355,7 @@ export default function MapScreen() {
 
   const handleFavouriteSpotPressed = async (userId: number, spotId: number) => {
     try {
+      console.log('asddas')
       setIsFavourite(!isFavourite);
       setLoading(true);
       const result = await updateFavouriteSpot(
@@ -323,8 +400,7 @@ export default function MapScreen() {
         style={[styles.updatedAtTitle, { backgroundColor: colors.secondary }]}
       >
         <Text variant="labelLarge" style={{ color: colors.surfaceVariant }}>
-          {i18n.t('parkingMap.updatedAt')}{' '}
-          {moment(updatedAt).format('HH:mm:ss')}
+          {i18n.t('parkingMap.updatedAt')} {updatedAt}
         </Text>
       </View>
       <View style={styles.bottomButtons}>
@@ -365,82 +441,44 @@ export default function MapScreen() {
           }
         ]}
       >
-        <View style={styles.modalHeader}>
-          <Text variant="titleMedium" style={{ color: colors.tertiary }}>
-            {getParkingSpotModalState(modalContent!)}
-          </Text>
-          {user && (
-            <View style={styles.modalActionIcons}>
-              <IconButton
-                icon={notificationsEnabled ? 'bell' : 'bell-outline'}
-                size={30}
-                onPress={() =>
-                  handleNotificationPressed(user!.userId, modalContent!.spotId)
-                }
-              />
-              <IconButton
-                icon={isFavourite ? 'star' : 'star-outline'}
-                size={30}
-                onPress={() =>
-                  handleFavouriteSpotPressed(user!.userId, modalContent!.spotId)
-                }
-              />
-            </View>
-          )}
-        </View>
-        <Divider />
-        <ScrollView style={styles.modalScrollContent}>
-          <View
-            style={[
-              styles.historyHeaderRow,
-              {
-                backgroundColor:
-                  Colors[isThemeDark ? 'dark' : 'light']
-                    .modalContainerTableHeader
-              }
-            ]}
-          >
-            <View style={styles.historyHeaderColumn}>
-              <Text variant="titleMedium" style={{ color: colors.tertiary }}>
-                {i18n.t('parkingMap.parkingSpotDetail.table.stateColumnName')}
-              </Text>
-            </View>
-            <View style={styles.historyHeaderColumn}>
-              <Text variant="titleMedium" style={{ color: colors.tertiary }}>
-                {i18n.t(
-                  'parkingMap.parkingSpotDetail.table.updatedAtColumnName'
-                )}
-              </Text>
-            </View>
-          </View>
-          {modalContent?.detail?.history?.map((historyItem, index) => (
-            <View key={index} style={styles.historyRow}>
-              <View style={styles.historyColumn}>
-                <Text variant="bodyMedium" style={{ color: colors.tertiary }}>
-                  {historyItem.occupied
-                    ? i18n.t('parkingMap.parkingSpotDetail.table.stateOccupied')
-                    : i18n.t('parkingMap.parkingSpotDetail.table.stateFree')}
-                </Text>
-              </View>
-              <View style={styles.historyColumn}>
-                <Text style={{ color: colors.tertiary }}>
-                  {moment(historyItem.updatedAt).format('HH:mm:ss DD.MM.YYYY')}
-                </Text>
-              </View>
-              <Divider />
-            </View>
-          ))}
-        </ScrollView>
-        <View style={styles.modalFooter}>
-          <Button
-            mode="contained"
-            style={styles.closeModalButton}
-            onPress={() => setModalVisible(false)}
-          >
-            {i18n.t('base.close')}
-          </Button>
-        </View>
+        <ParkingSpotHistory
+          modalContent={modalContent}
+          setModalVisible={setModalVisible}
+        />
       </Modal>
+      <RBSheet
+        ref={refRBSheet}
+        closeOnDragDown={true}
+        closeOnPressMask={true}
+        animationType={'fade'}
+        customStyles={{
+          wrapper: {
+            backgroundColor:
+              Colors[isThemeDark ? 'dark' : 'light'].spinnerOverlay
+          },
+          draggableIcon: {
+            backgroundColor: Colors[isThemeDark ? 'dark' : 'light'].spinnerColor
+          },
+          container: {
+            backgroundColor:
+              Colors[isThemeDark ? 'dark' : 'light'].modalContainer
+          }
+        }}
+      >
+        {sheetContent && (
+          <ParkingSheet
+            getSheetText={getSheetText}
+            getSheetTitle={getSheetTitle}
+            handleFavouriteSpotPressed={handleFavouriteSpotPressed}
+            handleNotificationPressed={handleNotificationPressed}
+            isFavourite={isFavourite}
+            notificationsEnabled={notificationsEnabled}
+            openSpotHistory={openSpotHistory}
+            sheetContent={sheetContent}
+          />
+        )}
+      </RBSheet>
+
       <Snackbar
         visible={snackbarVisible}
         onDismiss={onDismissSnackBar}
@@ -487,36 +525,20 @@ const styles = StyleSheet.create({
     top: 4,
     left: 4
   },
-  modalContainer: {
-    padding: 20,
-    margin: 20,
-    height: Dimensions.get('window').height * 0.65
+  leftContainer: {
+    flex: 1
   },
-  modalHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between'
+  rightContainer: {
+    flexDirection: 'row'
+  },
+  modalContainer: {
+    height: '100%'
   },
   updatedAtTitle: {
     position: 'absolute',
     top: 10,
     padding: 11,
     borderRadius: 20
-  },
-  modalFooter: {
-    alignItems: 'center'
-  },
-  closeModalButton: {
-    marginTop: 20
-  },
-  modalActionIcons: {
-    alignItems: 'center',
-    flexDirection: 'row'
-  },
-  modalScrollContent: {
-    flex: 1,
-    marginTop: 10,
-    marginBottom: 10
   },
   findFavParkingSpot: {
     marginTop: 8

@@ -1,8 +1,9 @@
 import { HeatmapPoint } from '../models/heatmap';
 import {
+  ParkingSheetResponse,
   ParkingSpot,
   ParkingSpotCoordinates,
-  ParkingSpotDetail
+  SpotHistoryRecord
 } from '../models/parking-spot';
 import { base64Credentials, requestHeader } from './request-header';
 
@@ -122,10 +123,30 @@ export const fetchHeatmapData = async (): Promise<HeatmapPoint[]> => {
   }
 };
 
+export const fetchSpotHistory = async (
+  spotId: number
+): Promise<SpotHistoryRecord[]> => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/spot-history/${spotId}`, {
+      method: 'GET',
+      headers: requestHeader
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const jsonResponse = await response.json();
+    return jsonResponse.historyRecords;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const fetchSpotDetailById = async (
   userId: number,
   spotId: number
-): Promise<ParkingSpotDetail> => {
+): Promise<ParkingSheetResponse> => {
   try {
     const response = await fetch(`${API_BASE_URL}/spot-detail-by-id`, {
       method: 'POST',
@@ -141,7 +162,7 @@ export const fetchSpotDetailById = async (
     }
 
     const jsonResponse = await response.json();
-    const parkingSpotDetail: ParkingSpotDetail = jsonResponse.data;
+    const parkingSpotDetail: ParkingSheetResponse = jsonResponse.data;
 
     return parkingSpotDetail;
   } catch (error) {
