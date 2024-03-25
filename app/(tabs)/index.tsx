@@ -15,9 +15,7 @@ import { format } from 'date-fns';
 import { ParkingSheetResponse, ParkingSpot, SpotHistoryRecord } from '../models/parking-spot';
 import { PreferencesContext, PreferencesContextProps } from '../context/preference-context';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { subscribeToNotification, unsubscribeFromNotificationByUserAndParkingSpotId } from '../services/notifications-service';
 import { UNIZA_INITIAL_REGION } from '@/constants/coords';
-import { updateFavouriteSpot } from '../services/user-service';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 
 export interface ModalContent {
@@ -185,11 +183,11 @@ export default function MapScreen() {
     }
   }, [parkingSpots]);
 
-  const handleMarkerPress = async (
+  async function handleMarkerPress(
     spotName: string,
     occupied: boolean,
     spotId: number
-  ) => {
+  ) {
     try {
       setLoading(true);
       const parkingSpotDetail = await fetchSpotDetailById(
@@ -213,7 +211,7 @@ export default function MapScreen() {
     } finally {
       setLoading(false);
     }
-  };
+  }
 
   function getMarkerDescription(updatedAt: Date) {
     return `${i18n.t('parkingMap.updatedAt')} ${format(updatedAt, 'HH:mm:ss')}`;
@@ -244,43 +242,6 @@ export default function MapScreen() {
     } finally {
       setLoading(false);
     }
-  }
-
-  function getSheetTitle(sheetContent: ParkingSheetContent) {
-    var state = '';
-    if (sheetContent?.occupied !== null) {
-      state = sheetContent?.occupied
-        ? i18n.t('parkingMap.parkingSpotDetail.header.stateOccupied')
-        : i18n.t('parkingMap.parkingSpotDetail.header.stateFree');
-    } else {
-      state = i18n.t('parkingMap.parkingSpotDetail.header.stateUnknown');
-    }
-
-    return `${sheetContent?.spotName} - ${state}`;
-  }
-
-  function getSheetText(sheetContent: ParkingSheetContent) {
-    var state = '';
-    if (sheetContent?.occupied !== null) {
-      state = sheetContent?.occupied
-        ? i18n.t('parkingMap.parkingSheet.occupiedSince')
-        : i18n.t('parkingMap.parkingSheet.freeSince');
-    } else {
-      return i18n.t('parkingMap.parkingSheet.stateUnknown');
-    }
-
-    var sinceDate = '';
-
-    if (sheetContent.sheetData.stateSince === null) {
-      sinceDate = i18n.t('parkingMap.parkingSheet.noData');
-    } else {
-      sinceDate = format(
-        sheetContent.sheetData.stateSince,
-        'HH:mm:ss dd.MM.yyyy'
-      );
-    }
-
-    return `${state}: ${sinceDate}`;
   }
 
   const renderMarker = (spot: ParkingSpot) => {
@@ -332,47 +293,6 @@ export default function MapScreen() {
   };
 
   const onDismissSnackBar = () => setSnackbarVisible(false);
-
-  const handleNotificationPressed = async (userId: number, spotId: number) => {
-    try {
-      setLoading(true);
-      setNotificationsEnabled(!notificationsEnabled);
-
-      if (notificationsEnabled) {
-        await unsubscribeFromNotificationByUserAndParkingSpotId(userId, spotId);
-        setSnackBarContent(i18n.t('notifications.unsubscribe'), successColor);
-      } else {
-        await subscribeToNotification(spotId, userId);
-        setSnackBarContent(i18n.t('notifications.subscribe'), successColor);
-      }
-    } catch (error) {
-      setSnackBarContent(i18n.t('base.error'), errorColor);
-    } finally {
-      setSnackbarVisible(true);
-      setLoading(false);
-    }
-  };
-
-  const handleFavouriteSpotPressed = async (userId: number, spotId: number) => {
-    try {
-      console.log('asddas')
-      setIsFavourite(!isFavourite);
-      setLoading(true);
-      const result = await updateFavouriteSpot(
-        userId,
-        isFavourite ? null : spotId
-      );
-      setSnackBarContent(
-        result.message,
-        result.success ? successColor : errorColor
-      );
-    } catch (error) {
-      setSnackBarContent(i18n.t('base.error'), errorColor);
-    } finally {
-      setSnackbarVisible(true);
-      setLoading(false);
-    }
-  };
 
   return (
     <SafeAreaProvider style={styles.container}>
@@ -453,8 +373,7 @@ export default function MapScreen() {
         animationType={'fade'}
         customStyles={{
           wrapper: {
-            backgroundColor:
-              Colors[isThemeDark ? 'dark' : 'light'].sheetOverlay
+            backgroundColor: Colors[isThemeDark ? 'dark' : 'light'].sheetOverlay
           },
           draggableIcon: {
             backgroundColor: Colors[isThemeDark ? 'dark' : 'light'].spinnerColor
@@ -467,14 +386,15 @@ export default function MapScreen() {
       >
         {sheetContent && (
           <ParkingSheet
-            getSheetText={getSheetText}
-            getSheetTitle={getSheetTitle}
-            handleFavouriteSpotPressed={handleFavouriteSpotPressed}
-            handleNotificationPressed={handleNotificationPressed}
             isFavourite={isFavourite}
             notificationsEnabled={notificationsEnabled}
             openSpotHistory={openSpotHistory}
             sheetContent={sheetContent}
+            setIsFavourite={setIsFavourite}
+            setLoading={setLoading}
+            setNotificationsEnabled={setNotificationsEnabled}
+            setSnackBarContent={setSnackBarContent}
+            setSnackBarVisible={setSnackbarVisible}
           />
         )}
       </RBSheet>
@@ -542,25 +462,6 @@ const styles = StyleSheet.create({
   },
   findFavParkingSpot: {
     marginTop: 8
-  },
-  historyRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 8
-  },
-  historyHeaderRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingVertical: 8
-  },
-  historyHeaderColumn: {
-    flex: 1,
-    paddingHorizontal: 8
-  },
-  historyColumn: {
-    flex: 1,
-    paddingHorizontal: 8
   },
   separator: {
     marginVertical: 30,

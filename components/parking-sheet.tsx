@@ -1,44 +1,137 @@
 import React, { useContext } from 'react';
-import { Text, Button, Divider, IconButton,useTheme } from 'react-native-paper';
+import { Text, Button, Divider, IconButton, useTheme } from 'react-native-paper';
 import { StyleSheet, View } from 'react-native';
 import i18n from '../assets/localization/i18n';
 import { ParkingSheetContent } from '@/app/(tabs)';
 import { PreferencesContext, PreferencesContextProps } from '@/app/context/preference-context';
+import { subscribeToNotification, unsubscribeFromNotificationByUserAndParkingSpotId } from '@/app/services/notifications-service';
+import { updateFavouriteSpot } from '@/app/services/user-service';
+import { errorColor, successColor } from '@/constants/Colors';
+import { format } from 'date-fns';
 
 interface ParkingSheetProps {
   sheetContent: ParkingSheetContent;
-  getSheetTitle: (content: ParkingSheetContent) => string;
-  getSheetText: (content: ParkingSheetContent) => string;
-  handleNotificationPressed: (userId: number, spotId: number) => void;
-  handleFavouriteSpotPressed: (userId: number, spotId: number) => void;
   openSpotHistory: (spotName: string, spotId: number) => void;
   isFavourite: boolean;
   notificationsEnabled: boolean;
+  setLoading: (loading: boolean) => void;
+  setNotificationsEnabled: (enable: boolean) => void;
+  setIsFavourite: (favourite: boolean) => void;
+  setSnackBarContent: (message: string, colorCode: string) => void;
+  setSnackBarVisible: (visible: boolean) => void;
 }
 
 const ParkingSheet: React.FC<ParkingSheetProps> = ({
   sheetContent,
-  getSheetTitle,
-  getSheetText,
-  handleNotificationPressed,
-  handleFavouriteSpotPressed,
   openSpotHistory,
   isFavourite,
-  notificationsEnabled
+  notificationsEnabled,
+  setLoading,
+  setNotificationsEnabled,
+  setIsFavourite,
+  setSnackBarContent,
+  setSnackBarVisible
 }) => {
   const { user } = useContext<PreferencesContextProps>(PreferencesContext);
   const { colors } = useTheme();
+
+  async function handleNotificationPressed(userId: number, spotId: number) {
+    try {
+      setLoading(true);
+      setNotificationsEnabled(!notificationsEnabled);
+
+      if (notificationsEnabled) {
+        await unsubscribeFromNotificationByUserAndParkingSpotId(userId, spotId);
+        setSnackBarContent(i18n.t('notifications.unsubscribe'), successColor);
+      } else {
+        await subscribeToNotification(spotId, userId);
+        setSnackBarContent(i18n.t('notifications.subscribe'), successColor);
+      }
+    } catch (error) {
+      setSnackBarContent(i18n.t('base.error'), errorColor);
+    } finally {
+      setSnackBarVisible(true);
+      setLoading(false);
+    }
+  }
+
+  async function handleFavouriteSpotPressed(userId: number, spotId: number) {
+    try {
+      setIsFavourite(!isFavourite);
+      setLoading(true);
+      const result = await updateFavouriteSpot(
+        userId,
+        isFavourite ? null : spotId
+      );
+      setSnackBarContent(
+        result.message,
+        result.success ? successColor : errorColor
+      );
+    } catch (error) {
+      setSnackBarContent(i18n.t('base.error'), errorColor);
+    } finally {
+      setSnackBarVisible(true);
+      setLoading(false);
+    }
+  }
+
+  function getSheetTitle(sheetContent: ParkingSheetContent) {
+    var state = '';
+    if (sheetContent?.occupied !== null) {
+      state = sheetContent?.occupied
+        ? i18n.t('parkingMap.parkingSpotDetail.header.stateOccupied')
+        : i18n.t('parkingMap.parkingSpotDetail.header.stateFree');
+    } else {
+      state = i18n.t('parkingMap.parkingSpotDetail.header.stateUnknown');
+    }
+
+    return `${sheetContent?.spotName} - ${state}`;
+  }
+
+  function getSheetText(sheetContent: ParkingSheetContent) {
+    var state = '';
+    if (sheetContent?.occupied !== null) {
+      state = sheetContent?.occupied
+        ? i18n.t('parkingMap.parkingSheet.occupiedSince')
+        : i18n.t('parkingMap.parkingSheet.freeSince');
+    } else {
+      return i18n.t('parkingMap.parkingSheet.stateUnknown');
+    }
+
+    var sinceDate = '';
+
+    if (sheetContent.sheetData.stateSince === null) {
+      sinceDate = i18n.t('parkingMap.parkingSheet.noData');
+    } else {
+      sinceDate = format(
+        sheetContent.sheetData.stateSince,
+        'HH:mm:ss dd.MM.yyyy'
+      );
+    }
+    return `${state}: ${sinceDate}`;
+  }
 
   return (
     <React.Fragment>
       <View
         style={[
           styles.sheetHeader,
-          user ? { marginBottom: 6 } : { marginBottom: 20 }
+          user
+            ? {
+                marginBottom: 6
+              }
+            : {
+                marginBottom: 20
+              }
         ]}
       >
         <View style={styles.leftContainer}>
-          <Text variant="titleMedium" style={{ color: colors.tertiary }}>
+          <Text
+            variant="titleMedium"
+            style={{
+              color: colors.tertiary
+            }}
+          >
             {getSheetTitle(sheetContent)}
           </Text>
         </View>
@@ -90,7 +183,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 20,
+    paddingHorizontal: 20
   },
   leftContainer: {
     flex: 1
