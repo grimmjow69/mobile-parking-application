@@ -4,11 +4,10 @@ import MapView, { Heatmap, PROVIDER_GOOGLE } from 'react-native-maps';
 import SpinnerOverlay from 'react-native-loading-spinner-overlay';
 import { ActivityIndicator, IconButton, Snackbar, Text, useTheme } from 'react-native-paper';
 import { darkMap, LightMap } from '@/constants/map-styles';
-import { Dimensions, StyleSheet } from 'react-native';
+import { Dimensions, StyleSheet, View } from 'react-native';
 import { fetchHeatmapData } from '../services/parking-data-service';
 import { HeatmapPoint } from '../models/heatmap';
 import { PreferencesContext, PreferencesContextProps } from '../context/preference-context';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { UNIZA_INITIAL_REGION } from '@/constants/coords';
 import { useCallback, useContext, useEffect, useState } from 'react';
 import { useIsFocused } from '@react-navigation/native';
@@ -50,7 +49,7 @@ export default function HeatmapScreen() {
   const onDismissSnackBar = () => setSnackbarVisible(false);
 
   return (
-    <SafeAreaProvider style={styles.container}>
+    <View style={styles.container}>
       <MapView
         initialRegion={UNIZA_INITIAL_REGION}
         showsPointsOfInterest={false}
@@ -130,7 +129,7 @@ export default function HeatmapScreen() {
           />
         }
       />
-    </SafeAreaProvider>
+    </View>
   );
 }
 

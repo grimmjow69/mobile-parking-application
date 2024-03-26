@@ -60,102 +60,98 @@ const ChangeEmail: React.FC<ChangeEmailProps> = ({
 
   const emailError = newEmail !== '' && !validateEmail(newEmail);
   const passwordLengthError = password !== '' && password.length < 6;
-  
+
   return (
-    <>
-      <Modal
-        visible={visible}
-        onDismiss={onDismiss}
-        contentContainerStyle={[
-          styles.dialog,
-          {
-            backgroundColor:
-              Colors[isThemeDark ? 'dark' : 'light'].modalContainer2
-          }
-        ]}
-        dismissableBackButton={true}
-        dismissable={false}
-      >
-        <TextInput
-          label={i18n.t('profile.newEmail')}
-          value={newEmail}
-          onChangeText={setNewEmail}
-          mode="outlined"
-          autoCapitalize="none"
-          keyboardType="email-address"
-          error={emailError}
-          textContentType="emailAddress"
-          right={
-            <TextInput.Icon icon="email" color={getIconColor(emailError)} />
-          }
-        />
+    <Modal
+      visible={visible}
+      onDismiss={onDismiss}
+      contentContainerStyle={[
+        styles.dialog,
+        {
+          backgroundColor:
+            Colors[isThemeDark ? 'dark' : 'light'].modalContainer2
+        }
+      ]}
+      dismissableBackButton={true}
+      dismissable={false}
+    >
+      <TextInput
+        label={i18n.t('profile.newEmail')}
+        value={newEmail}
+        onChangeText={setNewEmail}
+        mode="outlined"
+        autoCapitalize="none"
+        keyboardType="email-address"
+        error={emailError}
+        textContentType="emailAddress"
+        right={<TextInput.Icon icon="email" color={getIconColor(emailError)} />}
+      />
 
-        <HelperText type="error" visible={emailError}>
-          {i18n.t('profile.errors.emailError')}
-        </HelperText>
+      <HelperText type="error" visible={emailError}>
+        {i18n.t('profile.errors.emailError')}
+      </HelperText>
 
-        <TextInput
-          label={i18n.t('profile.currentPassword')}
-          value={password}
-          onChangeText={setPassword}
-          mode="outlined"
-          secureTextEntry
-          error={passwordLengthError}
-          textContentType="password"
-          right={
-            <TextInput.Icon
-              icon="lock"
-              color={getIconColor(passwordLengthError)}
-            />
-          }
-        />
+      <TextInput
+        label={i18n.t('profile.currentPassword')}
+        value={password}
+        onChangeText={setPassword}
+        mode="outlined"
+        secureTextEntry
+        error={passwordLengthError}
+        textContentType="password"
+        right={
+          <TextInput.Icon
+            icon="lock"
+            color={getIconColor(passwordLengthError)}
+          />
+        }
+      />
 
-        <HelperText type="error" visible={passwordLengthError}>
-          {i18n.t('profile.errors.passwordLengthError')}
-        </HelperText>
+      <HelperText type="error" visible={passwordLengthError}>
+        {i18n.t('profile.errors.passwordLengthError')}
+      </HelperText>
 
-        <View style={styles.buttonContainer}>
-          <Button
-            icon="email-sync-outline"
-            mode="contained"
-            labelStyle={{
+      <View style={styles.buttonContainer}>
+        <Button
+          icon="email-sync-outline"
+          mode="contained"
+          labelStyle={{
+            color: colors.surfaceVariant
+          }}
+          buttonColor={colors.secondary}
+          onPress={handleChangeEmail}
+          disabled={!isFormValid()}
+        >
+          <Text
+            variant="bodyLarge"
+            style={{
               color: colors.surfaceVariant
             }}
-            buttonColor={colors.secondary}
-            onPress={handleChangeEmail}
-            disabled={!isFormValid()}
           >
-            <Text
-              variant="bodyLarge"
-              style={{
-                color: colors.surfaceVariant
-              }}
-            >
-              {i18n.t('profile.changeEmail')}
-            </Text>
-          </Button>
-          <Button
-            mode="contained"
-            onPress={onDismiss}
-            style={[
-              {
-                backgroundColor: '#F77D24',
-                marginTop: 12
-              }
-            ]}
+            {i18n.t('profile.changeEmail')}
+          </Text>
+        </Button>
+        <Button
+          mode="contained"
+          onPress={onDismiss}
+          style={[
+            {
+              backgroundColor: '#F77D24',
+              marginTop: 12
+            }
+          ]}
+        >
+          <Text
+            variant="bodyLarge"
+            style={{
+              color: '#fff'
+            }}
           >
-            <Text
-              variant="bodyLarge"
-              style={{
-                color: '#fff'
-              }}
-            >
-              {i18n.t('base.close')}
-            </Text>
-          </Button>
-        </View>
-      </Modal>
-    </>
+            {i18n.t('base.close')}
+          </Text>
+        </Button>
+      </View>
+    </Modal>
   );
 };
 

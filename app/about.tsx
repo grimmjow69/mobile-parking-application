@@ -1,4 +1,3 @@
-import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import i18n from '../assets/localization/i18n';
 import { Text, useTheme } from 'react-native-paper';
@@ -7,7 +6,6 @@ export default function AboutScreen() {
   const { colors } = useTheme();
   return (
     <View style={styles.container}>
-      <SafeAreaProvider>
         <ScrollView>
           <Text
             variant="headlineSmall"
@@ -58,7 +56,6 @@ export default function AboutScreen() {
             {i18n.t('about.end')}
           </Text>
         </ScrollView>
-      </SafeAreaProvider>
     </View>
   );
 }

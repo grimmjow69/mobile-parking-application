@@ -15,6 +15,7 @@ import { Stack } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { useFonts } from 'expo-font';
 import { UserData } from './models/user';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 export { ErrorBoundary } from 'expo-router';
 
 export const unstable_settings = {
@@ -108,8 +109,7 @@ function RootLayoutNav() {
           const userData = JSON.parse(userJson);
           setUser(userData);
         }
-      } catch (e) {
-      }
+      } catch (e) {}
     };
 
     loadPreferences();
@@ -152,42 +152,46 @@ function RootLayoutNav() {
     <PreferencesContext.Provider value={preferences}>
       <ThemeProvider value={reactNavigationtheme}>
         <PaperProvider theme={paperTheme}>
-          <Stack>
-            <Stack.Screen
-              name="(tabs)"
-              options={{
-                headerShown: false
-              }}
-            />
-            <Stack.Screen
-              name="registration"
-              options={{
-                presentation: 'modal',
-                title: i18n.t('navigation.registration')
-              }}
-            />
-            <Stack.Screen
-              name="resend-password"
-              options={{
-                presentation: 'modal',
-                title: i18n.t('navigation.resendPassword')
-              }}
-            />
-            <Stack.Screen
-              name="my-notifications"
-              options={{
-                presentation: 'modal',
-                title: i18n.t('navigation.notifications')
-              }}
-            />
-            <Stack.Screen
-              name="about"
-              options={{
-                presentation: 'modal',
-                title: i18n.t('navigation.about')
-              }}
-            />
-          </Stack>
+          <SafeAreaProvider
+            style={{ backgroundColor: reactNavigationtheme.colors.background }}
+          >
+            <Stack>
+              <Stack.Screen
+                name="(tabs)"
+                options={{
+                  headerShown: false
+                }}
+              />
+              <Stack.Screen
+                name="registration"
+                options={{
+                  presentation: 'modal',
+                  title: i18n.t('navigation.registration')
+                }}
+              />
+              <Stack.Screen
+                name="resend-password"
+                options={{
+                  presentation: 'modal',
+                  title: i18n.t('navigation.resendPassword')
+                }}
+              />
+              <Stack.Screen
+                name="my-notifications"
+                options={{
+                  presentation: 'modal',
+                  title: i18n.t('navigation.notifications')
+                }}
+              />
+              <Stack.Screen
+                name="about"
+                options={{
+                  presentation: 'modal',
+                  title: i18n.t('navigation.about')
+                }}
+              />
+            </Stack>
+          </SafeAreaProvider>
         </PaperProvider>
       </ThemeProvider>
     </PreferencesContext.Provider>
