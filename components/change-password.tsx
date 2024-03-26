@@ -10,20 +10,23 @@ import { updateUserPassword } from '@/app/services/user-service';
 interface ChangePasswordProps {
   visible: boolean;
   onDismiss: () => void;
+  setLoading: (loading: boolean) => void;
+  setSnackBarContent: (message: string, colorCode: string) => void;
+  setSnackBarVisible: (visible: boolean) => void;
 }
 
 const ChangePassword: React.FC<ChangePasswordProps> = ({
   visible,
-  onDismiss
+  onDismiss,
+  setLoading,
+  setSnackBarContent,
+  setSnackBarVisible
 }) => {
-  const [snackbarVisible, setSnackbarVisible] = useState<boolean>(false);
-  const [snackbarMessage, setSnackbarMessage] = useState<string>('');
-  const [snackbarColor, setSnackbarColor] = useState<string>('');
-  const [loading, setLoading] = useState<boolean>(false);
   const [currentPassword, setCurrentPassword] = useState<string>('');
   const [newPassword, setNewPassword] = useState<string>('');
   const [confirmNewPassword, setConfirmNewPassword] = useState<string>('');
-  const { user, isThemeDark } = useContext<PreferencesContextProps>(PreferencesContext);
+  const { user, isThemeDark } =
+    useContext<PreferencesContextProps>(PreferencesContext);
   const { colors } = useTheme();
 
   const handleChangePassword = async () => {
@@ -38,32 +41,24 @@ const ChangePassword: React.FC<ChangePasswordProps> = ({
         i18n.t(`profile.${result.message}`),
         result.success ? successColor : errorColor
       );
+
       if (result.success) {
         onDismiss();
       }
     } catch (err) {
       setSnackBarContent(i18n.t('base.error'), errorColor);
     } finally {
-      setSnackbarVisible(true);
+      setSnackBarVisible(true);
       setLoading(false);
     }
   };
-
-  function setSnackBarContent(message: string, color: string) {
-    setSnackbarColor(color);
-    setSnackbarMessage(message);
-  }
-
-  const onDismissSnackBar = () => setSnackbarVisible(false);
 
   const passwordsMatchError =
     newPassword !== '' &&
     confirmNewPassword !== '' &&
     newPassword !== confirmNewPassword;
-
   const passwordLengthError =
     currentPassword !== '' && currentPassword.length < 6;
-
   const newPasswordLengthError = newPassword !== '' && newPassword.length < 6;
 
   const isFormValid = () => {
@@ -78,142 +73,118 @@ const ChangePassword: React.FC<ChangePasswordProps> = ({
     hasError ? colors.error : colors.outline;
 
   return (
-    <>
-      <Modal
-        visible={visible}
-        onDismiss={onDismiss}
-        contentContainerStyle={[
-          styles.dialog,
-          {
-            backgroundColor:
-              Colors[isThemeDark ? 'dark' : 'light'].modalContainer2
-          }
-        ]}
-        dismissableBackButton={true}
-        dismissable={false}
-      >
-        <TextInput
-          label={i18n.t('profile.currentPassword')}
-          value={currentPassword}
-          onChangeText={setCurrentPassword}
-          mode="outlined"
-          secureTextEntry
-          error={passwordLengthError}
-          textContentType="password"
-          right={
-            <TextInput.Icon
-              icon="lock"
-              color={getIconColor(passwordLengthError)}
-            />
-          }
-        />
+    <Modal
+      visible={visible}
+      onDismiss={onDismiss}
+      contentContainerStyle={[
+        styles.dialog,
+        {
+          backgroundColor:
+            Colors[isThemeDark ? 'dark' : 'light'].modalContainer2
+        }
+      ]}
+      dismissableBackButton={true}
+      dismissable={false}
+    >
+      <TextInput
+        label={i18n.t('profile.currentPassword')}
+        value={currentPassword}
+        onChangeText={setCurrentPassword}
+        mode="outlined"
+        secureTextEntry
+        error={passwordLengthError}
+        textContentType="password"
+        right={
+          <TextInput.Icon
+            icon="lock"
+            color={getIconColor(passwordLengthError)}
+          />
+        }
+      />
 
-        <HelperText type="error" visible={passwordLengthError}>
-          {i18n.t('profile.errors.passwordLengthError')}
-        </HelperText>
+      <HelperText type="error" visible={passwordLengthError}>
+        {i18n.t('profile.errors.passwordLengthError')}
+      </HelperText>
 
-        <TextInput
-          label={i18n.t('profile.newPassword')}
-          value={newPassword}
-          onChangeText={setNewPassword}
-          mode="outlined"
-          secureTextEntry
-          error={newPasswordLengthError}
-          textContentType="newPassword"
-          right={
-            <TextInput.Icon
-              icon="lock"
-              color={getIconColor(passwordLengthError)}
-            />
-          }
-        />
-        <HelperText type="error" visible={newPasswordLengthError}>
-          {i18n.t('profile.errors.passwordLengthError')}
-        </HelperText>
+      <TextInput
+        label={i18n.t('profile.newPassword')}
+        value={newPassword}
+        onChangeText={setNewPassword}
+        mode="outlined"
+        secureTextEntry
+        error={newPasswordLengthError}
+        textContentType="newPassword"
+        right={
+          <TextInput.Icon
+            icon="lock"
+            color={getIconColor(passwordLengthError)}
+          />
+        }
+      />
+      <HelperText type="error" visible={newPasswordLengthError}>
+        {i18n.t('profile.errors.passwordLengthError')}
+      </HelperText>
 
-        <TextInput
-          label={i18n.t('profile.confirmPassword')}
-          value={confirmNewPassword}
-          onChangeText={setConfirmNewPassword}
-          mode="outlined"
-          error={passwordsMatchError}
-          secureTextEntry
-          right={
-            <TextInput.Icon
-              icon="lock"
-              color={getIconColor(passwordLengthError)}
-            />
-          }
-        />
+      <TextInput
+        label={i18n.t('profile.confirmPassword')}
+        value={confirmNewPassword}
+        onChangeText={setConfirmNewPassword}
+        mode="outlined"
+        error={passwordsMatchError}
+        secureTextEntry
+        right={
+          <TextInput.Icon
+            icon="lock"
+            color={getIconColor(passwordLengthError)}
+          />
+        }
+      />
 
-        <HelperText type="error" visible={passwordsMatchError}>
-          {i18n.t('profile.errors.passwordsMatchError')}
-        </HelperText>
+      <HelperText type="error" visible={passwordsMatchError}>
+        {i18n.t('profile.errors.passwordsMatchError')}
+      </HelperText>
 
-        <View style={styles.buttonContainer}>
-          <Button
-            icon="key-change"
-            mode="contained"
-            labelStyle={{ color: colors.surfaceVariant }}
-            buttonColor={colors.secondary}
-            onPress={handleChangePassword}
-            disabled={!isFormValid()}
-          >
-            <Text variant="bodyLarge" style={{ color: colors.surfaceVariant }}>
-              {i18n.t('profile.changePassword')}
-            </Text>
-          </Button>
-          <Button
-            mode="contained"
-            onPress={onDismiss}
-            style={[
-              {
-                backgroundColor: '#F77D24',
-                marginTop: 12
-              }
-            ]}
-          >
-            <Text variant="bodyLarge" style={{ color: '#fff' }}>
-              {i18n.t('base.close')}
-            </Text>
-          </Button>
-        </View>
-        <Text
-          style={{ textAlign: 'center', fontWeight: 'bold', color: '#fff' }}
+      <View style={styles.buttonContainer}>
+        <Button
+          icon="key-change"
+          mode="contained"
+          labelStyle={{
+            color: colors.surfaceVariant
+          }}
+          buttonColor={colors.secondary}
+          onPress={handleChangePassword}
+          disabled={!isFormValid()}
         >
-          {' '}
-          {snackbarMessage}
-        </Text>
-
-        <SpinnerOverlay
-          textContent={i18n.t('base.wait')}
-          textStyle={isThemeDark ? { color: '#fff' } : { color: '#303c64' }}
-          animation="fade"
-          visible={loading}
-          overlayColor={Colors[isThemeDark ? 'dark' : 'light'].spinnerOverlay}
-          customIndicator={
-            <ActivityIndicator
-              size="large"
-              color={Colors[isThemeDark ? 'dark' : 'light'].spinnerColor}
-            />
-          }
-        />
-      </Modal>
-
-      <Snackbar
-        visible={snackbarVisible}
-        onDismiss={onDismissSnackBar}
-        duration={Snackbar.DURATION_SHORT}
-        style={{ backgroundColor: snackbarColor }}
-      >
-        <Text
-          style={{ textAlign: 'center', fontWeight: 'bold', color: '#fff' }}
+          <Text
+            variant="bodyLarge"
+            style={{
+              color: colors.surfaceVariant
+            }}
+          >
+            {i18n.t('profile.changePassword')}
+          </Text>
+        </Button>
+        <Button
+          mode="contained"
+          onPress={onDismiss}
+          style={[
+            {
+              backgroundColor: '#F77D24',
+              marginTop: 12
+            }
+          ]}
         >
-          {' '}
-          {snackbarMessage}
-        </Text>
-      </Snackbar>
-    </>
+          <Text
+            variant="bodyLarge"
+            style={{
+              color: '#fff'
+            }}
+          >
+            {i18n.t('base.close')}
+          </Text>
+        </Button>
+      </View>
+    </Modal>
   );
 };
 

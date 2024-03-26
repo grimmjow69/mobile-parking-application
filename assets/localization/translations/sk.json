@@ -83,7 +83,11 @@
     "changePassword": "Zmeniť heslo",
     "confirmPassword": "Potvrďte heslo",
     "currentPassword": "Aktuálne heslo",
+    "deleteAccount": "Zmazať účet",
+    "deleteUserTitle": "Zmazanie účtu",
+    "deleteUserContent": "Prosím, potvrďte, že si naozaj želáte zmazať váš účet",
     "dontHaveAccount": "Nemáte účet?",
+    "accountDeletedSuccessfuly": "Účet bol úspešne vymazaný",
     "email": "Email",
     "errors": {
       "emailError": "Formát emailovej adresy je neplatný",

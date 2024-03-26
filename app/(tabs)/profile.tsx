@@ -75,6 +75,9 @@ export default function ProfileScreen() {
           isChangePasswordVisible={isChangePasswordVisible}
           toggleChangeEmailModal={toggleChangeEmailModal}
           toggleChangePasswordModal={toggleChangePasswordModal}
+          setLoading={setLoading}
+          setSnackBarContent={setSnackBarContent}
+          setSnackBarVisible={setSnackbarVisible}
         />
       ) : (
         <LoginForm

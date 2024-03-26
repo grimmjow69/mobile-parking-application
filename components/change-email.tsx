@@ -1,7 +1,6 @@
 import Colors, { errorColor, successColor } from '@/constants/Colors';
 import i18n from '@/assets/localization/i18n';
-import SpinnerOverlay from 'react-native-loading-spinner-overlay';
-import { ActivityIndicator, Button, HelperText, Modal, Snackbar, Text, TextInput, useTheme } from 'react-native-paper';
+import { Button, HelperText, Modal, Text, TextInput, useTheme } from 'react-native-paper';
 import { PreferencesContext } from '@/app/context/preference-context';
 import { StyleSheet, View } from 'react-native';
 import { updateUserEmail } from '@/app/services/user-service';
@@ -10,13 +9,18 @@ import { useContext, useState } from 'react';
 interface ChangeEmailProps {
   visible: boolean;
   onDismiss: () => void;
+  setLoading: (loading: boolean) => void;
+  setSnackBarContent: (message: string, colorCode: string) => void;
+  setSnackBarVisible: (visible: boolean) => void;
 }
 
-const ChangeEmail: React.FC<ChangeEmailProps> = ({ visible, onDismiss }) => {
-  const [snackbarVisible, setSnackbarVisible] = useState<boolean>(false);
-  const [snackbarMessage, setSnackbarMessage] = useState<string>('');
-  const [snackbarColor, setSnackbarColor] = useState<string>('');
-  const [loading, setLoading] = useState<boolean>(false);
+const ChangeEmail: React.FC<ChangeEmailProps> = ({
+  visible,
+  onDismiss,
+  setLoading,
+  setSnackBarContent,
+  setSnackBarVisible
+}) => {
   const [newEmail, setNewEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const { user, isThemeDark } = useContext(PreferencesContext);
@@ -37,7 +41,7 @@ const ChangeEmail: React.FC<ChangeEmailProps> = ({ visible, onDismiss }) => {
     } catch (err) {
       setSnackBarContent(i18n.t('base.error'), errorColor);
     } finally {
-      setSnackbarVisible(true);
+      setSnackBarVisible(true);
       setLoading(false);
     }
   };
@@ -54,17 +58,9 @@ const ChangeEmail: React.FC<ChangeEmailProps> = ({ visible, onDismiss }) => {
   const getIconColor = (hasError: boolean) =>
     hasError ? colors.error : colors.outline;
 
-  function setSnackBarContent(message: string, color: string) {
-    setSnackbarColor(color);
-    setSnackbarMessage(message);
-  }
-
-  const onDismissSnackBar = () => setSnackbarVisible(false);
-
   const emailError = newEmail !== '' && !validateEmail(newEmail);
-
   const passwordLengthError = password !== '' && password.length < 6;
-
+  
   return (
     <>
       <Modal
@@ -122,12 +118,19 @@ const ChangeEmail: React.FC<ChangeEmailProps> = ({ visible, onDismiss }) => {
           <Button
             icon="email-sync-outline"
             mode="contained"
-            labelStyle={{ color: colors.surfaceVariant }}
+            labelStyle={{
+              color: colors.surfaceVariant
+            }}
             buttonColor={colors.secondary}
             onPress={handleChangeEmail}
             disabled={!isFormValid()}
           >
-            <Text variant="bodyLarge" style={{ color: colors.surfaceVariant }}>
+            <Text
+              variant="bodyLarge"
+              style={{
+                color: colors.surfaceVariant
+              }}
+            >
               {i18n.t('profile.changeEmail')}
             </Text>
           </Button>
@@ -141,64 +144,17 @@ const ChangeEmail: React.FC<ChangeEmailProps> = ({ visible, onDismiss }) => {
               }
             ]}
           >
-            <Text variant="bodyLarge" style={{ color: '#fff' }}>
+            <Text
+              variant="bodyLarge"
+              style={{
+                color: '#fff'
+              }}
+            >
               {i18n.t('base.close')}
             </Text>
           </Button>
         </View>
-        <Text
-          style={{
-            textAlign: 'center',
-            fontWeight: 'bold',
-            color: '#fff'
-          }}
-        >
-          {' '}
-          {snackbarMessage}
-        </Text>
-
-        <SpinnerOverlay
-          textContent={i18n.t('base.wait')}
-          textStyle={
-            isThemeDark
-              ? {
-                  color: '#fff'
-                }
-              : {
-                  color: '#303c64'
-                }
-          }
-          animation="fade"
-          visible={loading}
-          overlayColor={Colors[isThemeDark ? 'dark' : 'light'].spinnerOverlay}
-          customIndicator={
-            <ActivityIndicator
-              size="large"
-              color={Colors[isThemeDark ? 'dark' : 'light'].spinnerColor}
-            />
-          }
-        />
       </Modal>
-
-      <Snackbar
-        visible={snackbarVisible}
-        onDismiss={onDismissSnackBar}
-        duration={Snackbar.DURATION_SHORT}
-        style={{
-          backgroundColor: snackbarColor
-        }}
-      >
-        <Text
-          style={{
-            textAlign: 'center',
-            fontWeight: 'bold',
-            color: '#fff'
-          }}
-        >
-          {' '}
-          {snackbarMessage}
-        </Text>
-      </Snackbar>
     </>
   );
 };

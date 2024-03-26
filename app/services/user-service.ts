@@ -120,3 +120,34 @@ export const updateUserEmail = async (
     };
   }
 };
+
+export const deleteUsersAccount = async (
+  userId: number
+): Promise<UpdateUserResponse> => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/delete`, {
+      method: 'DELETE',
+      headers: requestHeader,
+      body: JSON.stringify({
+        userId: userId
+      })
+    });
+
+    if (response.ok) {
+      return {
+        success: true,
+        message: i18n.t('profile.accountDeletedSuccessfuly')
+      };
+    } else {
+      return {
+        success: false,
+        message: i18n.t('base.error')
+      };
+    }
+  } catch (error) {
+    return {
+      success: false,
+      message: i18n.t('base.error')
+    };
+  }
+};

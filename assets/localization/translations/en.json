@@ -84,6 +84,10 @@
     "changePassword": "Change password",
     "confirmPassword": "Confirm password",
     "currentPassword": "Current password",
+    "deleteAccount": "Delete account",
+    "deleteUserTitle": "Deleting account",
+    "deleteUserContent": "Please confirm that you want to delete your account",
+    "accountDeletedSuccessfuly": "Account has been successfuly deleted",
     "dontHaveAccount": "Don't have account ?",
     "email": "Email",
     "errors": {

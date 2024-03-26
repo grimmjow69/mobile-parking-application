@@ -67,6 +67,7 @@ const ParkingSheet: React.FC<ParkingSheetProps> = ({
         result.message,
         result.success ? successColor : errorColor
       );
+      console.log(result)
     } catch (error) {
       setSnackBarContent(i18n.t('base.error'), errorColor);
     } finally {
