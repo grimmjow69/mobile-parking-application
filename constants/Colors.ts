@@ -94,6 +94,7 @@ export const lightTheme = {
     notification: 'rgb(255, 69, 58)'
   }
 };
+
 export default {
   light: {
     text: '#000',
@@ -105,7 +106,7 @@ export default {
     refreshIconText: '#fff',
     navigationBar: '#fff',
     sheetOverlay: 'rgba(255, 255, 255, 0.6)',
-    spinnerOverlay: 'rgba(255, 255, 255, 0.7)',
+    spinnerOverlay: 'rgba(255, 255, 255, 0.95)',
     spinnerColor: '#303c64',
     modalContainer: '#fff',
     modalContainer2: '#fff',
@@ -129,5 +130,6 @@ export default {
     modalContainerTableHeader: '#444444'
   }
 };
+
 export const errorColor: string = '#D32F2F';
 export const successColor: string = '#56ae57';

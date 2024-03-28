@@ -3,16 +3,10 @@ import i18n from '@/assets/localization/i18n';
 import { Button, HelperText, Modal, Text, TextInput, useTheme } from 'react-native-paper';
 import { PreferencesContext } from '@/app/context/preference-context';
 import { StyleSheet, View } from 'react-native';
-import { updateUserEmail } from '@/app/services/user-service';
+import { changeUserEmail } from '@/app/services/user-service';
 import { useContext, useState } from 'react';
+import { ChangeEmailProps } from './component-props';
 
-interface ChangeEmailProps {
-  visible: boolean;
-  onDismiss: () => void;
-  setLoading: (loading: boolean) => void;
-  setSnackBarContent: (message: string, colorCode: string) => void;
-  setSnackBarVisible: (visible: boolean) => void;
-}
 
 const ChangeEmail: React.FC<ChangeEmailProps> = ({
   visible,
@@ -26,10 +20,13 @@ const ChangeEmail: React.FC<ChangeEmailProps> = ({
   const { user, isThemeDark } = useContext(PreferencesContext);
   const { colors } = useTheme();
 
-  const handleChangeEmail = async () => {
+  const EMAIL_REGEX = /\S+@\S+\.\S+/;
+  const MIN_PASSWORD_LENGTH = 6;
+
+  const handleEmailChange = async () => {
     try {
       setLoading(true);
-      const result = await updateUserEmail(user!.userId, newEmail, password);
+      const result = await changeUserEmail(user!.userId, newEmail, password);
       setSnackBarContent(
         i18n.t(`profile.${result.message}`),
         result.success ? successColor : errorColor
@@ -46,20 +43,20 @@ const ChangeEmail: React.FC<ChangeEmailProps> = ({
     }
   };
 
-  const validateEmail = (email: string) => {
-    const re = /\S+@\S+\.\S+/;
-    return re.test(email);
+  const isEmailValid = (email: string) => {
+    return EMAIL_REGEX.test(email);
   };
 
   const isFormValid = () => {
-    return validateEmail(newEmail) && password.length >= 6;
+    return isEmailValid(newEmail) && password.length >= MIN_PASSWORD_LENGTH;
   };
 
   const getIconColor = (hasError: boolean) =>
     hasError ? colors.error : colors.outline;
 
-  const emailError = newEmail !== '' && !validateEmail(newEmail);
-  const passwordLengthError = password !== '' && password.length < 6;
+  const emailError = newEmail !== '' && !isEmailValid(newEmail);
+  const passwordLengthError =
+    password !== '' && password.length < MIN_PASSWORD_LENGTH;
 
   return (
     <Modal
@@ -119,7 +116,7 @@ const ChangeEmail: React.FC<ChangeEmailProps> = ({
             color: colors.surfaceVariant
           }}
           buttonColor={colors.secondary}
-          onPress={handleChangeEmail}
+          onPress={handleEmailChange}
           disabled={!isFormValid()}
         >
           <Text
@@ -156,20 +153,10 @@ const ChangeEmail: React.FC<ChangeEmailProps> = ({
 };
 
 const styles = StyleSheet.create({
-  loginForm: {
-    flex: 1,
-    alignItems: 'center'
-  },
   buttonContainer: {
     marginTop: 20,
     padding: 20,
     justifyContent: 'center'
-  },
-  input: {
-    width: 240
-  },
-  linkText: {
-    fontWeight: 'bold'
   },
   dialog: {
     flex: 1,

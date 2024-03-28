@@ -10,7 +10,7 @@ import SpinnerOverlay from 'react-native-loading-spinner-overlay';
 import { ActivityIndicator, Button, IconButton, Modal, Snackbar, Text, useTheme } from 'react-native-paper';
 import { darkMap, LightMap } from '@/constants/map-styles';
 import { Dimensions, StyleSheet, View } from 'react-native';
-import { fetchAllSpotsData, fetchSpotDetailById, fetchSpotHistory, fetchUserFavouriteSpot,getClosestFreeParkingSpot } from '../services/parking-data-service';
+import { findClosestFreeParkingSpot, getAllParkingSpotsData, getSpotDetailById, getSpotHistory, getUserFavouriteSpot } from '../services/parking-data-service';
 import { format } from 'date-fns';
 import { ParkingSheetResponse, ParkingSpot, SpotHistoryRecord } from '../models/parking-spot';
 import { PreferencesContext, PreferencesContextProps } from '../context/preference-context';
@@ -29,6 +29,10 @@ export interface ParkingSheetContent {
   spotId: number;
   sheetData: ParkingSheetResponse;
 }
+
+const DATE_FORMAT = 'HH:mm:ss';
+const LATITUDE_DELTA = 0.001;
+const LONGITUDE_DELTA = 0.001;
 
 export default function MapScreen() {
   const [parkingSpots, setParkingSpots] = useState<ParkingSpot[]>([]);
@@ -56,14 +60,14 @@ export default function MapScreen() {
   const isFocused = useIsFocused();
   const { colors } = useTheme();
 
-  const getData = useCallback(async () => {
+  const fetchActualParkingData = useCallback(async () => {
     setLoading(true);
     setClosestSpot(null);
     try {
-      const allSpotsData = await fetchAllSpotsData();
+      const allSpotsData = await getAllParkingSpotsData();
       setParkingSpots(allSpotsData.data);
       if (allSpotsData.updatedAt) {
-        setUpdatedAt(format(allSpotsData.updatedAt, 'HH:mm:ss'));
+        setUpdatedAt(format(allSpotsData.updatedAt, DATE_FORMAT));
       } else {
         setUpdatedAt(i18n.t('base.unknown'));
       }
@@ -78,9 +82,9 @@ export default function MapScreen() {
 
   useEffect(() => {
     if (isFocused) {
-      getData();
+      fetchActualParkingData();
     }
-  }, [isFocused, getData]);
+  }, [isFocused, fetchActualParkingData]);
 
   useEffect(() => {
     const blurListener = navigation.addListener('blur', () => {
@@ -116,19 +120,19 @@ export default function MapScreen() {
         longitude: location.coords.longitude
       };
 
-      const closestFreeSpot = await getClosestFreeParkingSpot(
+      const closestFreeSpotResponse = await findClosestFreeParkingSpot(
         userLocation.latitude,
         userLocation.longitude
       );
 
-      if (closestFreeSpot) {
-        setClosestSpot(closestFreeSpot);
+      if (closestFreeSpotResponse && closestFreeSpotResponse.success) {
+        setClosestSpot(closestFreeSpotResponse.closestFreeSpot);
         setSnackBarContent(i18n.t('parkingMap.closestSpotFound'), successColor);
         mapRef.current?.animateToRegion({
-          latitude: closestFreeSpot.latitude,
-          longitude: closestFreeSpot.longitude,
-          latitudeDelta: 0.001,
-          longitudeDelta: 0.001
+          latitude: closestFreeSpotResponse.closestFreeSpot.latitude,
+          longitude: closestFreeSpotResponse.closestFreeSpot.longitude,
+          latitudeDelta: LATITUDE_DELTA,
+          longitudeDelta: LONGITUDE_DELTA
         });
       } else {
         setSnackBarContent(i18n.t('parkingMap.noSpotFound'), errorColor);
@@ -145,25 +149,25 @@ export default function MapScreen() {
     if (user) {
       try {
         setLoading(true);
-        const favouriteParkingSpot = await fetchUserFavouriteSpot(user?.userId);
+        const favouriteParkingSpot = await getUserFavouriteSpot(user?.userId);
+        
         if (favouriteParkingSpot) {
-          const closestFreeSpot = await getClosestFreeParkingSpot(
+          const closestFreeSpotResponse = await findClosestFreeParkingSpot(
             favouriteParkingSpot.latitude,
             favouriteParkingSpot.longitude
           );
 
-          if (closestFreeSpot) {
-            setClosestSpot(closestFreeSpot);
-
+          if (closestFreeSpotResponse && closestFreeSpotResponse.success) {
+            setClosestSpot(closestFreeSpotResponse.closestFreeSpot);
             setSnackBarContent(
               i18n.t('parkingMap.closestSpotFound'),
               successColor
             );
             mapRef.current?.animateToRegion({
-              latitude: closestFreeSpot.latitude,
-              longitude: closestFreeSpot.longitude,
-              latitudeDelta: 0.001,
-              longitudeDelta: 0.001
+              latitude: closestFreeSpotResponse.closestFreeSpot.latitude,
+              longitude: closestFreeSpotResponse.closestFreeSpot.longitude,
+              latitudeDelta: LATITUDE_DELTA,
+              longitudeDelta: LONGITUDE_DELTA
             });
           } else {
             setSnackBarContent(i18n.t('parkingMap.noSpotFound'), errorColor);
@@ -190,7 +194,7 @@ export default function MapScreen() {
   ) {
     try {
       setLoading(true);
-      const parkingSpotDetail = await fetchSpotDetailById(
+      const parkingSpotDetail = await getSpotDetailById(
         user ? user.userId : 0,
         spotId
       );
@@ -214,21 +218,24 @@ export default function MapScreen() {
   }
 
   function getMarkerDescription(updatedAt: Date) {
-    return `${i18n.t('parkingMap.updatedAt')} ${format(updatedAt, 'HH:mm:ss')}`;
+    return `${i18n.t('parkingMap.updatedAt')} ${format(
+      updatedAt,
+      DATE_FORMAT
+    )}`;
   }
 
   useEffect(() => {
     if (isFocused) {
-      getData();
+      fetchActualParkingData();
     }
-  }, [isFocused, getData]);
+  }, [isFocused, fetchActualParkingData]);
 
   async function openSpotHistory(spotName: string, spotId: number) {
     try {
       refRBSheet.current?.close();
       setLoading(true);
 
-      const history = await fetchSpotHistory(spotId);
+      const history = await getSpotHistory(spotId);
 
       setModalContent({
         spotName: spotName,
@@ -245,7 +252,7 @@ export default function MapScreen() {
   }
 
   const renderMarker = (spot: ParkingSpot) => {
-    var circleColor = spot.occupied != null ? errorColor : successColor;
+    let circleColor = spot.occupied != null ? errorColor : successColor;
 
     if (spot.occupied != null) {
       circleColor = spot.occupied ? errorColor : successColor;
@@ -292,7 +299,7 @@ export default function MapScreen() {
     );
   };
 
-  const onDismissSnackBar = () => setSnackbarVisible(false);
+  const dismissSnackBar = () => setSnackbarVisible(false);
 
   return (
     <SafeAreaProvider style={styles.container}>
@@ -314,7 +321,7 @@ export default function MapScreen() {
         containerColor={colors.secondary}
         size={28}
         style={styles.refreshButton}
-        onPress={() => getData()}
+        onPress={() => fetchActualParkingData()}
       />
       <View
         style={[styles.updatedAtTitle, { backgroundColor: colors.secondary }]}
@@ -357,7 +364,7 @@ export default function MapScreen() {
           styles.modalContainer,
           {
             backgroundColor:
-              Colors[isThemeDark ? 'dark' : 'light'].modalContainer
+            Colors[isThemeDark ? 'dark' : 'light'].modalContainer
           }
         ]}
       >
@@ -380,7 +387,7 @@ export default function MapScreen() {
           },
           container: {
             backgroundColor:
-              Colors[isThemeDark ? 'dark' : 'light'].modalContainer
+            Colors[isThemeDark ? 'dark' : 'light'].modalContainer
           }
         }}
       >
@@ -401,7 +408,7 @@ export default function MapScreen() {
 
       <Snackbar
         visible={snackbarVisible}
-        onDismiss={onDismissSnackBar}
+        onDismiss={dismissSnackBar}
         duration={1000}
         style={{ backgroundColor: snackbarColor, alignItems: 'center' }}
       >
@@ -445,12 +452,6 @@ const styles = StyleSheet.create({
     top: 4,
     left: 4
   },
-  leftContainer: {
-    flex: 1
-  },
-  rightContainer: {
-    flexDirection: 'row'
-  },
   modalContainer: {
     height: '100%'
   },
@@ -462,11 +463,6 @@ const styles = StyleSheet.create({
   },
   findFavParkingSpot: {
     marginTop: 8
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%'
   },
   map: {
     flex: 1,

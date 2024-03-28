@@ -5,12 +5,21 @@ import SpinnerOverlay from 'react-native-loading-spinner-overlay';
 import { ActivityIndicator, IconButton, Snackbar, Text, useTheme } from 'react-native-paper';
 import { darkMap, LightMap } from '@/constants/map-styles';
 import { Dimensions, StyleSheet, View } from 'react-native';
-import { fetchHeatmapData } from '../services/parking-data-service';
+import { getHeatmapData } from '../services/parking-data-service';
 import { HeatmapPoint } from '../models/heatmap';
 import { PreferencesContext, PreferencesContextProps } from '../context/preference-context';
 import { UNIZA_INITIAL_REGION } from '@/constants/coords';
 import { useCallback, useContext, useEffect, useState } from 'react';
 import { useIsFocused } from '@react-navigation/native';
+
+const GRADIENT_COLORS = [
+  'transparent',
+  '#BBCF4C',
+  '#EEC20B',
+  '#F29305',
+  '#E50000'
+];
+const START_POINTS = [0, 0.25, 0.5, 0.75, 1];
 
 export default function HeatmapScreen() {
   const [heatmapPoints, setHeatmapPoints] = useState<HeatmapPoint[]>([]);
@@ -24,10 +33,10 @@ export default function HeatmapScreen() {
   const isFocused = useIsFocused();
   const { colors } = useTheme();
 
-  const getData = useCallback(async () => {
+  const fetchHeatmapData = useCallback(async () => {
     setLoading(true);
     try {
-      const points = await fetchHeatmapData();
+      const points = await getHeatmapData();
       setHeatmapPoints(points);
       setSnackbarMessage(i18n.t('base.loadSuccess'));
       setSnackbarColor('#56ae57');
@@ -42,11 +51,11 @@ export default function HeatmapScreen() {
 
   useEffect(() => {
     if (isFocused) {
-      getData();
+      fetchHeatmapData();
     }
-  }, [isFocused, getData]);
+  }, [isFocused, fetchHeatmapData]);
 
-  const onDismissSnackBar = () => setSnackbarVisible(false);
+  const dismissSnackBar = () => setSnackbarVisible(false);
 
   return (
     <View style={styles.container}>
@@ -57,20 +66,14 @@ export default function HeatmapScreen() {
         customMapStyle={isThemeDark ? darkMap : LightMap}
         style={styles.map}
       >
-        {loading ? (
+        {loading || heatmapPoints.length === 0 ? (
           <></>
         ) : (
           <Heatmap
             points={heatmapPoints}
             gradient={{
-              colors: [
-                'transparent',
-                '#BBCF4C',
-                '#EEC20B',
-                '#F29305',
-                '#E50000'
-              ],
-              startPoints: [0, 0.25, 0.5, 0.75, 1],
+              colors: GRADIENT_COLORS,
+              startPoints: START_POINTS,
               colorMapSize: 500
             }}
             radius={10}
@@ -85,11 +88,11 @@ export default function HeatmapScreen() {
         containerColor={colors.secondary}
         size={28}
         style={styles.refreshButton}
-        onPress={() => getData()}
+        onPress={() => fetchHeatmapData()}
       />
       <Snackbar
         visible={snackbarVisible}
-        onDismiss={onDismissSnackBar}
+        onDismiss={dismissSnackBar}
         duration={1000}
         style={{
           backgroundColor: snackbarColor,
@@ -138,15 +141,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center'
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold'
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%'
   },
   refreshButton: {
     position: 'absolute',

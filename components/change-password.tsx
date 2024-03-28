@@ -1,19 +1,13 @@
 import Colors, { errorColor, successColor } from '@/constants/Colors';
 import i18n from '@/assets/localization/i18n';
 import { useContext, useState } from 'react';
-import SpinnerOverlay from 'react-native-loading-spinner-overlay';
-import { ActivityIndicator, Button, HelperText, Modal, Snackbar, Text, TextInput, useTheme } from 'react-native-paper';
+import { Button, HelperText, Modal, Text, TextInput, useTheme } from 'react-native-paper';
 import { PreferencesContext, PreferencesContextProps } from '@/app/context/preference-context';
 import { StyleSheet, View } from 'react-native';
-import { updateUserPassword } from '@/app/services/user-service';
+import { changeUserPassword } from '@/app/services/user-service';
+import { ChangePasswordProps } from './component-props';
 
-interface ChangePasswordProps {
-  visible: boolean;
-  onDismiss: () => void;
-  setLoading: (loading: boolean) => void;
-  setSnackBarContent: (message: string, colorCode: string) => void;
-  setSnackBarVisible: (visible: boolean) => void;
-}
+const MIN_PASSWORD_LENGTH = 6;
 
 const ChangePassword: React.FC<ChangePasswordProps> = ({
   visible,
@@ -29,10 +23,10 @@ const ChangePassword: React.FC<ChangePasswordProps> = ({
     useContext<PreferencesContextProps>(PreferencesContext);
   const { colors } = useTheme();
 
-  const handleChangePassword = async () => {
+  const handlePasswordChange = async () => {
     try {
       setLoading(true);
-      const result = await updateUserPassword(
+      const result = await changeUserPassword(
         user!.userId,
         newPassword,
         currentPassword
@@ -58,14 +52,15 @@ const ChangePassword: React.FC<ChangePasswordProps> = ({
     confirmNewPassword !== '' &&
     newPassword !== confirmNewPassword;
   const passwordLengthError =
-    currentPassword !== '' && currentPassword.length < 6;
-  const newPasswordLengthError = newPassword !== '' && newPassword.length < 6;
+    currentPassword !== '' && currentPassword.length < MIN_PASSWORD_LENGTH;
+  const newPasswordLengthError =
+    newPassword !== '' && newPassword.length < MIN_PASSWORD_LENGTH;
 
-  const isFormValid = () => {
+  const isPasswordFormValid = () => {
     return (
       newPassword === confirmNewPassword &&
-      currentPassword.length >= 6 &&
-      newPassword.length >= 6
+      currentPassword.length >= MIN_PASSWORD_LENGTH &&
+      newPassword.length >= MIN_PASSWORD_LENGTH
     );
   };
 
@@ -152,8 +147,8 @@ const ChangePassword: React.FC<ChangePasswordProps> = ({
             color: colors.surfaceVariant
           }}
           buttonColor={colors.secondary}
-          onPress={handleChangePassword}
-          disabled={!isFormValid()}
+          onPress={handlePasswordChange}
+          disabled={!isPasswordFormValid()}
         >
           <Text
             variant="bodyLarge"
@@ -193,9 +188,6 @@ const styles = StyleSheet.create({
     marginTop: 20,
     padding: 20,
     justifyContent: 'center'
-  },
-  input: {
-    width: 240
   },
   dialog: {
     flex: 1,

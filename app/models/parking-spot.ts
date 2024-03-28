@@ -8,8 +8,23 @@ export interface ParkingSpot {
 }
 
 export interface ParkingSpotCoordinates {
+  spotId: number;
   longitude: number;
   latitude: number;
+}
+
+export interface FindClosestFreeParkingSpotResponse {
+  operation: string;
+  closestFreeSpot: ParkingSpot;
+  success: boolean;
+  error:string
+}
+
+export interface FavouriteSpotResponse {
+  operation: string;
+  favouriteSpot: ParkingSpotCoordinates | null;
+  success: boolean;
+  error:string
 }
 
 export interface ParkingSpotDetail {

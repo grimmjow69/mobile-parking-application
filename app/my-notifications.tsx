@@ -1,13 +1,13 @@
+import Colors, { errorColor, successColor } from '@/constants/Colors';
 import i18n from '@/assets/localization/i18n';
 import SpinnerOverlay from 'react-native-loading-spinner-overlay';
-import { Pressable, StyleSheet, View } from 'react-native';
-import { ActivityIndicator, Button, Dialog, Icon, IconButton, List, Snackbar, Text } from 'react-native-paper';
-import Colors, { errorColor, successColor } from '@/constants/Colors';
-import { fetchUserNotifications, unsubscribeFromNotificationByNotificationId } from './services/notifications-service';
+import { ActivityIndicator, Button, Dialog, Icon, List, Snackbar, Text } from 'react-native-paper';
+import { getUserNotifications, unsubscribeUserFromNotificationById } from './services/notifications-service';
 import { PreferencesContext, PreferencesContextProps } from './context/preference-context';
+import { Pressable, StyleSheet, View } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { SpotNotification } from './models/notifications';
 import { useContext, useEffect, useState } from 'react';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 export default function MyNotificationsScreen() {
   const [snackbarVisible, setSnackbarVisible] = useState<boolean>(false);
@@ -26,7 +26,7 @@ export default function MyNotificationsScreen() {
     async function loadNotifications() {
       try {
         setLoading(true);
-        const notificationsArray = await fetchUserNotifications(user!.userId);
+        const notificationsArray = await getUserNotifications(user!.userId);
         setUserNotifications(notificationsArray);
         setSnackBarContent(i18n.t('base.loadSuccess'), successColor);
       } catch (e) {
@@ -40,16 +40,19 @@ export default function MyNotificationsScreen() {
     loadNotifications();
   }, [user]);
 
-  function unsubscribe(notificationId: number) {
+  function removeSubscription(notificationId: number) {
     try {
       setDialogVisible(false);
       setLoading(true);
-      unsubscribeFromNotificationByNotificationId(notificationId);
+      unsubscribeUserFromNotificationById(notificationId);
       const updatedNotifications = userNotifications.filter(
         (notification) => notification.notificationId !== notificationId
       );
       setUserNotifications(updatedNotifications);
-      setSnackBarContent(i18n.t('notifications.unsubscribe'), successColor);
+      setSnackBarContent(
+        i18n.t('notifications.removeSubscription'),
+        successColor
+      );
     } catch (err) {
       setSnackBarContent(i18n.t('base.error'), errorColor);
     } finally {
@@ -58,9 +61,9 @@ export default function MyNotificationsScreen() {
     }
   }
 
-  const onDismissSnackBar = () => setSnackbarVisible(false);
+  const dismissSnackBar = () => setSnackbarVisible(false);
 
-  const EmptyListComponent = () => (
+  const NoNotificationsComponent = () => (
     <View style={styles.centered}>
       <Icon source={'delete-empty'} size={72} />
       <Text style={styles.emptyText}>
@@ -74,7 +77,7 @@ export default function MyNotificationsScreen() {
     setSnackbarMessage(message);
   }
 
-  function deleteNotificationRecord(notificationId: number) {
+  function removeNotificationRecord(notificationId: number) {
     setNotificationId(notificationId);
     setDialogVisible(true);
   }
@@ -115,10 +118,10 @@ export default function MyNotificationsScreen() {
               right={() => (
                 <Pressable
                   onPress={() =>
-                    deleteNotificationRecord(notification.notificationId)
+                    removeNotificationRecord(notification.notificationId)
                   }
                 >
-                  <Icon source="delete-circle" color='#FF5733' size={32}/>
+                  <Icon source="delete-circle" color="#FF5733" size={32} />
                 </Pressable>
               )}
               style={styles.itemDivider}
@@ -126,7 +129,7 @@ export default function MyNotificationsScreen() {
           ))}
         </List.Section>
       ) : (
-        <EmptyListComponent />
+        <NoNotificationsComponent />
       )}
 
       <Dialog visible={dialogVisible} onDismiss={() => setDialogVisible(false)}>
@@ -135,7 +138,7 @@ export default function MyNotificationsScreen() {
           <Text>{i18n.t('notifications.unsubscribeContent')}</Text>
         </Dialog.Content>
         <Dialog.Actions>
-          <Button onPress={() => unsubscribe(notificationId!)}>
+          <Button onPress={() => removeSubscription(notificationId!)}>
             {i18n.t('base.confirm')}
           </Button>
           <Button onPress={() => setDialogVisible(false)}>
@@ -146,7 +149,7 @@ export default function MyNotificationsScreen() {
 
       <Snackbar
         visible={snackbarVisible}
-        onDismiss={onDismissSnackBar}
+        onDismiss={dismissSnackBar}
         duration={1000}
         style={{
           backgroundColor: snackbarColor,
@@ -178,7 +181,7 @@ const styles = StyleSheet.create({
   },
   unsubscribeButton: {
     position: 'relative',
-    left: 18,
+    left: 18
   },
   centered: {
     flex: 1,

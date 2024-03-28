@@ -7,19 +7,10 @@ import { Link } from 'expo-router';
 import i18n from '@/assets/localization/i18n';
 import { PreferencesContext, PreferencesContextProps } from '@/app/context/preference-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { deleteUsersAccount } from '@/app/services/user-service';
+import { removeUserAccount } from '@/app/services/user-service';
 import { errorColor, successColor } from '@/constants/Colors';
-
-interface UserContentProps {
-  toggleChangeEmailModal: () => void;
-  toggleChangePasswordModal: () => void;
-  handleSignOut: () => void;
-  isChangeEmailVisible: boolean;
-  isChangePasswordVisible: boolean;
-  setLoading: (loading: boolean) => void;
-  setSnackBarContent: (message: string, colorCode: string) => void;
-  setSnackBarVisible: (visible: boolean) => void;
-}
+import { STORAGE_KEYS } from '@/constants/common';
+import { UserContentProps } from './component-props';
 
 const UserContent: React.FC<UserContentProps> = ({
   toggleChangeEmailModal,
@@ -32,16 +23,16 @@ const UserContent: React.FC<UserContentProps> = ({
   setSnackBarVisible
 }) => {
   const { colors } = useTheme();
-  const [dialogVisible, setDialogVisible] = useState<boolean>(false);
+  const [dialogVisible, setDeleteDialogVisible] = useState<boolean>(false);
   const { user, setUser } =
     useContext<PreferencesContextProps>(PreferencesContext);
 
-  async function deleteAccount(userId: number) {
+  async function handleDeleteAccount(userId: number) {
     try {
       if (user) {
         setLoading(true);
-        const result = await deleteUsersAccount(user.userId);
-        await AsyncStorage.removeItem('user');
+        const result = await removeUserAccount(user.userId);
+        await AsyncStorage.removeItem(STORAGE_KEYS.USER);
         setUser(null);
 
         setSnackBarContent(
@@ -109,7 +100,7 @@ const UserContent: React.FC<UserContentProps> = ({
         style={styles.buttonRow}
         mode="contained"
         buttonColor={colors.error}
-        onPress={() => setDialogVisible(true)}
+        onPress={() => setDeleteDialogVisible(true)}
       >
         <Text
           variant="bodyLarge"
@@ -150,16 +141,19 @@ const UserContent: React.FC<UserContentProps> = ({
         setSnackBarContent={setSnackBarContent}
         setSnackBarVisible={setSnackBarVisible}
       />
-      <Dialog visible={dialogVisible} onDismiss={() => setDialogVisible(false)}>
+      <Dialog
+        visible={dialogVisible}
+        onDismiss={() => setDeleteDialogVisible(false)}
+      >
         <Dialog.Title>{i18n.t('profile.deleteUserTitle')}</Dialog.Title>
         <Dialog.Content>
           <Text>{i18n.t('profile.deleteUserContent')}</Text>
         </Dialog.Content>
         <Dialog.Actions>
-          <Button onPress={() => deleteAccount(user!.userId)}>
+          <Button onPress={() => handleDeleteAccount(user!.userId)}>
             {i18n.t('base.confirm')}
           </Button>
-          <Button onPress={() => setDialogVisible(false)}>
+          <Button onPress={() => setDeleteDialogVisible(false)}>
             {i18n.t('base.close')}
           </Button>
         </Dialog.Actions>
@@ -174,16 +168,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingTop: 60
   },
-  input: {
-    width: 240
-  },
   signOutButton: {
     position: 'absolute',
     bottom: 48
-  },
-  footerView: {
-    position: 'relative',
-    top: 200
   },
   buttonRow: {
     marginBottom: 10,

@@ -3,19 +3,14 @@ import i18n from '@/assets/localization/i18n';
 import { Button, HelperText, Modal, Text, TextInput, useTheme } from 'react-native-paper';
 import { PreferencesContext, PreferencesContextProps } from '@/app/context/preference-context';
 import { ReportCategory, ReportRequest } from '@/app/models/report';
-import { sendReport } from '@/app/services/report-service';
+import { submitUserReport } from '@/app/services/report-service';
 import { StyleSheet, View } from 'react-native';
 import { useContext, useState } from 'react';
+import { ReportBugPropss } from './component-props';
 
-interface ChangePasswordProps {
-  visible: boolean;
-  onDismiss: () => void;
-  setSnackBarContent: (message: string, colorCode: string) => void;
-  setLoading: (loading: boolean) => void;
-  setSnackBarVisible: (visible: boolean) => void;
-}
+const MIN_REPORT_MESSAGE_LENGTH = 12;
 
-const ReportBug: React.FC<ChangePasswordProps> = ({
+const ReportBug: React.FC<ReportBugPropss> = ({
   visible,
   onDismiss,
   setSnackBarContent,
@@ -28,7 +23,7 @@ const ReportBug: React.FC<ChangePasswordProps> = ({
     useContext<PreferencesContextProps>(PreferencesContext);
   const { colors } = useTheme();
 
-  async function handleReportBug() {
+  async function submitBugReport() {
     try {
       setLoading(true);
       const request: ReportRequest = {
@@ -37,7 +32,7 @@ const ReportBug: React.FC<ChangePasswordProps> = ({
         category: ReportCategory.BUG
       };
 
-      const result = await sendReport(request);
+      const result = await submitUserReport(request);
 
       setSnackBarContent(
         i18n.t(result.message),
@@ -56,11 +51,11 @@ const ReportBug: React.FC<ChangePasswordProps> = ({
     }
   }
 
-  const reportMessageLengthError =
-    reportMessage !== '' && reportMessage.length < 12;
+  const isReportMessageLengthValid =
+    reportMessage !== '' && reportMessage.length < MIN_REPORT_MESSAGE_LENGTH;
 
-  const isFormValid = () => {
-    return reportMessage.length > 12;
+  const isBugReportFormValid = () => {
+    return reportMessage.length > MIN_REPORT_MESSAGE_LENGTH;
   };
 
   return (
@@ -89,13 +84,13 @@ const ReportBug: React.FC<ChangePasswordProps> = ({
           textAlignVertical: 'top',
           marginBottom: 10
         }}
-        error={reportMessageLengthError}
+        error={isReportMessageLengthValid}
         onChangeText={(reportMessage) => {
           setReportMessage(reportMessage);
         }}
       />
 
-      <HelperText type="error" visible={reportMessageLengthError}>
+      <HelperText type="error" visible={isReportMessageLengthValid}>
         {i18n.t('settings.reportBugLength')}
       </HelperText>
 
@@ -106,9 +101,9 @@ const ReportBug: React.FC<ChangePasswordProps> = ({
           labelStyle={{ color: colors.surfaceVariant }}
           buttonColor={colors.secondary}
           onPress={() => {
-            handleReportBug();
+            submitBugReport();
           }}
-          disabled={!isFormValid()}
+          disabled={!isBugReportFormValid()}
         >
           <Text variant="bodyLarge" style={{ color: colors.surfaceVariant }}>
             {i18n.t('settings.reportBug')}
@@ -138,9 +133,6 @@ const styles = StyleSheet.create({
     marginTop: 20,
     padding: 20,
     justifyContent: 'center'
-  },
-  input: {
-    width: 240
   },
   dialog: {
     flex: 1,

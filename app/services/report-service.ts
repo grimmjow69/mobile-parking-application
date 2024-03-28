@@ -4,17 +4,17 @@ import {
   ReportRequest,
   ReportResponse
 } from '../models/report';
-import { requestHeader } from './request-header';
+import { defaultRequestHeader } from './request-header';
 
 const API_BASE_URL = 'http://192.168.100.11:8080/report';
 
-export const sendReport = async (
+export const submitUserReport = async (
   request: ReportRequest
 ): Promise<ReportResponse> => {
   try {
     const response = await fetch(`${API_BASE_URL}/save-report`, {
       method: 'POST',
-      headers: requestHeader,
+      headers: defaultRequestHeader,
       body: JSON.stringify({
         userId: request.userId,
         reportMessage: request.reportMessage,

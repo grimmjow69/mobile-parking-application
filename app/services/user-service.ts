@@ -1,16 +1,17 @@
 import i18n from '@/assets/localization/i18n';
 import { UpdateUserResponse } from '../models/user';
-import { requestHeader } from './request-header';
+import { defaultRequestHeader } from './request-header';
+
 const API_BASE_URL = 'http://192.168.100.11:8080/user';
 
-export const updateFavouriteSpot = async (
+export const changeFavouriteSpot = async (
   userId: number,
   spotId: number | null
 ): Promise<UpdateUserResponse> => {
   try {
     const response = await fetch(`${API_BASE_URL}/update-favourite-spot`, {
       method: 'PUT',
-      headers: requestHeader,
+      headers: defaultRequestHeader,
       body: JSON.stringify({
         userId: userId,
         spotId: spotId
@@ -36,7 +37,7 @@ export const updateFavouriteSpot = async (
   }
 };
 
-export const updateUserPassword = async (
+export const changeUserPassword = async (
   userId: number,
   newPassword: string,
   password: string
@@ -44,7 +45,7 @@ export const updateUserPassword = async (
   try {
     const response = await fetch(`${API_BASE_URL}/update-password`, {
       method: 'PUT',
-      headers: requestHeader,
+      headers: defaultRequestHeader,
       body: JSON.stringify({
         userId: userId,
         newPassword: newPassword,
@@ -76,7 +77,7 @@ export const updateUserPassword = async (
   }
 };
 
-export const updateUserEmail = async (
+export const changeUserEmail = async (
   userId: number,
   newEmail: string,
   password: string
@@ -84,7 +85,7 @@ export const updateUserEmail = async (
   try {
     const response = await fetch(`${API_BASE_URL}/update-email`, {
       method: 'PUT',
-      headers: requestHeader,
+      headers: defaultRequestHeader,
       body: JSON.stringify({
         userId: userId,
         newEmail: newEmail,
@@ -121,13 +122,13 @@ export const updateUserEmail = async (
   }
 };
 
-export const deleteUsersAccount = async (
+export const removeUserAccount = async (
   userId: number
 ): Promise<UpdateUserResponse> => {
   try {
     const response = await fetch(`${API_BASE_URL}/delete`, {
       method: 'DELETE',
-      headers: requestHeader,
+      headers: defaultRequestHeader,
       body: JSON.stringify({
         userId: userId
       })

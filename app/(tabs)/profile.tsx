@@ -4,13 +4,13 @@ import i18n from '../../assets/localization/i18n';
 import LoginForm from '@/components/login-form';
 import SpinnerOverlay from 'react-native-loading-spinner-overlay';
 import UserContent from '@/components/user-content';
-import { ActivityIndicator, Snackbar, Text, useTheme } from 'react-native-paper';
-import { deletePushTokenFromServer } from '../services/notifications-service';
+import { ActivityIndicator, Snackbar, Text } from 'react-native-paper';
 import { PreferencesContext, PreferencesContextProps } from '../context/preference-context';
+import { removePushToken } from '../services/notifications-service';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { StyleSheet } from 'react-native';
 import { useContext, useEffect, useState } from 'react';
 import { useNavigation } from 'expo-router';
+import { STORAGE_KEYS } from '@/constants/common';
 
 export default function ProfileScreen() {
   const { user, isThemeDark, setUser } =
@@ -43,8 +43,8 @@ export default function ProfileScreen() {
     try {
       if (user) {
         setLoading(true);
-        await deletePushTokenFromServer(user.userId);
-        await AsyncStorage.removeItem('user');
+        await removePushToken(user.userId);
+        await AsyncStorage.removeItem(STORAGE_KEYS.USER);
         setUser(null);
       }
     } catch (error) {
@@ -64,10 +64,10 @@ export default function ProfileScreen() {
 
   useEffect(() => {}, [user]);
 
-  const onDismissSnackBar = () => setSnackbarVisible(false);
+  const dismissSnackBar = () => setSnackbarVisible(false);
 
   return (
-    <SafeAreaProvider style={styles.container}>
+    <SafeAreaProvider>
       {user ? (
         <UserContent
           handleSignOut={handleSignOut}
@@ -89,7 +89,7 @@ export default function ProfileScreen() {
       )}
       <Snackbar
         visible={snackbarVisible}
-        onDismiss={onDismissSnackBar}
+        onDismiss={dismissSnackBar}
         duration={Snackbar.DURATION_SHORT}
         style={{
           backgroundColor: snackbarColor
@@ -123,7 +123,3 @@ export default function ProfileScreen() {
     </SafeAreaProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {}
-});

@@ -7,16 +7,14 @@ import { Link } from 'expo-router';
 import { loginUser } from '@/app/services/auth-service';
 import { PreferencesContext, PreferencesContextProps } from '@/app/context/preference-context';
 import { PushNotificationConfig } from '@/app/models/notifications';
-import { registerForPushNotificationsAsync, sendPushTokenToServer } from '@/app/services/notifications-service';
+import { getPushNotificationsToken, registerPushToken } from '@/app/services/notifications-service';
 import { StyleSheet, View } from 'react-native';
 import { UserData } from '@/app/models/user';
+import { STORAGE_KEYS } from '@/constants/common';
+import { LoginFormProps } from './component-props';
 
-interface LoginFormProps {
-    loading: boolean;
-    setLoading: (loading: boolean) => void;
-    setSnackBarContent: (message: string, colorCode: string) => void;
-    setSnackBarVisible: (visible: boolean) => void;
-}
+const EMAIL_REGEX = /\S+@\S+\.\S+/;
+const MIN_PASSWORD_LENGTH = 6;
 
 const LoginForm: React.FC<LoginFormProps> = ({
   loading,
@@ -29,7 +27,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
   const { colors } = useTheme();
   const { setUser } = useContext<PreferencesContextProps>(PreferencesContext);
 
-  async function handleLogin() {
+  async function handleUserLogin() {
     try {
       setLoading(true);
       const result = await loginUser(email, password);
@@ -39,7 +37,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
       );
 
       if (result.success && result.user) {
-        handleLoginSuccess(result.user);
+        handleUserLoginSuccess(result.user);
       }
     } catch (error) {
       setSnackBarContent(i18n.t('base.error'), errorColor);
@@ -49,24 +47,24 @@ const LoginForm: React.FC<LoginFormProps> = ({
     }
   }
 
-  async function handleLoginSuccess(userData: UserData) {
+  async function handleUserLoginSuccess(userData: UserData) {
     setUser(userData);
     try {
-      const value = await AsyncStorage.getItem('pushNotificationsConfig');
+      const value = await AsyncStorage.getItem(STORAGE_KEYS.PUSH_NOTIFICATIONS_CONFIG);
       if (value !== null) {
         const config: PushNotificationConfig = JSON.parse(value);
 
         if (config.enabled) {
-          await registerForPushNotificationsAsync().then((token) => {
+          await getPushNotificationsToken().then((token) => {
             if (token) {
-              sendPushTokenToServer(token, userData.userId);
+              registerPushToken(token, userData.userId);
             }
           });
         }
       } else {
-        await registerForPushNotificationsAsync().then((token) => {
+        await getPushNotificationsToken().then((token) => {
           if (token) {
-            sendPushTokenToServer(token, userData.userId);
+            registerPushToken(token, userData.userId);
           }
         });
       }
@@ -76,19 +74,19 @@ const LoginForm: React.FC<LoginFormProps> = ({
   }
 
   function validateEmail(email: string) {
-    const re = /\S+@\S+\.\S+/;
-    return re.test(email);
+    return EMAIL_REGEX.test(email);
   }
 
-  function isFormValid() {
-    return validateEmail(email) && password.length >= 6;
+  function isLoginFormValid() {
+    return validateEmail(email) && password.length >= MIN_PASSWORD_LENGTH;
   }
 
   const getIconColor = (hasError: boolean) =>
     hasError ? colors.error : colors.outline;
 
   const emailError = email !== '' && !validateEmail(email);
-  const passwordLengthError = password !== '' && password.length < 6;
+  const passwordLengthError =
+    password !== '' && password.length < MIN_PASSWORD_LENGTH;
 
   return (
     <View style={styles.loginForm}>
@@ -130,12 +128,12 @@ const LoginForm: React.FC<LoginFormProps> = ({
 
       <Button
         mode="contained"
-        onPress={handleLogin}
+        onPress={handleUserLogin}
         buttonColor={colors.secondary}
         labelStyle={{ color: colors.surfaceVariant }}
         style={{ marginTop: 10 }}
         icon="login-variant"
-        disabled={!isFormValid()}
+        disabled={!isLoginFormValid()}
       >
         <Text variant="bodyLarge" style={{ color: colors.surfaceVariant }}>
           {i18n.t('profile.logIn')}
@@ -190,10 +188,6 @@ const styles = StyleSheet.create({
   footerView: {
     position: 'relative',
     top: 200
-  },
-  buttonRow: {
-    marginBottom: 10,
-    width: 200
   }
 });
 

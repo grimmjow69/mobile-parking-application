@@ -5,9 +5,11 @@ import { ActivityIndicator, Button, HelperText, Snackbar, Text, TextInput, useTh
 import { PreferencesContext, PreferencesContextProps } from './context/preference-context';
 import { ReportCategory, ReportRequest } from './models/report';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { sendReport } from './services/report-service';
+import { submitUserReport } from './services/report-service';
 import { StyleSheet } from 'react-native';
 import { useContext, useState } from 'react';
+
+const EMAIL_REGEX = /\S+@\S+\.\S+/;
 
 export default function PasswordResendScreen() {
   const [email, setEmail] = useState<string>('');
@@ -15,10 +17,11 @@ export default function PasswordResendScreen() {
   const [snackbarVisible, setSnackbarVisible] = useState<boolean>(false);
   const [snackbarMessage, setSnackbarMessage] = useState<string>('');
   const [snackbarColor, setSnackbarColor] = useState<string>('');
-  const { user, isThemeDark } = useContext<PreferencesContextProps>(PreferencesContext);
+  const { user, isThemeDark } =
+    useContext<PreferencesContextProps>(PreferencesContext);
   const { colors } = useTheme();
 
-  const handleForgottenPassword = async () => {
+  const processForgottenPassword = async () => {
     try {
       setLoading(true);
       const request: ReportRequest = {
@@ -26,7 +29,7 @@ export default function PasswordResendScreen() {
         reportMessage: email,
         category: ReportCategory.FORGOTTEN_PASSWORD
       };
-      const result = await sendReport(request);
+      const result = await submitUserReport(request);
 
       setSnackBarContent(
         i18n.t(result.message),
@@ -49,21 +52,20 @@ export default function PasswordResendScreen() {
     setSnackbarMessage(message);
   }
 
-  const validateEmail = (email: string) => {
-    const re = /\S+@\S+\.\S+/;
-    return re.test(email);
+  const isEmailValid = (email: string) => {
+    return EMAIL_REGEX.test(email);
   };
 
-  const emailError = email !== '' && !validateEmail(email);
+  const emailError = email !== '' && !isEmailValid(email);
 
-  const isFormValid = () => {
-    return validateEmail(email);
+  const isResendPasswordFormValid = () => {
+    return isEmailValid(email);
   };
 
   const getIconColor = (hasError: boolean) =>
     hasError ? colors.error : colors.outline;
 
-  const onDismissSnackBar = () => setSnackbarVisible(false);
+  const dismissSnackBar = () => setSnackbarVisible(false);
 
   return (
     <SafeAreaProvider style={styles.container}>
@@ -86,12 +88,12 @@ export default function PasswordResendScreen() {
 
       <Button
         mode="contained"
-        onPress={handleForgottenPassword}
+        onPress={processForgottenPassword}
         style={styles.button}
         buttonColor={colors.secondary}
         labelStyle={{ color: colors.surfaceVariant }}
         icon="login-variant"
-        disabled={!isFormValid()}
+        disabled={!isResendPasswordFormValid()}
       >
         <Text variant="bodyLarge" style={{ color: colors.surfaceVariant }}>
           {i18n.t('profile.resendPassword')}
@@ -99,7 +101,7 @@ export default function PasswordResendScreen() {
       </Button>
       <Snackbar
         visible={snackbarVisible}
-        onDismiss={onDismissSnackBar}
+        onDismiss={dismissSnackBar}
         duration={Snackbar.DURATION_SHORT}
         style={{ backgroundColor: snackbarColor }}
       >

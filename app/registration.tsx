@@ -3,11 +3,14 @@ import i18n from '../assets/localization/i18n';
 import SpinnerOverlay from 'react-native-loading-spinner-overlay';
 import { ActivityIndicator, Button, HelperText, Snackbar, Text, TextInput, useTheme } from 'react-native-paper';
 import { PreferencesContext, PreferencesContextProps } from './context/preference-context';
-import { registerUser } from './services/auth-service';
+import { registerNewUser } from './services/auth-service';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { StyleSheet } from 'react-native';
 import { useContext, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
+
+const EMAIL_REGEX = /\S+@\S+\.\S+/;
+const MIN_PASSWORD_LENGTH = 6;
 
 export default function RegistrationScreen() {
   const navigation = useNavigation();
@@ -21,12 +24,12 @@ export default function RegistrationScreen() {
   const { isThemeDark } =
     useContext<PreferencesContextProps>(PreferencesContext);
 
-  const onDismissSnackBar = () => setSnackbarVisible(false);
+  const dismissSnackBar = () => setSnackbarVisible(false);
 
-  const handleRegister = async () => {
+  const registerUser = async () => {
     try {
       setLoading(true);
-      const result = await registerUser(email, password);
+      const result = await registerNewUser(email, password);
       setSnackBarContent(
         i18n.t(result.message),
         result.success ? successColor : errorColor
@@ -48,14 +51,15 @@ export default function RegistrationScreen() {
     setSnackbarMessage(message);
   }
 
-  const validateEmail = (email: string) => {
-    const re = /\S+@\S+\.\S+/;
-    return re.test(email);
+  const isEmailValid = (email: string) => {
+    return EMAIL_REGEX.test(email);
   };
 
-  const isFormValid = () => {
+  const isRegistrationFormValid = () => {
     return (
-      validateEmail(email) && password === passwordCheck && password.length >= 6
+      isEmailValid(email) &&
+      password === passwordCheck &&
+      password.length >= MIN_PASSWORD_LENGTH
     );
   };
 
@@ -64,12 +68,13 @@ export default function RegistrationScreen() {
   const getIconColor = (hasError: boolean) =>
     hasError ? colors.error : colors.outline;
 
-  const emailError = email !== '' && !validateEmail(email);
+  const emailError = email !== '' && !isEmailValid(email);
 
   const passwordsMatchError =
     password !== '' && passwordCheck !== '' && password !== passwordCheck;
 
-  const passwordLengthError = password !== '' && password.length < 6;
+  const passwordLengthError =
+    password !== '' && password.length < MIN_PASSWORD_LENGTH;
 
   return (
     <SafeAreaProvider style={styles.container}>
@@ -134,12 +139,12 @@ export default function RegistrationScreen() {
 
       <Button
         mode="contained"
-        onPress={handleRegister}
+        onPress={registerUser}
         buttonColor={colors.secondary}
         labelStyle={{ color: colors.surfaceVariant }}
         style={styles.button}
         icon="login-variant"
-        disabled={!isFormValid()}
+        disabled={!isRegistrationFormValid()}
       >
         <Text variant="bodyLarge" style={{ color: colors.surfaceVariant }}>
           {i18n.t('profile.register')}
@@ -162,7 +167,7 @@ export default function RegistrationScreen() {
 
       <Snackbar
         visible={snackbarVisible}
-        onDismiss={onDismissSnackBar}
+        onDismiss={dismissSnackBar}
         duration={Snackbar.DURATION_SHORT}
         style={{
           backgroundColor: snackbarColor

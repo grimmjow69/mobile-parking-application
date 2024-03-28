@@ -5,12 +5,9 @@ import { Button, Divider, Text, useTheme } from 'react-native-paper';
 import { format } from 'date-fns/format';
 import { PreferencesContext, PreferencesContextProps } from '@/app/context/preference-context';
 import { ScrollView, StyleSheet, View } from 'react-native';
-import { ModalContent } from '@/app/(tabs)';
+import { ParkingSpotHistoryProps } from './component-props';
 
-interface ParkingSpotHistoryProps {
-  modalContent: ModalContent | null;
-  setModalVisible: (visible: boolean) => void;
-}
+const DATE_FORMAT = 'HH:mm:ss dd.MM.yyyy';
 
 const ParkingSpotHistory: React.FC<ParkingSpotHistoryProps> = ({
   modalContent,
@@ -60,7 +57,7 @@ const ParkingSpotHistory: React.FC<ParkingSpotHistoryProps> = ({
             </View>
             <View style={styles.historyColumn}>
               <Text style={{ color: colors.tertiary }}>
-                {format(historyItem.updatedAt, 'HH:mm:ss dd.MM.yyyy')}
+                {format(historyItem.updatedAt, DATE_FORMAT)}
               </Text>
             </View>
             <Divider />
@@ -81,14 +78,6 @@ const ParkingSpotHistory: React.FC<ParkingSpotHistoryProps> = ({
 };
 
 const styles = StyleSheet.create({
-  modalContainer: {
-    height: '100%'
-  },
-  modalHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between'
-  },
   modalFooter: {
     alignItems: 'center'
   },

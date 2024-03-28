@@ -4,22 +4,13 @@ import { StyleSheet, View } from 'react-native';
 import i18n from '../assets/localization/i18n';
 import { ParkingSheetContent } from '@/app/(tabs)';
 import { PreferencesContext, PreferencesContextProps } from '@/app/context/preference-context';
-import { subscribeToNotification, unsubscribeFromNotificationByUserAndParkingSpotId } from '@/app/services/notifications-service';
-import { updateFavouriteSpot } from '@/app/services/user-service';
+import { subscribeUserToNotification, unsubscribeUserFromNotificationBySpotId } from '@/app/services/notifications-service';
+import { changeFavouriteSpot } from '@/app/services/user-service';
 import { errorColor, successColor } from '@/constants/Colors';
 import { format } from 'date-fns';
+import { ParkingSheetProps } from './component-props';
 
-interface ParkingSheetProps {
-  sheetContent: ParkingSheetContent;
-  openSpotHistory: (spotName: string, spotId: number) => void;
-  isFavourite: boolean;
-  notificationsEnabled: boolean;
-  setLoading: (loading: boolean) => void;
-  setNotificationsEnabled: (enable: boolean) => void;
-  setIsFavourite: (favourite: boolean) => void;
-  setSnackBarContent: (message: string, colorCode: string) => void;
-  setSnackBarVisible: (visible: boolean) => void;
-}
+const DATE_FORMAT = 'HH:mm:ss dd.MM.yyyy';
 
 const ParkingSheet: React.FC<ParkingSheetProps> = ({
   sheetContent,
@@ -35,16 +26,19 @@ const ParkingSheet: React.FC<ParkingSheetProps> = ({
   const { user } = useContext<PreferencesContextProps>(PreferencesContext);
   const { colors } = useTheme();
 
-  async function handleNotificationPressed(userId: number, spotId: number) {
+  async function handleNotificationButtonPressed(
+    userId: number,
+    spotId: number
+  ) {
     try {
       setLoading(true);
       setNotificationsEnabled(!notificationsEnabled);
 
       if (notificationsEnabled) {
-        await unsubscribeFromNotificationByUserAndParkingSpotId(userId, spotId);
+        await unsubscribeUserFromNotificationBySpotId(userId, spotId);
         setSnackBarContent(i18n.t('notifications.unsubscribe'), successColor);
       } else {
-        await subscribeToNotification(spotId, userId);
+        await subscribeUserToNotification(spotId, userId);
         setSnackBarContent(i18n.t('notifications.subscribe'), successColor);
       }
     } catch (error) {
@@ -55,11 +49,14 @@ const ParkingSheet: React.FC<ParkingSheetProps> = ({
     }
   }
 
-  async function handleFavouriteSpotPressed(userId: number, spotId: number) {
+  async function handleFavouriteSpotButtonPressed(
+    userId: number,
+    spotId: number
+  ) {
     try {
       setIsFavourite(!isFavourite);
       setLoading(true);
-      const result = await updateFavouriteSpot(
+      const result = await changeFavouriteSpot(
         userId,
         isFavourite ? null : spotId
       );
@@ -67,7 +64,6 @@ const ParkingSheet: React.FC<ParkingSheetProps> = ({
         result.message,
         result.success ? successColor : errorColor
       );
-      console.log(result)
     } catch (error) {
       setSnackBarContent(i18n.t('base.error'), errorColor);
     } finally {
@@ -76,8 +72,8 @@ const ParkingSheet: React.FC<ParkingSheetProps> = ({
     }
   }
 
-  function getSheetTitle(sheetContent: ParkingSheetContent) {
-    var state = '';
+  function generateSheetTitle(sheetContent: ParkingSheetContent) {
+    let state = '';
     if (sheetContent?.occupied !== null) {
       state = sheetContent?.occupied
         ? i18n.t('parkingMap.parkingSpotDetail.header.stateOccupied')
@@ -89,8 +85,8 @@ const ParkingSheet: React.FC<ParkingSheetProps> = ({
     return `${sheetContent?.spotName} - ${state}`;
   }
 
-  function getSheetText(sheetContent: ParkingSheetContent) {
-    var state = '';
+  function generateSheetText(sheetContent: ParkingSheetContent) {
+    let state = '';
     if (sheetContent?.occupied !== null) {
       state = sheetContent?.occupied
         ? i18n.t('parkingMap.parkingSheet.occupiedSince')
@@ -99,15 +95,12 @@ const ParkingSheet: React.FC<ParkingSheetProps> = ({
       return i18n.t('parkingMap.parkingSheet.stateUnknown');
     }
 
-    var sinceDate = '';
+    let sinceDate = '';
 
     if (sheetContent.sheetData.stateSince === null) {
       sinceDate = i18n.t('parkingMap.parkingSheet.noData');
     } else {
-      sinceDate = format(
-        sheetContent.sheetData.stateSince,
-        'HH:mm:ss dd.MM.yyyy'
-      );
+      sinceDate = format(sheetContent.sheetData.stateSince, DATE_FORMAT);
     }
     return `${state}: ${sinceDate}`;
   }
@@ -133,7 +126,7 @@ const ParkingSheet: React.FC<ParkingSheetProps> = ({
               color: colors.tertiary
             }}
           >
-            {getSheetTitle(sheetContent)}
+            {generateSheetTitle(sheetContent)}
           </Text>
         </View>
         {user && (
@@ -142,14 +135,20 @@ const ParkingSheet: React.FC<ParkingSheetProps> = ({
               icon={notificationsEnabled ? 'bell' : 'bell-outline'}
               size={30}
               onPress={() =>
-                handleNotificationPressed(user.userId, sheetContent.spotId)
+                handleNotificationButtonPressed(
+                  user.userId,
+                  sheetContent.spotId
+                )
               }
             />
             <IconButton
               icon={isFavourite ? 'star' : 'star-outline'}
               size={30}
               onPress={() =>
-                handleFavouriteSpotPressed(user.userId, sheetContent.spotId)
+                handleFavouriteSpotButtonPressed(
+                  user.userId,
+                  sheetContent.spotId
+                )
               }
             />
           </View>
@@ -157,7 +156,7 @@ const ParkingSheet: React.FC<ParkingSheetProps> = ({
       </View>
       <Divider />
       <View style={styles.sheetBody}>
-        <Text variant="bodyLarge">{getSheetText(sheetContent)}</Text>
+        <Text variant="bodyLarge">{generateSheetText(sheetContent)}</Text>
       </View>
       <View style={styles.sheetFooter}>
         <Button
@@ -175,11 +174,6 @@ const ParkingSheet: React.FC<ParkingSheetProps> = ({
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
   sheetHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -192,12 +186,6 @@ const styles = StyleSheet.create({
   rightContainer: {
     flexDirection: 'row'
   },
-  updatedAtTitle: {
-    position: 'absolute',
-    top: 10,
-    padding: 11,
-    borderRadius: 20
-  },
   sheetFooter: {
     alignItems: 'center'
   },
@@ -207,11 +195,6 @@ const styles = StyleSheet.create({
   },
   closeSheetButton: {
     marginTop: 20
-  },
-  modalScrollContent: {
-    flex: 1,
-    marginTop: 10,
-    marginBottom: 10
   }
 });
 

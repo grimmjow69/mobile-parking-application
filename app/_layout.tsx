@@ -11,14 +11,15 @@ import { PaperProvider } from 'react-native-paper';
 import { Platform } from 'react-native';
 import { PreferencesContext } from './context/preference-context';
 import { PushNotificationConfig } from './models/notifications';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Stack } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { useFonts } from 'expo-font';
 import { UserData } from './models/user';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { LANGUAGES, STORAGE_KEYS, THEMES } from '@/constants/common';
 export { ErrorBoundary } from 'expo-router';
 
-export const unstable_settings = {
+export const initialRouteSettings = {
   initialRouteName: '(tabs)'
 };
 
@@ -32,7 +33,7 @@ Notifications.setNotificationHandler({
 
 SplashScreen.preventAutoHideAsync();
 
-export default function RootLayout() {
+export default function AppRootLayout() {
   const [loaded, error] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
     ...FontAwesome.font
@@ -52,50 +53,56 @@ export default function RootLayout() {
     return null;
   }
 
-  return <RootLayoutNav />;
+  return <AppAppNavigationLayout />;
 }
 
-function RootLayoutNav() {
+function AppAppNavigationLayout() {
   const [isThemeDark, setIsThemeDark] = useState<boolean>(false);
   const [alertNotifications, setAlertNotifications] = useState<boolean>(true);
-  const [language, setLanguage] = useState<string>('en');
+  const [language, setLanguage] = useState<string>(LANGUAGES.ENGLISH);
   const [user, setUser] = useState<UserData | null>(null);
 
-  const setFavouriteSpotId = useCallback((id: number) => {
+  const updateFavouriteSpotId = useCallback((id: number) => {
     setUser((currentUser) => {
       if (!currentUser) return currentUser;
       return { ...currentUser, favouriteSpotId: id };
     });
   }, []);
 
-  const toggleTheme = React.useCallback(() => {
+  const switchTheme = React.useCallback(() => {
     return setIsThemeDark(!isThemeDark);
   }, [isThemeDark]);
 
-  const toggleAlertNotifications = React.useCallback(() => {
+  const switchAlertNotifications = React.useCallback(() => {
     return setAlertNotifications(!alertNotifications);
   }, [alertNotifications]);
 
   useEffect(() => {
     const loadPreferences = async () => {
       try {
-        const storedTheme = await AsyncStorage.getItem('theme');
+        const storedTheme = await AsyncStorage.getItem(STORAGE_KEYS.THEME);
 
         if (storedTheme !== null) {
-          setIsThemeDark(storedTheme === 'dark');
+          setIsThemeDark(storedTheme === THEMES.DARK);
         }
 
-        const storedLanguage = await AsyncStorage.getItem('language');
+        const storedLanguage = await AsyncStorage.getItem(
+          STORAGE_KEYS.LANGUAGE
+        );
 
         if (storedLanguage !== null) {
           setLanguage(storedLanguage);
           i18n.changeLanguage(storedLanguage);
         }
 
-        const value = await AsyncStorage.getItem('pushNotificationsConfig');
+        const storedNotificationsConfig = await AsyncStorage.getItem(
+          STORAGE_KEYS.PUSH_NOTIFICATIONS_CONFIG
+        );
 
-        if (value !== null) {
-          const config: PushNotificationConfig = JSON.parse(value);
+        if (storedNotificationsConfig !== null) {
+          const config: PushNotificationConfig = JSON.parse(
+            storedNotificationsConfig
+          );
           setAlertNotifications(config.enabled);
         }
       } catch (e) {}
@@ -103,7 +110,7 @@ function RootLayoutNav() {
 
     const loadUserData = async () => {
       try {
-        const userJson = await AsyncStorage.getItem('user');
+        const userJson = await AsyncStorage.getItem(STORAGE_KEYS.USER);
 
         if (userJson !== null) {
           const userData = JSON.parse(userJson);
@@ -119,26 +126,26 @@ function RootLayoutNav() {
   let reactNavigationtheme = isThemeDark ? DarkTheme : DefaultTheme;
   const preferences = React.useMemo(
     () => ({
-      toggleTheme,
+      switchTheme,
       isThemeDark,
       language,
       setLanguage,
       user,
       setUser,
       alertNotifications,
-      toggleAlertNotifications,
-      setFavouriteSpotId
+      switchAlertNotifications,
+      updateFavouriteSpotId
     }),
     [
-      toggleTheme,
+      switchTheme,
       isThemeDark,
       language,
       setLanguage,
       user,
       setUser,
       alertNotifications,
-      toggleAlertNotifications,
-      setFavouriteSpotId
+      switchAlertNotifications,
+      updateFavouriteSpotId
     ]
   );
 

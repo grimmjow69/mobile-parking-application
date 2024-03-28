@@ -2,18 +2,18 @@ import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
 import { Platform } from 'react-native';
 import { SpotNotification } from '../models/notifications';
-import { requestHeader } from './request-header';
+import { defaultRequestHeader } from './request-header';
 
 const API_BASE_URL = 'http://192.168.100.11:8080/notification';
 
-export const sendPushTokenToServer = async (
+export const registerPushToken = async (
   token: string,
   userId: number
 ): Promise<void> => {
   try {
     const response = await fetch(`${API_BASE_URL}/register-push-token`, {
       method: 'POST',
-      headers: requestHeader,
+      headers: defaultRequestHeader,
       body: JSON.stringify({
         userId: userId,
         token: token
@@ -26,13 +26,11 @@ export const sendPushTokenToServer = async (
   } catch (error) {}
 };
 
-export const deletePushTokenFromServer = async (
-  userId: number
-): Promise<void> => {
+export const removePushToken = async (userId: number): Promise<void> => {
   try {
     const response = await fetch(`${API_BASE_URL}/delete-push-token`, {
       method: 'POST',
-      headers: requestHeader,
+      headers: defaultRequestHeader,
       body: JSON.stringify({
         userId: userId
       })
@@ -44,7 +42,7 @@ export const deletePushTokenFromServer = async (
   } catch (error) {}
 };
 
-export const fetchUserNotifications = async (
+export const getUserNotifications = async (
   userId: number
 ): Promise<SpotNotification[]> => {
   try {
@@ -52,7 +50,7 @@ export const fetchUserNotifications = async (
       `${API_BASE_URL}/user-notifications/${userId}`,
       {
         method: 'GET',
-        headers: requestHeader
+        headers: defaultRequestHeader
       }
     );
 
@@ -66,7 +64,7 @@ export const fetchUserNotifications = async (
   }
 };
 
-export async function registerForPushNotificationsAsync() {
+export async function getPushNotificationsToken() {
   let token;
   if (Constants.isDevice) {
     const { status: existingStatus } =
@@ -101,14 +99,14 @@ export async function registerForPushNotificationsAsync() {
   return token;
 }
 
-export const subscribeToNotification = async (
+export const subscribeUserToNotification = async (
   parkingSpotId: number,
   userId: number
 ): Promise<void> => {
   try {
     const response = await fetch(`${API_BASE_URL}/subscribe`, {
       method: 'POST',
-      headers: requestHeader,
+      headers: defaultRequestHeader,
       body: JSON.stringify({
         parkingSpotId: parkingSpotId,
         userId: userId
@@ -121,7 +119,7 @@ export const subscribeToNotification = async (
   } catch (error) {}
 };
 
-export const unsubscribeFromNotificationByNotificationId = async (
+export const unsubscribeUserFromNotificationById = async (
   notificationId: number
 ): Promise<void> => {
   try {
@@ -129,7 +127,7 @@ export const unsubscribeFromNotificationByNotificationId = async (
       `${API_BASE_URL}/unsubscribe/${notificationId}`,
       {
         method: 'DELETE',
-        headers: requestHeader
+        headers: defaultRequestHeader
       }
     );
 
@@ -139,14 +137,14 @@ export const unsubscribeFromNotificationByNotificationId = async (
   } catch (error) {}
 };
 
-export const unsubscribeFromNotificationByUserAndParkingSpotId = async (
+export const unsubscribeUserFromNotificationBySpotId = async (
   userId: number,
   parkingSpotId: number
 ): Promise<void> => {
   try {
     const response = await fetch(`${API_BASE_URL}/unsubscribe`, {
       method: 'POST',
-      headers: requestHeader,
+      headers: defaultRequestHeader,
       body: JSON.stringify({
         userId: userId,
         parkingSpotId: parkingSpotId

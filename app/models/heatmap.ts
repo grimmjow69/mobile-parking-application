@@ -1,10 +1,12 @@
 export interface HeatmapPoint {
+  weight: number;
   latitude: number;
   longitude: number;
-  weight: number;
 }
 
-export interface OccupancyCount {
-  name: string;
-  times_occupied: number;
+export interface HeatmapResponse {
+  operation: string;
+  parkingSpotsOccupancyCount: HeatmapPoint[];
+  success: boolean;
+  error: string;
 }
