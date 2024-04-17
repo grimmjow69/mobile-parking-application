@@ -34,7 +34,6 @@ const UserContent: React.FC<UserContentProps> = ({
         const result = await removeUserAccount(user.userId);
         await AsyncStorage.removeItem(STORAGE_KEYS.USER);
         setUser(null);
-
         setSnackBarContent(
           i18n.t(result.message),
           result.success ? successColor : errorColor

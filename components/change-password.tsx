@@ -6,6 +6,7 @@ import { PreferencesContext, PreferencesContextProps } from '@/app/context/prefe
 import { StyleSheet, View } from 'react-native';
 import { changeUserPassword } from '@/app/services/user-service';
 import { ChangePasswordProps } from './component-props';
+import { Keyboard } from 'react-native';
 
 const MIN_PASSWORD_LENGTH = 6;
 
@@ -37,6 +38,10 @@ const ChangePassword: React.FC<ChangePasswordProps> = ({
       );
 
       if (result.success) {
+        setCurrentPassword('');
+        setNewPassword('');
+        setConfirmNewPassword('');
+        Keyboard.dismiss();
         onDismiss();
       }
     } catch (err) {

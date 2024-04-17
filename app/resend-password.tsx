@@ -8,6 +8,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { submitUserReport } from './services/report-service';
 import { StyleSheet } from 'react-native';
 import { useContext, useState } from 'react';
+import { Keyboard } from 'react-native';
 
 const EMAIL_REGEX = /\S+@\S+\.\S+/;
 
@@ -37,6 +38,7 @@ export default function PasswordResendScreen() {
       );
 
       if (result.success) {
+        Keyboard.dismiss();
         setSnackbarVisible(false);
       }
     } catch (err) {

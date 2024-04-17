@@ -8,6 +8,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { StyleSheet } from 'react-native';
 import { useContext, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
+import { Keyboard } from 'react-native';
 
 const EMAIL_REGEX = /\S+@\S+\.\S+/;
 const MIN_PASSWORD_LENGTH = 6;
@@ -35,6 +36,7 @@ export default function RegistrationScreen() {
         result.success ? successColor : errorColor
       );
       if (result.success) {
+        Keyboard.dismiss();
         setTimeout(() => {
           navigation.goBack();
         }, 1);

@@ -6,7 +6,7 @@ import { StyleSheet, View } from 'react-native';
 import { changeUserEmail } from '@/app/services/user-service';
 import { useContext, useState } from 'react';
 import { ChangeEmailProps } from './component-props';
-
+import { Keyboard } from 'react-native';
 
 const ChangeEmail: React.FC<ChangeEmailProps> = ({
   visible,
@@ -33,6 +33,9 @@ const ChangeEmail: React.FC<ChangeEmailProps> = ({
       );
 
       if (result.success) {
+        setNewEmail('');
+        setPassword('');
+        Keyboard.dismiss();
         onDismiss();
       }
     } catch (err) {

@@ -12,6 +12,7 @@ import { StyleSheet, View } from 'react-native';
 import { UserData } from '@/app/models/user';
 import { STORAGE_KEYS } from '@/constants/common';
 import { LoginFormProps } from './component-props';
+import { Keyboard } from 'react-native';
 
 const EMAIL_REGEX = /\S+@\S+\.\S+/;
 const MIN_PASSWORD_LENGTH = 6;
@@ -48,6 +49,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
   }
 
   async function handleUserLoginSuccess(userData: UserData) {
+    Keyboard.dismiss();
     setUser(userData);
     try {
       const value = await AsyncStorage.getItem(STORAGE_KEYS.PUSH_NOTIFICATIONS_CONFIG);
