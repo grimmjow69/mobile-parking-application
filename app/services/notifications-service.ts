@@ -29,7 +29,7 @@ export const registerPushToken = async (
 export const removePushToken = async (userId: number): Promise<void> => {
   try {
     const response = await fetch(`${API_BASE_URL}/delete-push-token`, {
-      method: 'POST',
+      method: 'DELETE',
       headers: defaultRequestHeader,
       body: JSON.stringify({
         userId: userId
@@ -104,7 +104,7 @@ export const subscribeUserToNotification = async (
   userId: number
 ): Promise<void> => {
   try {
-    const response = await fetch(`${API_BASE_URL}/subscribe`, {
+    const response = await fetch(`${API_BASE_URL}/subscribe-notification`, {
       method: 'POST',
       headers: defaultRequestHeader,
       body: JSON.stringify({

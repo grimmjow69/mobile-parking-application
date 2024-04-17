@@ -21,7 +21,7 @@ export const findClosestFreeParkingSpot = async (
   startLongitude: number
 ) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/find-closest-free-spot`, {
+    const response = await fetch(`${API_BASE_URL}/closest-free-spot`, {
       method: 'POST',
       headers: defaultRequestHeader,
       body: JSON.stringify({
@@ -46,7 +46,7 @@ export const getUserFavouriteSpot = async (
   userId: number
 ): Promise<ParkingSpotCoordinates | null> => {
   try {
-    const response = await fetch(`${API_BASE_URL}/favourite-spot/${userId}`, {
+    const response = await fetch(`${API_BASE_URL}/user-favourite-spot/${userId}`, {
       method: 'GET',
       headers: defaultRequestHeader
     });
@@ -62,31 +62,10 @@ export const getUserFavouriteSpot = async (
   }
 };
 
-export const getSpotCoordinates = async (
-  spotId: number
-): Promise<ParkingSpotCoordinates> => {
-  try {
-    const response = await fetch(`${API_BASE_URL}/spot-coordinates/${spotId}`, {
-      method: 'GET',
-      headers: defaultRequestHeader
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const jsonData = await response.json();
-    const data: ParkingSpotCoordinates = jsonData.spotCoordinates;
-    return data;
-  } catch (error) {
-    throw error;
-  }
-};
-
 export const getAllParkingSpotsData =
   async (): Promise<ParkingSpotsResponse> => {
     try {
-      const response = await fetch(`${API_BASE_URL}/all-spots`, {
+      const response = await fetch(`${API_BASE_URL}/parking-spots`, {
         method: 'GET',
         headers: defaultRequestHeader
       });
@@ -152,7 +131,7 @@ export const getSpotDetailById = async (
   spotId: number
 ): Promise<ParkingSheetResponse> => {
   try {
-    const response = await fetch(`${API_BASE_URL}/spot-detail-by-id`, {
+    const response = await fetch(`${API_BASE_URL}/spot-detail`, {
       method: 'POST',
       headers: defaultRequestHeader,
       body: JSON.stringify({

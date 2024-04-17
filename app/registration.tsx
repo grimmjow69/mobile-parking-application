@@ -34,9 +34,10 @@ export default function RegistrationScreen() {
         i18n.t(result.message),
         result.success ? successColor : errorColor
       );
-
       if (result.success) {
-        navigation.goBack();
+        setTimeout(() => {
+          navigation.goBack();
+        }, 1);
       }
     } catch (err) {
       setSnackBarContent(i18n.t('base.error'), errorColor);

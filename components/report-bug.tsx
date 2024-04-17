@@ -76,13 +76,11 @@ const ReportBug: React.FC<ReportBugPropss> = ({
       <TextInput
         multiline
         mode="outlined"
-        numberOfLines={1}
+        numberOfLines={4}
         value={reportMessage}
         label={i18n.t('settings.reportBugLabel')}
         style={{
-          width: 300,
-          textAlignVertical: 'top',
-          marginBottom: 10
+          width: 300
         }}
         error={isReportMessageLengthValid}
         onChangeText={(reportMessage) => {
