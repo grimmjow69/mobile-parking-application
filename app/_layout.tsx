@@ -1,14 +1,12 @@
-import * as NavigationBar from 'expo-navigation-bar';
 import * as Notifications from 'expo-notifications';
 import * as SplashScreen from 'expo-splash-screen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Colors, { darkTheme, lightTheme } from '@/constants/Colors';
+import { darkTheme, lightTheme } from '@/constants/Colors';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import i18n from '../assets/localization/i18n';
 import React, { useCallback } from 'react';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { PaperProvider } from 'react-native-paper';
-import { Platform } from 'react-native';
 import { PreferencesContext } from './context/preference-context';
 import { PushNotificationConfig } from './models/notifications';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -148,12 +146,6 @@ function AppAppNavigationLayout() {
       updateFavouriteSpotId
     ]
   );
-
-  if (Platform.OS === 'android') {
-    NavigationBar.setBackgroundColorAsync(
-      Colors[isThemeDark ? 'dark' : 'light'].navigationBar
-    );
-  }
 
   return (
     <PreferencesContext.Provider value={preferences}>

@@ -4,7 +4,6 @@ import { Icon } from 'react-native-paper';
 import { PreferencesContext, PreferencesContextProps } from '../context/preference-context';
 import { Tabs } from 'expo-router';
 import { useContext } from 'react';
-import { THEMES } from '@/constants/common';
 
 export default function TabLayout() {
   const { isThemeDark } =
