@@ -1,13 +1,13 @@
 {
   "about": {
-    "content1": "Našim cieľom je umožniť Vám jednoduché a efektívne parkovanie v areáli Žilinskej univerzity. S touto aplikáciou môžete ľahko nájsť najbližšie voľné parkovacie miesto a získať aktuálne informácie o obsadenosti jednotlivých parkovísk.",
-    "content2": "Umožňujeme vám zvoliť si obľúbené parkovacie miesto, v takom prípade budeme prioritne vyhľadávať voľné miesta v jeho okolí.",
-    "content3": "Taktiež poskytujeme archiváciu stavov parkovacích miest, čo vám pomôže sledovať predchádzajúce stavy jednotlivých parkovacích miest.",
-    "content4": "Pokiaľ používate operačný systém Android, aplikácia vás pomocou Google Maps pohodlne dovedie k požadovanému parkovaciemu miestu.",
-    "content5": "Aplikácia ponúka aj funkcionalitu Heatmapy, kde môžete sledovať frekvenciu vyťaženia jednotlivých parkovacích miest.",
-    "content6": "Aplikácia má predvolené zapnuté push notifikácie, ktoré vás informujú vždy, keď sa skenuje parkovisko.",
-    "end": "Užite si pohodlie a jednoduchosť parkovania s touto aplikáciou.",
-    "title": "Vitajte v aplikácii pre asistované parkovanie na UNIZE"
+    "title": "Vitajte v aplikácii asistovaného parkovania na UNIZE",
+    "content1": "S našou aplikáciou môžete ľahko nájsť najbližšie voľné parkovacie miesto a získať aktuálne informácie o dostupnosti parkovísk.",
+    "content2": "Máte obľúbené parkovacie miesto? Nastavte si ho a my Vám budeme prioritne hľadať voľné miesta v jeho blízkosti.",
+    "content3": "Umožňujeme Vám tiež sledovať históriu obsadenosti parkovacích miest vďaka našej funkcii archivácie údajov.",
+    "content4": "Ak používate Android, naša aplikácia Vás pomocou Google Maps pohodlne navedie priamo na vybrané parkovacie miesto.",
+    "content5": "Vyskúšajte tiež našu funkciu Heatmapy, ktorá Vám ukáže, ako často sú jednotlivé parkovacie miesta vyťažené.",
+    "content6": "Nezabudnite, že aplikácia má aktivované push notifikácie, ktoré Vás budú pravidelne informovať o zmenách stavu miest, ktoré si zvolíte.",
+    "end": "Užite si pohodlie a jednoduchosť parkovania s našou aplikáciou."
   },
   "base": {
     "close": "Zavrieť",

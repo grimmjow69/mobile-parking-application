@@ -6,7 +6,7 @@ import SpinnerOverlay from 'react-native-loading-spinner-overlay';
 import { ActivityIndicator, Button, Snackbar, Switch, Text, useTheme } from 'react-native-paper';
 import { registerPushToken, getPushNotificationsToken, removePushToken } from '../services/notifications-service';
 import { Link, useNavigation } from 'expo-router';
-import { PreferencesContext, PreferencesContextProps } from '../context/preference-context';
+import { PreferencesContext,  PreferencesContextProps } from '../context/preference-context';
 import { PushNotificationConfig } from '../models/notifications';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { StyleSheet, View } from 'react-native';
@@ -102,7 +102,14 @@ export default function SettingsScreen() {
           >
             {i18n.t('settings.darkTheme')}
           </Text>
-          <Switch value={isThemeDark} onValueChange={toggleDarkTheme} />
+          <Switch
+            value={isThemeDark}
+            onValueChange={toggleDarkTheme}
+            trackColor={{
+              false: '#575859',
+              true: isThemeDark ? '#b0b0b0' : '#b5b5b5'
+            }}
+          />
         </View>
 
         <View style={styles.switchRow}>
@@ -114,7 +121,14 @@ export default function SettingsScreen() {
           >
             {i18n.t('settings.useEnglish')}
           </Text>
-          <Switch value={isLanguageEnglish} onValueChange={toggleLanguage} />
+          <Switch
+            value={isLanguageEnglish}
+            onValueChange={toggleLanguage}
+            trackColor={{
+              false: '#575859',
+              true: isThemeDark ? '#b0b0b0' : '#b5b5b5'
+            }}
+          />
         </View>
 
         {user && (
@@ -127,7 +141,14 @@ export default function SettingsScreen() {
             >
               {i18n.t('settings.alertPushNotifications')}
             </Text>
-            <Switch value={alertNotifications} onValueChange={toggleAlert} />
+            <Switch
+              value={alertNotifications}
+              onValueChange={toggleAlert}
+              trackColor={{
+                false: '#575859',
+                true: isThemeDark ? '#b0b0b0' : '#b5b5b5'
+              }}
+            />
           </View>
         )}
 
