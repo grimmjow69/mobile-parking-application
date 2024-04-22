@@ -1,11 +1,13 @@
 import * as Notifications from 'expo-notifications';
 import * as SplashScreen from 'expo-splash-screen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { darkTheme, lightTheme } from '@/constants/Colors';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import i18n from '../assets/localization/i18n';
+import NetInfo from '@react-native-community/netinfo';
 import React, { useCallback } from 'react';
+import { darkTheme, lightTheme } from '@/constants/Colors';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
+import { LANGUAGES, STORAGE_KEYS, THEMES } from '@/constants/common';
 import { PaperProvider } from 'react-native-paper';
 import { PreferencesContext } from './context/preference-context';
 import { PushNotificationConfig } from './models/notifications';
@@ -14,7 +16,7 @@ import { Stack } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { useFonts } from 'expo-font';
 import { UserData } from './models/user';
-import { LANGUAGES, STORAGE_KEYS, THEMES } from '@/constants/common';
+import NoInternetScreen from './resend-password copy';
 export { ErrorBoundary } from 'expo-router';
 
 export const initialRouteSettings = {
@@ -59,6 +61,7 @@ function AppAppNavigationLayout() {
   const [alertNotifications, setAlertNotifications] = useState<boolean>(true);
   const [language, setLanguage] = useState<string>(LANGUAGES.ENGLISH);
   const [user, setUser] = useState<UserData | null>(null);
+  const [isConnected, setIsConnected] = useState(true);
 
   const updateFavouriteSpotId = useCallback((id: number) => {
     setUser((currentUser) => {
@@ -116,10 +119,22 @@ function AppAppNavigationLayout() {
         }
       } catch (e) {}
     };
-
+    
     loadPreferences();
     loadUserData();
   }, []);
+
+  useEffect(() => {
+    NetInfo.fetch().then((state) => {
+      setIsConnected(state.isConnected ?? false);
+    });
+
+    const unsubscribe = NetInfo.addEventListener((state) => {
+      setIsConnected(state.isConnected ?? false);
+    });
+    return () => unsubscribe();
+  }, []);
+
   let paperTheme = isThemeDark ? darkTheme : lightTheme;
   let reactNavigationtheme = isThemeDark ? DarkTheme : DefaultTheme;
   const preferences = React.useMemo(
@@ -154,6 +169,7 @@ function AppAppNavigationLayout() {
           <SafeAreaProvider
             style={{ backgroundColor: reactNavigationtheme.colors.background }}
           >
+            {isConnected ? (
             <Stack>
               <Stack.Screen
                 name="(tabs)"
@@ -190,6 +206,9 @@ function AppAppNavigationLayout() {
                 }}
               />
             </Stack>
+            ) : (
+              <NoInternetScreen/>
+            )}
           </SafeAreaProvider>
         </PaperProvider>
       </ThemeProvider>

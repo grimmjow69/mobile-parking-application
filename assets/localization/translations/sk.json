@@ -17,7 +17,8 @@
     "loadSuccess": "Dáta boli úspešne načítané",
     "locationPermissionDenied": "Povolenie polohy je zamietnuté. Prosím, povoľte ho vo svojich nastaveniach zariadenia",
     "unknown": "neznáme",
-    "wait": "Prosím, počkajte"
+    "wait": "Prosím, počkajte",
+    "noInternetConnection": "Žiadne pripojenie k internetu"
   },
   "heatmap": {
     "updatedAt:": "Aktualizované: "

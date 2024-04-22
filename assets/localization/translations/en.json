@@ -17,7 +17,8 @@
     "loadSuccess": "Data loaded successfully",
     "locationPermissionDenied": "Location permission was denied. Please enable it in your device settings to continue",
     "unknown": "unknown",
-    "wait": "Please wait"
+    "wait": "Please wait",
+    "noInternetConnection": "No internet connection"
   },
   "heatmap": {
     "updatedAt:": "Updated at: "
