@@ -1,7 +1,7 @@
 export interface ParkingSpot {
   parkingSpotId: number;
   name: string;
-  occupied: boolean;
+  occupied: boolean | null;
   updatedAt: Date;
   latitude: number;
   longitude: number;
@@ -17,7 +17,7 @@ export interface FindClosestFreeParkingSpotResponse {
   operation: string;
   closestFreeSpot: ParkingSpot;
   success: boolean;
-  error:string
+  error: string
 }
 
 export interface FavouriteSpotResponse {

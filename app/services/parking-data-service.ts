@@ -1,12 +1,5 @@
 import { HeatmapPoint, HeatmapResponse } from '../models/heatmap';
-import {
-  FavouriteSpotResponse,
-  FindClosestFreeParkingSpotResponse,
-  ParkingSheetResponse,
-  ParkingSpot,
-  ParkingSpotCoordinates,
-  SpotHistoryRecord
-} from '../models/parking-spot';
+import { FavouriteSpotResponse, FindClosestFreeParkingSpotResponse, ParkingSheetResponse, ParkingSpot, ParkingSpotCoordinates, SpotHistoryRecord } from '../models/parking-spot';
 import { defaultRequestHeader } from './request-header';
 
 const API_BASE_URL = 'http://192.168.100.11:8080/parking';
@@ -30,10 +23,6 @@ export const findClosestFreeParkingSpot = async (
       })
     });
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
     const closestSpotDetail: FindClosestFreeParkingSpotResponse =
       await response.json();
     return closestSpotDetail;
@@ -46,14 +35,13 @@ export const getUserFavouriteSpot = async (
   userId: number
 ): Promise<ParkingSpotCoordinates | null> => {
   try {
-    const response = await fetch(`${API_BASE_URL}/user-favourite-spot/${userId}`, {
-      method: 'GET',
-      headers: defaultRequestHeader
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
+    const response = await fetch(
+      `${API_BASE_URL}/user-favourite-spot/${userId}`,
+      {
+        method: 'GET',
+        headers: defaultRequestHeader
+      }
+    );
 
     const jsonResponse: FavouriteSpotResponse = await response.json();
     return jsonResponse.favouriteSpot;
@@ -70,10 +58,6 @@ export const getAllParkingSpotsData =
         headers: defaultRequestHeader
       });
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
       const result: ParkingSpotsResponse = await response.json();
       return result;
     } catch (error) {
@@ -87,10 +71,6 @@ export const getHeatmapData = async (): Promise<HeatmapPoint[]> => {
       method: 'GET',
       headers: defaultRequestHeader
     });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
 
     const data: HeatmapResponse = await response.json();
     const heatmapData: HeatmapPoint[] = Object.values(
@@ -115,10 +95,6 @@ export const getSpotHistory = async (
       headers: defaultRequestHeader
     });
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
     const jsonResponse = await response.json();
     return jsonResponse.historyRecords;
   } catch (error) {
@@ -139,10 +115,6 @@ export const getSpotDetailById = async (
         spotId
       })
     });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
 
     const jsonResponse = await response.json();
     const parkingSpotDetail: ParkingSheetResponse = jsonResponse.data;

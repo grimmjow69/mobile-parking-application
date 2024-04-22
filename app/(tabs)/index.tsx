@@ -189,7 +189,7 @@ export default function MapScreen() {
 
   async function handleMarkerPress(
     spotName: string,
-    occupied: boolean,
+    occupied: boolean | null,
     spotId: number
   ) {
     try {

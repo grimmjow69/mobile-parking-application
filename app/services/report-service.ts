@@ -1,9 +1,5 @@
 import i18n from '../../assets/localization/i18n';
-import {
-  ReportCategory,
-  ReportRequest,
-  ReportResponse
-} from '../models/report';
+import { ReportCategory, ReportRequest, ReportResponse } from '../models/report';
 import { defaultRequestHeader } from './request-header';
 
 const API_BASE_URL = 'http://192.168.100.11:8080/report';

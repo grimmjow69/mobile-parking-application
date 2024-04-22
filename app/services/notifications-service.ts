@@ -11,7 +11,7 @@ export const registerPushToken = async (
   userId: number
 ): Promise<void> => {
   try {
-    const response = await fetch(`${API_BASE_URL}/register-push-token`, {
+    await fetch(`${API_BASE_URL}/register-push-token`, {
       method: 'POST',
       headers: defaultRequestHeader,
       body: JSON.stringify({
@@ -19,26 +19,18 @@ export const registerPushToken = async (
         token: token
       })
     });
-
-    if (!response.ok) {
-      throw new Error(`Server responded with status: ${response.status}`);
-    }
   } catch (error) {}
 };
 
 export const removePushToken = async (userId: number): Promise<void> => {
   try {
-    const response = await fetch(`${API_BASE_URL}/delete-push-token`, {
+    await fetch(`${API_BASE_URL}/delete-push-token`, {
       method: 'DELETE',
       headers: defaultRequestHeader,
       body: JSON.stringify({
         userId: userId
       })
     });
-
-    if (!response.ok) {
-      throw new Error(`Server responded with status: ${response.status}`);
-    }
   } catch (error) {}
 };
 
@@ -53,10 +45,6 @@ export const getUserNotifications = async (
         headers: defaultRequestHeader
       }
     );
-
-    if (!response.ok) {
-      throw new Error(`Server responded with status: ${response.status}`);
-    }
     const jsonResponse = await response.json();
     return jsonResponse.userNotifications;
   } catch (error) {
@@ -104,7 +92,7 @@ export const subscribeUserToNotification = async (
   userId: number
 ): Promise<void> => {
   try {
-    const response = await fetch(`${API_BASE_URL}/subscribe-notification`, {
+    await fetch(`${API_BASE_URL}/subscribe-notification`, {
       method: 'POST',
       headers: defaultRequestHeader,
       body: JSON.stringify({
@@ -112,10 +100,6 @@ export const subscribeUserToNotification = async (
         userId: userId
       })
     });
-
-    if (!response.ok) {
-      throw new Error(`Server responded with status: ${response.status}`);
-    }
   } catch (error) {}
 };
 
@@ -123,17 +107,10 @@ export const unsubscribeUserFromNotificationById = async (
   notificationId: number
 ): Promise<void> => {
   try {
-    const response = await fetch(
-      `${API_BASE_URL}/unsubscribe/${notificationId}`,
-      {
-        method: 'DELETE',
-        headers: defaultRequestHeader
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error(`Server responded with status: ${response.status}`);
-    }
+    await fetch(`${API_BASE_URL}/unsubscribe/${notificationId}`, {
+      method: 'DELETE',
+      headers: defaultRequestHeader
+    });
   } catch (error) {}
 };
 
@@ -142,7 +119,7 @@ export const unsubscribeUserFromNotificationBySpotId = async (
   parkingSpotId: number
 ): Promise<void> => {
   try {
-    const response = await fetch(`${API_BASE_URL}/unsubscribe`, {
+    await fetch(`${API_BASE_URL}/unsubscribe`, {
       method: 'POST',
       headers: defaultRequestHeader,
       body: JSON.stringify({
@@ -150,9 +127,5 @@ export const unsubscribeUserFromNotificationBySpotId = async (
         parkingSpotId: parkingSpotId
       })
     });
-
-    if (!response.ok) {
-      throw new Error(`Server responded with status: ${response.status}`);
-    }
   } catch (error) {}
 };
